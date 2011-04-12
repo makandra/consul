@@ -33,12 +33,23 @@ You describe access to your application by putting a <tt>Power</tt> model into <
     end
 
     power :dashboard do
-      true # not a scope, but a boolean power. this is useful to control access to stuff that doesn't live in the database.
+      true # not a scope, but a boolean power. This is useful to control access to stuff that doesn't live in the database.
     end
 
   end
 
-== Querying a power powers
+
+== Querying a power
+
+Common things you might want from a power:
+
+1. Get its scope
+2. Ask whether it is there
+3. Raise an error unless it its there
+4. Ask whether a given record is included in its scope
+5. Raise an error unless a given record is included in its scope
+
+Here is how to do all of that:
 
   power = Power.new(user)
   power.notes # => returns an ActiveRecord::Scope
@@ -46,8 +57,33 @@ You describe access to your application by putting a <tt>Power</tt> model into <
   power.notes! # => raises Consul::Powerless unless Power#notes returns a scope
   power.note?(Note.last) # => returns whether the given Note is in the Power#notes scope. Caches the result for subsequent queries.
   power.note!(Note.last) # => raises Consul::Powerless unless the given Note is in the Power#notes scope
+
+You can also write power checks like this:
+
+  power.include?(:notes)
+  power.include!(:notes)
+  power.include?(:note, Note.last)
+  power.include!(:note, Note.last)
+
+
+== Boolean powers
+
+Boolean powers are useful to control access to stuff that doesn't live in the database:
+
+  class Power
+    ...
+
+    power :dashboard do
+      true
+    end
+
+  end
+
+You can query it like the other powers:
+
   power.dashboard? # => true
   power.dashboard! # => raises Consul::Powerless unless Power#dashboard? returns true
+
 
 == Role-based permissions
 
@@ -134,7 +170,7 @@ It is often convenient to map a power scope to a private controller method:
 
   end
 
-The mapped method is aware of the <tt>:map</tt> option.
+This is especially useful when you are using a RESTful controller library like {resource_controller}[https://github.com/jamesgolick/resource_controller]. The mapped method is aware of the <tt>:map</tt> option.
 
 You can force yourself to use a <tt>power</tt> check in every controller. This will raise <tt>Consul::UncheckedPower</tt> if you ever forget it:
 
