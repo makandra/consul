@@ -1,0 +1,177 @@
+= Consul - A scope-based authorization solution
+
+Consul is a authorization solution for Ruby on Rails that uses scopes to control what a user can see or edit.
+
+
+== Status of this project
+
+Consul is a new kind of authorization solution for Rails applications that are mainly driven by scopes.
+While Consul has been used in production code, we are still figuring out whether or not it is a good idea.
+Also documentation is still sparse.
+
+If you are looking for something less adventurous with a stable API and great documentation, checkout out our
+other authorization solution, {Aegis}[https://github.com/makandra/aegis].
+
+
+== Describing a power for your application
+
+You describe access to your application by putting a <tt>Power</tt> model into <tt>app/models/power.rb</tt>:
+
+  class Power
+    include Consul::Power
+
+    def initialize(user)
+      @user = user
+    end
+
+    power :notes do
+      Note.by_author(@user)
+    end
+
+    power :users do
+      User if @user.admin?
+    end
+
+    power :dashboard do
+      true # not a scope, but a boolean power. this is useful to control access to stuff that doesn't live in the database.
+    end
+
+  end
+
+== Querying a power powers
+
+  power = Power.new(user)
+  power.notes # => returns an ActiveRecord::Scope
+  power.notes? # => returns true if Power#notes returns a scope
+  power.notes! # => raises Consul::Powerless unless Power#notes returns a scope
+  power.note?(Note.last) # => returns whether the given Note is in the Power#notes scope. Caches the result for subsequent queries.
+  power.note!(Note.last) # => raises Consul::Powerless unless the given Note is in the Power#notes scope
+  power.dashboard? # => true
+  power.dashboard! # => raises Consul::Powerless unless Power#dashboard? returns true
+
+== Role-based permissions
+
+Consul has no built-in support for role-based permissions, but you can easily implement it yourself. Let's say your <tt>User</tt> model has a string column <tt>role</tt> which can be <tt>"author"</tt> or "<tt>"admin"</tt>:
+
+  class Power
+    include Consul::Power
+
+    def initialize(user)
+      @user = user
+    end
+
+    power :notes do
+      case role
+        when :admin then Note
+        when :author then Note.by_author
+      end
+    end
+
+    private
+
+    def role
+      @user.role.to_sym
+    end
+
+  end
+
+
+== Controller integration
+
+It is convenient to expose a helper method <tt>current_power</tt> for your controllers and views:
+
+  class ApplicationController < ActionController::Base
+
+    private
+
+    def current_power
+      @current_power ||= Power.new(current_user)
+    end
+
+    helper_method :current_power
+
+  end
+
+You can now use power scopes to control access:
+
+  class NotesController < ApplicationController
+
+    def show
+      @note = current_power.notes.find(params[:id])
+    end
+
+  end
+
+Get convenient controller macros by including <tt>Consul::Controller</tt> in your application:
+
+  class ApplicationController < ActionController::Base
+    include Consul::Controller
+  end
+
+To make sure a power is given before every action in a controller:
+
+  class NotesController < ApplicationController
+    power :notes
+  end
+
+You can use <tt>:except</tt> and <tt>:only</tt> options like in before filters.
+
+You can also map different powers to different actions:
+
+  class NotesController < ApplicationController
+    power :notes, :map => { [:edit, :update, :destroy] => :changable_notes }
+  end
+
+It is often convenient to map a power scope to a private controller method:
+
+  class NotesController < ApplicationController
+
+    power :notes, :as => end_of_association_chain
+
+    def show
+      @note = end_of_association_chain.find(params[:id])
+    end
+
+  end
+
+The mapped method is aware of the <tt>:map</tt> option.
+
+You can force yourself to use a <tt>power</tt> check in every controller. This will raise <tt>Consul::UncheckedPower</tt> if you ever forget it:
+
+  class ApplicationController < ActionController::Base
+    include Consul::Controller
+    require_power_check
+  end
+
+Should you for some obscure reason want to forego the power check:
+
+  class ApiController < ApplicationController
+    skip_power_check
+  end
+
+== Installation
+
+Add the following to your <tt>Gemfile</tt>:
+    gem 'consul'
+
+Now run
+    bundle install
+
+
+== Rails 3 compatibility
+
+We cannot guarantee Rails 3 compatibility at this point.
+
+
+== Development
+
+A Rails 2 test application lives in <tt>spec/app_root</tt>. You can run specs from the project root by saying:
+
+  bundle exec rake spec
+  
+
+== Credits
+
+Henning Koch
+
+{makandra.com}[http://makandra.com/]
