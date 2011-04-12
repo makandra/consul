@@ -5,23 +5,29 @@
 
 Gem::Specification.new do |s|
   s.name = %q{consul}
-  s.version = "0.0.1"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Henning Koch"]
-  s.date = %q{2011-02-01}
+  s.date = %q{2011-04-12}
   s.description = %q{Consul is a scope-based authorization solution for Ruby on Rails.}
   s.email = %q{henning.koch@makandra.de}
+  s.extra_rdoc_files = [
+    "README.rdoc"
+  ]
   s.files = [
     ".gitignore",
      "Gemfile",
      "Gemfile.lock",
+     "README.rdoc",
      "Rakefile",
      "VERSION",
      "consul.gemspec",
      "lib/consul.rb",
+     "lib/consul/controller.rb",
      "lib/consul/errors.rb",
      "lib/consul/power.rb",
+     "lib/consul/spec/matchers.rb",
      "spec/app_root/app/controllers/application_controller.rb",
      "spec/app_root/app/models/client.rb",
      "spec/app_root/app/models/note.rb",
@@ -53,25 +59,25 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Scope-based authorization solution for Rails}
   s.test_files = [
-    "spec/consul/power_spec.rb",
-     "spec/spec_helper.rb",
-     "spec/app_root/lib/console_with_fixtures.rb",
-     "spec/app_root/app/models/power.rb",
-     "spec/app_root/app/models/client.rb",
-     "spec/app_root/app/models/note.rb",
-     "spec/app_root/app/models/user.rb",
-     "spec/app_root/app/controllers/application_controller.rb",
+    "spec/app_root/db/migrate/001_create_users.rb",
      "spec/app_root/db/migrate/002_create_clients.rb",
      "spec/app_root/db/migrate/003_create_notes.rb",
-     "spec/app_root/db/migrate/001_create_users.rb",
+     "spec/app_root/config/boot.rb",
+     "spec/app_root/config/environment.rb",
+     "spec/app_root/config/routes.rb",
+     "spec/app_root/config/environments/in_memory.rb",
      "spec/app_root/config/environments/mysql.rb",
      "spec/app_root/config/environments/postgresql.rb",
      "spec/app_root/config/environments/sqlite.rb",
      "spec/app_root/config/environments/sqlite3.rb",
-     "spec/app_root/config/environments/in_memory.rb",
-     "spec/app_root/config/environment.rb",
-     "spec/app_root/config/routes.rb",
-     "spec/app_root/config/boot.rb"
+     "spec/app_root/lib/console_with_fixtures.rb",
+     "spec/app_root/app/controllers/application_controller.rb",
+     "spec/app_root/app/models/client.rb",
+     "spec/app_root/app/models/note.rb",
+     "spec/app_root/app/models/power.rb",
+     "spec/app_root/app/models/user.rb",
+     "spec/consul/power_spec.rb",
+     "spec/spec_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
