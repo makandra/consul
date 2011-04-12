@@ -1,4 +1,4 @@
-module Aegis
+module Consul
   module Spec
     module Matchers
 
@@ -37,4 +37,4 @@ module Aegis
   end
 end
 
-ActiveSupport::TestCase.send :include, Aegis::Spec::Matchers
+ActiveSupport::TestCase.send :include, Consul::Spec::Matchers
