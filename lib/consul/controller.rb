@@ -68,7 +68,7 @@ module Consul
 
       private
 
-      def unchecked_permissions
+      def unchecked_power
         raise Consul::UncheckedPower, "This controller does not check against a power"
       end
 

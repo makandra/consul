@@ -1,7 +1,9 @@
 ActionController::Routing::Routes.draw do |map|
 
-  map.resources :properties do |properties|
-    properties.resources :reviews
-  end
+  map.resource :dashboard
+
+  map.resources :songs
+
+  map.resources :users
 
 end
