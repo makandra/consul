@@ -188,10 +188,10 @@ Should you for some obscure reason want to forego the power check:
 == Installation
 
 Add the following to your <tt>Gemfile</tt>:
-    gem 'consul'
+  gem 'consul'
 
 Now run
-    bundle install
+  bundle install
 
 
 == Rails 3 compatibility
