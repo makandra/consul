@@ -45,6 +45,10 @@ describe Consul::Power do
       2.times { @user.power.client_ids }
     end
 
+    it 'should return ids when the scope joins another table (bugfix)' do
+      expect { @user.power.note_ids }.to_not raise_error
+    end
+
   end
 
   describe 'include?' do

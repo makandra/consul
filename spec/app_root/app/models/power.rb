@@ -13,6 +13,10 @@ class Power
     client.notes
   end
 
+  power :notes do
+    Note.scoped(:joins => :client)
+  end
+
   power :admin do
     false
   end

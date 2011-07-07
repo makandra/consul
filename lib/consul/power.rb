@@ -37,7 +37,11 @@ module Consul
         define_method("#{name.to_s.singularize}?") { |*args| include?(name, *args) }
         define_method("#{name.to_s.singularize}!") { |*args| include!(name, *args) }
         ids_method = power_ids_name(name)
-        define_method(ids_method) { |*args| send(name, *args).scoped(:select => 'id').collect(&:id) }
+        define_method(ids_method) do |*args|
+          scope = send(name, *args)
+          scope_ids = scope.scoped(:select => "`#{scope.table_name}`.`id`")
+          scope_ids.collect(&:id)
+        end
         memoize ids_method
         name
       end
