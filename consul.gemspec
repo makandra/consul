@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{consul}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Henning Koch"]
-  s.date = %q{2011-04-13}
+  s.date = %q{2011-07-07}
   s.description = %q{Consul is a scope-based authorization solution for Ruby on Rails.}
   s.email = %q{henning.koch@makandra.de}
   s.extra_rdoc_files = [
@@ -61,38 +61,37 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/makandra/consul}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.7.2}
   s.summary = %q{Scope-based authorization solution for Rails}
   s.test_files = [
-    "spec/app_root/db/migrate/001_create_users.rb",
-     "spec/app_root/db/migrate/002_create_clients.rb",
-     "spec/app_root/db/migrate/003_create_notes.rb",
-     "spec/app_root/config/boot.rb",
-     "spec/app_root/config/environment.rb",
-     "spec/app_root/config/environments/in_memory.rb",
-     "spec/app_root/config/environments/mysql.rb",
-     "spec/app_root/config/environments/postgresql.rb",
-     "spec/app_root/config/environments/sqlite.rb",
-     "spec/app_root/config/environments/sqlite3.rb",
-     "spec/app_root/config/routes.rb",
-     "spec/app_root/lib/console_with_fixtures.rb",
+    "spec/controllers/users_controller_spec.rb",
+     "spec/controllers/songs_controller_spec.rb",
+     "spec/controllers/dashboards_controller_spec.rb",
+     "spec/spec_helper.rb",
+     "spec/consul/power_spec.rb",
+     "spec/app_root/app/controllers/songs_controller.rb",
      "spec/app_root/app/controllers/dashboards_controller.rb",
      "spec/app_root/app/controllers/application_controller.rb",
      "spec/app_root/app/controllers/users_controller.rb",
-     "spec/app_root/app/controllers/songs_controller.rb",
      "spec/app_root/app/models/client.rb",
-     "spec/app_root/app/models/note.rb",
-     "spec/app_root/app/models/user.rb",
      "spec/app_root/app/models/power.rb",
-     "spec/consul/power_spec.rb",
-     "spec/spec_helper.rb",
-     "spec/controllers/users_controller_spec.rb",
-     "spec/controllers/dashboards_controller_spec.rb",
-     "spec/controllers/songs_controller_spec.rb"
+     "spec/app_root/app/models/user.rb",
+     "spec/app_root/app/models/note.rb",
+     "spec/app_root/lib/console_with_fixtures.rb",
+     "spec/app_root/config/boot.rb",
+     "spec/app_root/config/routes.rb",
+     "spec/app_root/config/environments/mysql.rb",
+     "spec/app_root/config/environments/sqlite3.rb",
+     "spec/app_root/config/environments/in_memory.rb",
+     "spec/app_root/config/environments/postgresql.rb",
+     "spec/app_root/config/environments/sqlite.rb",
+     "spec/app_root/config/environment.rb",
+     "spec/app_root/db/migrate/001_create_users.rb",
+     "spec/app_root/db/migrate/002_create_clients.rb",
+     "spec/app_root/db/migrate/003_create_notes.rb"
   ]
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
