@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
 
-  power :admin, :map => { :index => :dashboard }
-
-  def index
-  end
+  power :always_false, :map => { :show => :always_true }
 
   def show
+  end
+
+  def update
   end
 
 end

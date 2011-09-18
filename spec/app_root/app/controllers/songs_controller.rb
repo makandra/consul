@@ -1,13 +1,12 @@
 class SongsController < ApplicationController
 
-  # power check is missing
-
-  skip_power_check :only => :index
+  # power check is missing, but we're skipping it for a single action'
+  skip_power_check :only => :show
 
   def show
   end
 
-  def index
+  def update
   end
 
 end

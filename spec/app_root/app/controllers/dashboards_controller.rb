@@ -1,6 +1,6 @@
 class DashboardsController < ApplicationController
   
-  power :dashboard
+  power :always_true
 
   def show
   end

@@ -72,15 +72,15 @@ describe Consul::Power do
     end
 
     it 'should return true when the queried power is not a scope, but returns true' do
-      @user.power.dashboard?.should be_true
+      @user.power.always_true?.should be_true
     end
 
     it 'should return false when the queried power is not a scope, but returns false' do
-      @user.power.admin?.should be_false
+      @user.power.always_false?.should be_false
     end
 
     it 'should return false when the queried power is not a scope, but returns nil' do
-      @user.power.moderator?.should be_false
+      @user.power.always_nil?.should be_false
     end
 
   end
@@ -100,15 +100,15 @@ describe Consul::Power do
     end
 
     it 'should not raise Consul::Powerless when the queried power is not a scope, but returns true' do
-      expect { @user.power.dashboard! }.to_not raise_error
+      expect { @user.power.always_true! }.to_not raise_error
     end
 
     it 'should raise Consul::Powerless when the queried power is not a scope, but returns false' do
-      expect { @user.power.admin! }.to raise_error
+      expect { @user.power.always_false! }.to raise_error(Consul::Powerless)
     end
 
     it 'should raise Consul::Powerless when the queried power is not a scope, but returns nil' do
-      expect { @user.power.moderator! }.to raise_error
+      expect { @user.power.always_nil! }.to raise_error(Consul::Powerless)
     end
 
   end

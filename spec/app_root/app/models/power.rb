@@ -17,16 +17,16 @@ class Power
     Note.scoped(:joins => :client)
   end
 
-  power :admin do
+  power :always_true do
+    true
+  end
+
+  power :always_false do
     false
   end
 
-  power :moderator do
+  power :always_nil do
     nil
-  end
-  
-  power :dashboard do
-    true
   end
 
 end
