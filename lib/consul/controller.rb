@@ -8,6 +8,8 @@ module Consul
 
     module ClassMethods
 
+      attr_accessor :current_power_initializer
+
       private
 
       def require_power_check(options = {})
@@ -16,6 +18,11 @@ module Consul
 
       def skip_power_check(options = {})
         skip_before_filter :unchecked_power, options
+      end
+
+      def current_power(&initializer)
+        self.current_power_initializer = initializer
+        around_filter :with_current_power
       end
 
       def power(*args)
@@ -68,8 +75,17 @@ module Consul
 
       private
 
+      attr_accessor :current_power
+
       def unchecked_power
         raise Consul::UncheckedPower, "This controller does not check against a power"
+      end
+
+      def with_current_power(&action)
+        @current_power = instance_eval(&self.class.current_power_initializer)
+        action.call
+      ensure
+        self.class.current_power_initializer = nil
       end
 
     end

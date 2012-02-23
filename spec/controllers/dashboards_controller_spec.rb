@@ -6,4 +6,8 @@ describe DashboardsController do
     expect { get :show }.to_not raise_error
   end
 
+  it 'should define a method #current_power' do
+    controller.send(:current_power).should be_a(Power)
+  end
+
 end
