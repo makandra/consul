@@ -113,4 +113,15 @@ describe Consul::Power do
 
   end
 
+  describe '.current' do
+
+    it 'should provide a class method to set and get the current Power' do
+      Power.current = 'current power'
+      Power.current.should == 'current power'
+      Power.current = nil
+      Power.current.should be_nil
+    end
+
+  end
+
 end

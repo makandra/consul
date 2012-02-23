@@ -50,6 +50,8 @@ module Consul
         "#{name.to_s.singularize}_ids"
       end
 
+      attr_accessor :current
+
     end
 
   end
