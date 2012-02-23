@@ -82,10 +82,11 @@ module Consul
       end
 
       def with_current_power(&action)
-        @current_power = instance_eval(&self.class.current_power_initializer)
+        p self.class.current_power_initializer
+        self.current_power = instance_eval(&self.class.current_power_initializer)
         action.call
       ensure
-        self.class.current_power_initializer = nil
+        self.current_power = nil
       end
 
     end
