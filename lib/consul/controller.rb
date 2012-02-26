@@ -8,7 +8,7 @@ module Consul
 
     module ClassMethods
 
-      attr_accessor :current_power_initializer
+      cattr_accessor :current_power_initializer
 
       private
 
@@ -82,7 +82,7 @@ module Consul
       end
 
       def with_current_power(&action)
-        p self.class.current_power_initializer
+        # p self.class.current_power_initializer
         self.current_power = instance_eval(&self.class.current_power_initializer)
         action.call
       ensure
