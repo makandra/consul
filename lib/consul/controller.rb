@@ -8,7 +8,17 @@ module Consul
 
     module ClassMethods
 
-      cattr_accessor :current_power_initializer
+      def current_power_initializer
+        p [self, @current_power_initializer, self.superclass.public_methods.include?('current_power_initializer')]
+        @current_power_initializer || super
+      rescue NoMethodError
+        nil
+      end
+
+      def current_power_initializer=(initializer)
+        p ["setting in", self]
+        @current_power_initializer = initializer
+      end
 
       private
 
@@ -23,6 +33,7 @@ module Consul
       def current_power(&initializer)
         self.current_power_initializer = initializer
         around_filter :with_current_power
+        helper_method :current_power
       end
 
       def power(*args)
@@ -82,7 +93,6 @@ module Consul
       end
 
       def with_current_power(&action)
-        # p self.class.current_power_initializer
         self.current_power = instance_eval(&self.class.current_power_initializer)
         action.call
       ensure
