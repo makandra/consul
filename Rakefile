@@ -27,6 +27,7 @@ begin
     gemspec.homepage = "http://github.com/makandra/consul"
     gemspec.description = "Consul is a scope-based authorization solution for Ruby on Rails."
     gemspec.authors = ["Henning Koch"]
+    gemspec.add_dependency 
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

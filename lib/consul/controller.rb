@@ -9,14 +9,10 @@ module Consul
     module ClassMethods
 
       def current_power_initializer
-        p [self, @current_power_initializer, self.superclass.public_methods.include?('current_power_initializer')]
-        @current_power_initializer || super
-      rescue NoMethodError
-        nil
+        @current_power_initializer || (superclass.respond_to?(:current_power_initializer) && superclass.current_power_initializer)
       end
 
       def current_power_initializer=(initializer)
-        p ["setting in", self]
         @current_power_initializer = initializer
       end
 
@@ -86,17 +82,23 @@ module Consul
 
       private
 
-      attr_accessor :current_power
-
       def unchecked_power
         raise Consul::UncheckedPower, "This controller does not check against a power"
       end
 
+      def current_power
+        @current_power_class && @current_power_class.current
+      end
+
       def with_current_power(&action)
-        self.current_power = instance_eval(&self.class.current_power_initializer)
+        power = instance_eval(&self.class.current_power_initializer) or raise Consul::Error, 'current_power initializer returned nil'
+        @current_power_class = power.class
+        @current_power_class.current = power
         action.call
       ensure
-        self.current_power = nil
+        if @current_power_class
+          @current_power_class.current = nil
+        end
       end
 
     end

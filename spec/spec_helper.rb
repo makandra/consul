@@ -11,6 +11,9 @@ require 'spec/rails'
 # Undo changes to RAILS_ENV
 silence_warnings {RAILS_ENV = ENV['RAILS_ENV']}
 
+# Requires supporting files with custom matchers and macros, etc in ./support/ and its subdirectories.
+Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each {|f| require f}
+
 # Run the migrations
 ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
 

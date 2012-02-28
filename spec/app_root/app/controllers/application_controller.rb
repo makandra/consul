@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   require_power_check
 
   current_power do
-    Power.new User.new
+    Power.new(User.new)
   end
   
 end
