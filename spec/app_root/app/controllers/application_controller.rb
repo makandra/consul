@@ -3,10 +3,8 @@ class ApplicationController < ActionController::Base
 
   require_power_check
 
-  private
-
-  def current_power
-    Power.new User.new
+  current_power do
+    Power.new(User.new)
   end
   
 end
