@@ -1,7 +1,9 @@
 class CreateUsers < ActiveRecord::Migration
 
   def self.up
-    create_table :users
+    create_table :users do |t|
+      t.string :role
+    end
   end
 
   def self.down

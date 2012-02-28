@@ -169,4 +169,11 @@ Class.class_eval do
     stubs
   end
 
+  define_method :disposable_copy do |&body|
+    this = self
+    copy = Class.new(self, &body)
+    copy.singleton_class.send(:define_method, :name) { this.name }
+    copy
+  end
+
 end

@@ -5,8 +5,14 @@ ENV['RAILS_ENV'] ||= 'in_memory'
 
 # Load the Rails environment and testing framework
 require "#{File.dirname(__FILE__)}/app_root/config/environment"
-require "#{File.dirname(__FILE__)}/../lib/consul"
 require 'spec/rails'
+
+# Load dependencies
+require 'assignable_values'
+require 'shoulda-matchers'
+
+# Load the gem itself
+require "#{File.dirname(__FILE__)}/../lib/consul"
 
 # Undo changes to RAILS_ENV
 silence_warnings {RAILS_ENV = ENV['RAILS_ENV']}
