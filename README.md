@@ -212,7 +212,7 @@ Here is a power implementation that can provide a list of assignable values for 
 Here you can see how to activate the authorization layer and use the new validations:
 
     story = Story.new
-    story.power = Power.current # activate the authorization layer
+    Power.current = Power.new(:role => :guest) # activate the authorization layer
 
     story.assignable_states # ['delivered'] # apparently we're not admins
 
@@ -239,7 +239,6 @@ You can not only authorize scalar attributes like strings or integers that way, 
 
 The `authorize_values_for` macro comes with many useful options and details best explained in the [assignable_values README](https://github.com/makandra/assignable_values), so head over there for more. The macro is basically a shortcut for this:
 
-    attr_accessor :power
     assignable_values_for :field, :through => lambda { Power.current }
 
 

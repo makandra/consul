@@ -12,13 +12,13 @@ describe Consul::ActiveRecord do
       end
     end
 
-    it 'should generate a getter and setter for a @power field' do
+    it 'should not generate a getter and setter for a @power field (change from previous versions)' do
       klass = Note.disposable_copy do
         authorize_values_for :attribute
       end
-      song = klass.new
-      song.should respond_to(:power)
-      song.should respond_to(:power=)
+      note = klass.new
+      note.should_not respond_to(:power)
+      note.should_not respond_to(:power=)
     end
 
     it 'should obtain assignable values from Power.current' do

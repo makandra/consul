@@ -4,7 +4,6 @@ module Consul
     private
 
     def authorize_values_for(property, options = {})
-      method_defined?(:power) or attr_accessor :power
       assignable_values_for property, options.merge(:through => lambda { ::Power.current })
     end
 
