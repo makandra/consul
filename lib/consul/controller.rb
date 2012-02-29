@@ -4,6 +4,15 @@ module Consul
     def self.included(base)
       base.send :include, InstanceMethods
       base.send :extend, ClassMethods
+      if ensure_power_initializer_present?
+        base.before_filter :ensure_power_initializer_present
+      end
+    end
+
+    private
+
+    def self.ensure_power_initializer_present?
+      ['development', 'test', 'cucumber', 'in_memory'].include?(Rails.env)
     end
 
     module ClassMethods
@@ -98,6 +107,12 @@ module Consul
       ensure
         if @current_power_class
           @current_power_class.current = nil
+        end
+      end
+
+      def ensure_power_initializer_present
+        unless self.class.current_power_initializer.present?
+          raise Consul::UnreachablePower, 'You included Consul::Controller but forgot to define a power using current_power do ... end'
         end
       end
 

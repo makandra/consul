@@ -3,4 +3,5 @@ module Consul
   class Powerless < Error; end
   class UncheckedPower < Error; end
   class UnmappedAction < Error; end
+  class UnreachablePower < Error; end
 end
