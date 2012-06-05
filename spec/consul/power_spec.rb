@@ -41,7 +41,7 @@ describe Consul::Power do
     end
 
     it 'should cache scope ids' do
-      @user.power.should_receive(:clients).once.and_return(double('scope').as_null_object)
+      @user.power.should_receive(:clients).once.and_return(double('scope', :construct_finder_sql => 'SELECT 1').as_null_object)
       2.times { @user.power.client_ids }
     end
 
@@ -62,7 +62,7 @@ describe Consul::Power do
     end
 
     it 'should only trigger a single query for multiple checks on the same scope' do
-      ActiveRecord::Base.connection.should_receive(:select_all).once.and_return([]) #.and_return(double('connection').as_null_object)
+      ActiveRecord::Base.connection.should_receive(:select_values).once.and_return([]) #.and_return(double('connection').as_null_object)
       @user.power.client?(@client1)
       @user.power.client?(@deleted_client)
     end

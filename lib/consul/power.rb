@@ -39,8 +39,13 @@ module Consul
         ids_method = power_ids_name(name)
         define_method(ids_method) do |*args|
           scope = send(name, *args)
-          scope_ids = scope.scoped(:select => "`#{scope.table_name}`.`id`")
-          scope_ids.collect(&:id)
+          scope = scope.scoped(:select => "`#{scope.table_name}`.`id`")
+          query = if scope.respond_to?(:to_sql)
+            scope.to_sql
+          else
+            scope.construct_finder_sql({})
+          end
+          ::ActiveRecord::Base.connection.select_values(query).collect(&:to_i)
         end
         memoize ids_method
         name
