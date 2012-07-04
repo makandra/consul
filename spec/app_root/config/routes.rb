@@ -8,4 +8,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :risks
 
+  map.resources :cakes, :member => { :custom_action => :get }
+
 end

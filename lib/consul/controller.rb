@@ -51,7 +51,16 @@ module Consul
         skip_power_check filter_options
 
         power_method = options[:power] || :current_power
+
         actions_map = (options[:map] || {})
+
+        if crud_resource = options[:crud]
+          default_power ||= crud_resource
+          actions_map[[:show, :index]] = crud_resource.to_sym
+          actions_map[[:new, :create]] = "creatable_#{crud_resource}".to_sym
+          actions_map[[:edit, :update]] = "updatable_#{crud_resource}".to_sym
+          actions_map[:destroy] = "destroyable_#{crud_resource}".to_sym
+        end
 
         direct_access_method = options[:as]
 
@@ -63,14 +72,14 @@ module Consul
         private
 
         define_method :check_power do
-          send(power_method).include!(power_for_action)
+          send(power_method).include!(power_method_for_action)
         end
 
         define_method direct_access_method do
-          send(power_method).send(power_for_action)
+          send(power_method).send(power_method_for_action)
         end if direct_access_method
 
-        define_method :power_for_action do
+        define_method :power_method_for_action do
           key = actions_map.keys.detect do |actions|
             Array(actions).collect(&:to_s).include?(action_name)
           end

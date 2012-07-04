@@ -137,6 +137,9 @@ You can now use power scopes to control access:
 
     end
 
+
+### Protect entry into controller actions
+
 To make sure a power is given before every action in a controller:
 
     class NotesController < ApplicationController
@@ -151,6 +154,27 @@ You can also map different powers to different actions:
       power :notes, :map => { [:edit, :update, :destroy] => :changable_notes }
     end
 
+Actions that are not listed in `:map` will get the default action `:notes`.
+
+Note that in moderately complex authorization scenarios you will often find yourself writing a map like this:
+
+    class NotesController < ApplicationController
+      power :notes, :map => {
+        [:edit, :update] => :updatable_notes
+        [:new, :create] => :creatable_notes
+        [:destroy] => :destroyable_notes
+      }
+    end
+
+Because this pattern is so common, there is a shortcut `:crud` to do the same:
+
+    class NotesController < ApplicationController
+      power :crud => :notes
+    end
+
+
+### Auto-mapping a power scope to a controller method
+
 It is often convenient to map a power scope to a private controller method:
 
     class NotesController < ApplicationController
@@ -164,6 +188,9 @@ It is often convenient to map a power scope to a private controller method:
     end
 
 This is especially useful when you are using a RESTful controller library like [resource_controller](https://github.com/jamesgolick/resource_controller). The mapped method is aware of the `:map` option.
+
+
+### How to never forget a power check
 
 You can force yourself to use a `power` check in every controller. This will raise `Consul::UncheckedPower` if you ever forget it:
 

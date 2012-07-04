@@ -29,6 +29,22 @@ class Power
     nil
   end
 
+  power :cakes do
+    :cakes
+  end
+
+  power :updatable_cakes do
+    :updatable_cakes
+  end
+
+  power :creatable_cakes do
+    :creatable_cakes
+  end
+
+  power :destroyable_cakes do
+    :destroyable_cakes
+  end
+
   def assignable_user_roles
     %w[guest admin]
   end
