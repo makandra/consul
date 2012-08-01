@@ -69,17 +69,8 @@ module Consul
 
         before_filter :check_power, filter_options
 
-        private
-
-        define_method :check_power do
-          send(power_method).include!(power_method_for_action)
-        end
-
-        define_method direct_access_method do
-          send(power_method).send(power_method_for_action)
-        end if direct_access_method
-
-        define_method :power_method_for_action do
+        singleton_class.send(:define_method, :power_name_for_action) do |action_name|
+          action_name = action_name.to_s
           key = actions_map.keys.detect do |actions|
             Array(actions).collect(&:to_s).include?(action_name)
           end
@@ -90,6 +81,22 @@ module Consul
           else
             raise Consul::UnmappedAction, "Could not map the action ##{action_name} to a power"
           end
+        end
+
+        private
+
+        define_method :check_power do
+          send(power_method).include!(power_name_for_current_action)
+        end
+
+        if direct_access_method
+          define_method direct_access_method do
+            send(power_method).send(power_name_for_current_action)
+          end
+        end
+
+        define_method :power_name_for_current_action do
+          self.class.power_name_for_action(action_name)
         end
 
       end

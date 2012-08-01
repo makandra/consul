@@ -10,4 +10,16 @@ describe UsersController, :type => :controller do
     expect { get :show, :id => '1' }.to_not raise_error
   end
 
+
+  describe '.power_name_for_action' do
+
+    it 'should return the name of the power for the given action (feature request from devolute)' do
+      UsersController.power_name_for_action(:show).should == :always_true
+      UsersController.power_name_for_action('show').should == :always_true
+      UsersController.power_name_for_action(:update).should == :always_false
+      UsersController.power_name_for_action('update').should == :always_false
+    end
+
+  end
+
 end
