@@ -269,6 +269,53 @@ The `authorize_values_for` macro comes with many useful options and details best
     assignable_values_for :field, :through => lambda { Power.current }
 
 
+Testing
+-------
+
+This section Some hints for testing authorization with Consul.
+
+### Test that a controller checks against a power
+
+You can say this in any controller spec:
+
+    describe CakesController do
+
+      it { should check_power(:cakes) }
+
+    end
+
+You can test against all options of the `power` macro:
+
+    describe CakesController do
+
+      it { should check_power(:cakes, :map => { [:edit, :update] => :updatable_cakes }) }
+
+    end
+
+### Temporarily change the current power
+
+When you set `Power.current` to a power in an RSpec example, you must remember to nilify it afterwards. Otherwise other examples will see your global changes.
+
+A better way is to use the `.with_power` method to change the current power for the duration of a block:
+
+    admin = User.new(:role => 'admin')
+    admin_power = Power.new(admin)
+
+    Power.with_power(admin_power) do
+      # run code that uses Power.current
+    end
+
+`Power.current` will be `nil` (or its former value) after the block has ended.
+
+A nice shortcut is that when you call `with_power` with an argument that is not already a `Power`, Consul will instantiate a `Power` for you:
+
+    admin = User.new(:role => 'admin')
+
+    Power.with_power(admin) do
+      # run code that uses Power.current
+    end
+
+
 Installation
 ------------
 

@@ -309,7 +309,6 @@ describe Consul::Power do
 
   end
 
-
   describe '.current' do
 
     it 'should provide a class method to set and get the current Power' do
@@ -317,6 +316,44 @@ describe Consul::Power do
       Power.current.should == 'current power'
       Power.current = nil
       Power.current.should be_nil
+    end
+
+  end
+
+  describe '.with_power' do
+
+    it 'should provide the given power as current power for the duration of the block' do
+      spy = double
+      inner_power = Power.new('inner')
+      Power.current = 'outer power'
+      spy.should_receive(:observe).with(inner_power)
+      Power.with_power(inner_power) do
+        spy.observe(Power.current)
+      end
+      Power.current.should == 'outer power'
+      Power.current = nil # clean up for subsequent specs -- to bad we can't use .with_power :)
+    end
+
+    it 'should restore an existing power even if the block raises an error' do
+      begin
+        inner_power = Power.new('inner')
+        Power.current = 'outer power'
+        Power.with_power(inner_power) do
+          raise ZeroDivisionError
+        end
+      rescue ZeroDivisionError
+        # do nothing
+      end
+      Power.current.should == 'outer power'
+    end
+
+    it 'should call instantiate a new Power if the given argument is not already a power' do
+      spy = double
+      Power.should_receive(:new).with('argument').and_return('instantiated power')
+      spy.should_receive(:observe).with('instantiated power')
+      Power.with_power('argument') do
+        spy.observe(Power.current)
+      end
     end
 
   end

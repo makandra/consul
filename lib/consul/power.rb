@@ -71,6 +71,17 @@ module Consul
 
       attr_accessor :current
 
+      def with_power(inner_power, &block)
+        unless inner_power.is_a?(self)
+          inner_power = new(inner_power)
+        end
+        old_power = current
+        self.current = inner_power
+        block.call
+      ensure
+        self.current = old_power
+      end
+
     end
 
   end
