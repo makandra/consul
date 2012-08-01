@@ -6,7 +6,7 @@ class Power
   end
 
   power :clients do
-    Client.active
+    Client.active unless guest?
   end
 
   power :client_notes do |client|
@@ -47,6 +47,30 @@ class Power
 
   def assignable_user_roles
     %w[guest admin]
+  end
+
+  power :key_figures do
+    %w[amount working_costs] unless guest?
+  end
+
+  power :api_key do
+    'secret-api-key' unless guest?
+  end
+
+  private
+
+  attr_accessor :user
+
+  def role
+    user.role
+  end
+
+  def admin?
+    user.role == 'admin'
+  end
+
+  def guest?
+    user.role == 'guest'
   end
 
 end

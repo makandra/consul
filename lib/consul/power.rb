@@ -2,19 +2,25 @@ module Consul
   module Power
 
     def self.included(base)
-      base.extend ActiveSupport::Memoizable
       base.extend ClassMethods
+      base.send :include, Memoizer
     end
 
     def include?(name, *args)
       args = args.dup
       record = args.shift
       power_value = send(name)
-      if record.nil? || boolean_or_nil?(power_value)
+      if record.nil?
         !!power_value
       else
-        power_ids_name = self.class.power_ids_name(name)
-        send(power_ids_name, *args).include?(record.id)
+        if scope?(power_value)
+          power_ids_name = self.class.power_ids_name(name)
+          send(power_ids_name, *args).include?(record.id)
+        elsif collection?(power_value)
+          power_value.include?(record)
+        else
+          raise Consul::NoCollection, "can only call #include? on a collection, but power was of type #{power_value.class.name}"
+        end
       end
     end
 
@@ -26,6 +32,14 @@ module Consul
 
     def boolean_or_nil?(value)
       [TrueClass, FalseClass, NilClass].include?(value.class)
+    end
+
+    def scope?(value)
+      value.respond_to?(:scoped)
+    end
+
+    def collection?(value)
+      value.is_a?(Array) || value.is_a?(Set)
     end
 
     module ClassMethods

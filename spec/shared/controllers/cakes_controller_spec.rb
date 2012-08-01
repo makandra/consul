@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CakesController do
+describe CakesController, :type => :controller do
 
   describe '#show' do
     it 'should get the power :cakes' do

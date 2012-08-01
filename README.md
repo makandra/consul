@@ -259,7 +259,7 @@ You can not only authorize scalar attributes like strings or integers that way, 
     class Power
       ...
 
-      def assignable_story_projects(story)
+      power :assignable_story_projects do |story|
         user.account.projects
       end
     end

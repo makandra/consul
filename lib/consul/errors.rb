@@ -4,4 +4,5 @@ module Consul
   class UncheckedPower < Error; end
   class UnmappedAction < Error; end
   class UnreachablePower < Error; end
+  class NoCollection < Error; end
 end

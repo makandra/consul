@@ -7,12 +7,15 @@ ENV['RAILS_ENV'] ||= 'in_memory'
 require "#{File.dirname(__FILE__)}/app_root/config/environment"
 require 'spec/rails'
 
-# Load dependencies
-require 'assignable_values'
-require 'shoulda-matchers'
+### Load dependencies
+#require 'memoizer'
+#require 'shoulda-matchers'
+#require 'assignable_values'
+#
+## Load the gem itself
+#require "#{File.dirname(__FILE__)}/../../lib/consul"
 
-# Load the gem itself
-require "#{File.dirname(__FILE__)}/../lib/consul"
+require 'rspec_candy/helpers'
 
 # Undo changes to RAILS_ENV
 silence_warnings {RAILS_ENV = ENV['RAILS_ENV']}

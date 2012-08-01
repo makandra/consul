@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UsersController do
+describe UsersController, :type => :controller do
 
   it "should raise an error if the checked power is not given" do
     expect { get :update, :id => '1' }.to raise_error(Consul::Powerless)
