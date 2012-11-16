@@ -4,9 +4,11 @@ class SongsController < ApplicationController
   skip_power_check :only => :show
 
   def show
+    render_nothing
   end
 
   def update
+    render_nothing
   end
 
 end

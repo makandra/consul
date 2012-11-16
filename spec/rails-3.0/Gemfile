@@ -1,0 +1,12 @@
+source :rubygems
+
+gem 'assignable_values'
+gem 'rails', '~>3.0.17'
+gem 'rspec'
+gem 'rspec-rails'
+gem 'shoulda-matchers'
+gem 'sqlite3'
+gem 'rspec_candy'
+gem 'ruby-debug'
+
+gem 'consul', :path => '../..'

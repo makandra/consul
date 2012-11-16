@@ -105,7 +105,7 @@ describe Consul::Power do
       end
 
       it 'should cache scope ids' do
-        @user.power.should_receive(:clients).once.and_return(double('scope', :construct_finder_sql => 'SELECT 1').as_null_object)
+        @user.power.should_receive(:clients).once.and_return(double('scope', :construct_finder_sql => 'SELECT 1', :to_sql => 'SELECT 1').as_null_object)
         2.times { @user.power.client_ids }
       end
 

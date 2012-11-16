@@ -2,7 +2,7 @@ doc
 pkg
 *.gem
 .idea
-spec/app_root/log/*
+app_root/log/*
 Gemfile.lock
 
 

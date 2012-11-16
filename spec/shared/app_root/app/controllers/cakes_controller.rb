@@ -4,34 +4,42 @@ class CakesController < ApplicationController
 
   def show
     notify_spy
+    render_nothing
   end
 
   def index
     notify_spy
+    render_nothing
   end
 
   def new
     notify_spy
+    render_nothing
   end
 
   def create
     notify_spy
+    render_nothing
   end
 
   def edit
     notify_spy
+    render_nothing
   end
 
   def update
     notify_spy
+    render_nothing
   end
 
   def destroy
     notify_spy
+    render_nothing
   end
 
   def custom_action
     notify_spy
+    render_nothing
   end
 
   private

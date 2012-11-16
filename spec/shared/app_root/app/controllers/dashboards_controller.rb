@@ -4,6 +4,7 @@ class DashboardsController < ApplicationController
 
   def show
     observe(current_power)
+    render_nothing
   end
 
   def error
