@@ -1,6 +1,8 @@
 Consul - A scope-based authorization solution
 =============================================
 
+[![Build Status](https://secure.travis-ci.org/makandra/consul.png?branch=master)](https://travis-ci.org/makandra/consul)
+
 Consul is a authorization solution for Ruby on Rails that uses scopes to control what a user can see or edit.
 
 We have used Consul in combination with [assignable_values](https://github.com/makandra/assignable_values) to solve a variety of authorization requirements ranging from boring to bizarre.
