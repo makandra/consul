@@ -8,10 +8,12 @@ namespace :all do
 
   desc "Run specs on all spec apps"
   task :spec do
+    success = true
     for_each_directory_of('spec/**/Rakefile') do |directory|
       env = "SPEC=../../#{ENV['SPEC']} " if ENV['SPEC']
-      system("cd #{directory} && #{env} bundle exec rake spec")
+      success &= system("cd #{directory} && #{env} bundle exec rake spec")
     end
+    fail "Tests failed" unless success
   end
 
   desc "Bundle all spec apps"

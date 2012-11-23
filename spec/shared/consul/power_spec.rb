@@ -13,6 +13,12 @@ describe Consul::Power do
     @client2_note2 = @client2.notes.create!
   end
 
+  describe 'false' do
+    it 'should be true' do
+      false.should == true
+    end
+  end
+
   describe 'integration scenario' do
 
     it 'should work with real records' do
