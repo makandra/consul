@@ -19,7 +19,7 @@ namespace :all do
   desc "Bundle all spec apps"
   task :bundle do
     for_each_directory_of('spec/**/Gemfile') do |directory|
-      system("cd #{directory} && bundle install")
+      system("cd #{directory} && rm -f Gemfile.lock && bundle install")
     end
   end
 
