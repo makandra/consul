@@ -331,9 +331,9 @@ Now run `bundle install` to lock the gem into your project.
 Development
 -----------
 
-A Rails 2 test application lives in `spec/app_root`. You can run specs from the project root by saying:
+Test applications for various Rails versions lives in `spec`. You can run specs from the project root by saying:
 
-  bundle exec rake spec
+  bundle exec rake all:spec
 
 If you would like to contribute:
 
