@@ -7,7 +7,7 @@ gem 'rspec-rails'
 gem 'shoulda-matchers'
 gem 'sqlite3'
 gem 'rspec_candy'
-gem 'ruby-debug'
+gem 'ruby-debug', :platforms => :mri_18
 gem 'database_cleaner'
 
 gem 'consul', :path => '../..'
