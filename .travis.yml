@@ -7,3 +7,6 @@ script: rake all:bundle all:spec
 notifications:
   email:
     - fail@makandra.de
+branches:
+  only:
+    - master
