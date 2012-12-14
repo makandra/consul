@@ -13,7 +13,9 @@ module Consul
       if record.nil?
         !!power_value
       else
-        if scope?(power_value)
+        if power_value.nil?
+          false
+        elsif scope?(power_value)
           power_ids_name = self.class.power_ids_name(name)
           send(power_ids_name, *args).include?(record.id)
         elsif collection?(power_value)

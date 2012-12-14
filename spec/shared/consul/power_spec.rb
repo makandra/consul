@@ -22,6 +22,60 @@ describe Consul::Power do
 
   end
 
+  context 'nil powers' do
+
+    describe '#include?' do
+
+      context 'when no record is given' do
+
+        it 'should return false' do
+          @user.role = 'guest'
+          @user.power.clients.should be_nil
+          @user.power.clients?.should be_false
+        end
+
+      end
+
+      context 'with a given record' do
+
+        it 'should return false' do
+          client = Client.create!
+          @user.role = 'guest'
+          @user.power.clients.should be_nil
+          @user.power.client?(client).should be_false
+        end
+
+      end
+
+    end
+
+    describe '#include!' do
+
+      context 'when no record is given' do
+
+        it 'should raise Consul::Powerless when the power returns nil' do
+          @user.role = 'guest'
+          @user.power.clients.should be_nil
+          expect { @user.power.clients! }.to raise_error(Consul::Powerless)
+        end
+
+      end
+
+      context 'with a given record' do
+
+        it 'should raise Consul::Powerless when' do
+          client = Client.create!
+          @user.role = 'guest'
+          @user.power.clients.should be_nil
+          expect { @user.power.client!(client) }.to raise_error(Consul::Powerless)
+        end
+
+      end
+
+    end
+
+  end
+
   context 'scope powers' do
 
     it 'should return the registered scope' do
@@ -38,12 +92,6 @@ describe Consul::Power do
 
         it 'should return true if the power returns a scope (which might or might not match records)' do
           @user.power.clients?.should be_true
-        end
-
-        it 'should return false if the power returns nil' do
-          @user.role = 'guest'
-          @user.power.clients.should be_nil
-          @user.power.clients?.should be_false
         end
 
       end
@@ -71,12 +119,6 @@ describe Consul::Power do
     describe '#include!' do
 
       context 'when no record is given' do
-
-        it 'should raise Consul::Powerless when the power returns nil' do
-          @user.role = 'guest'
-          @user.power.clients.should be_nil
-          expect { @user.power.clients! }.to raise_error(Consul::Powerless)
-        end
 
         it 'should not raise Consul::Powerless when the power returns a scope (which might or might not match records)' do
           expect { @user.power.clients! }.to_not raise_error

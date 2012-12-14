@@ -7,6 +7,8 @@ Consul is a authorization solution for Ruby on Rails that uses scopes to control
 
 We have used Consul in combination with [assignable_values](https://github.com/makandra/assignable_values) to solve a variety of authorization requirements ranging from boring to bizarre.
 
+Also see our crash course video: [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/).
+
 
 Describing a power for your application
 ---------------------------------------
@@ -61,8 +63,8 @@ You can also write power checks like this:
 
     power.include?(:notes)
     power.include!(:notes)
-    power.include?(:note, Note.last)
-    power.include!(:note, Note.last)
+    power.include?(:notes, Note.last)
+    power.include!(:notes, Note.last)
 
 
 Boolean powers
@@ -83,6 +85,60 @@ You can query it like the other powers:
 
     power.dashboard? # => true
     power.dashboard! # => raises Consul::Powerless unless Power#dashboard? returns true
+
+
+Powers that give no access at all
+---------------------------------
+
+Note that there is a difference between having access to an empty list of records, and having no access at all.
+If you want to express that a user has no access at all, make the respective power return `nil`.
+
+Note how the power in the example below returns `nil` unless the user is an admin:
+
+    class Power
+      ...
+
+      power :users do
+        User if @user.admin?
+      end
+
+    end
+
+When a non-admin queries the `:users` power, she will get the following behavior:
+
+    power.notes # => returns nil
+    power.notes? # => returns false
+    power.notes! # => raises Consul::Powerless
+    power.note?(Note.last) # => returns false
+    power.note!(Note.last) # => raises Consul::Powerless
+
+
+Other types of powers
+---------------------
+
+A power can return any type of object. For instance, you often want to return an array:
+
+    class Power
+      ...
+
+      power :assignable_note_states do
+        if admin?
+          %w[draft pending published retracted]
+        else
+          %w[draft pending]
+        end
+      end
+
+    end
+
+You can query it like any other power. E.g. if a non-admin queries this power she will get the following behavior:
+
+    power.assignable_note_states # => ['draft', 'pending']
+    power.assignable_note_states? # => returns true
+    power.assignable_note_states! # => does nothing (because the power isn't nil)
+    power.assignable_note_state?('draft') # => returns true
+    power.assignable_note_state?('published') # => returns false
+    power.assignable_note_state!('published') # => raises Consul::Powerless
 
 
 Role-based permissions
