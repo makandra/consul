@@ -8,9 +8,8 @@ FileUtils.rm(Dir.glob("#{ENV['RAILS_ROOT']}/db/*.db"), :force => true)
 # Load the Rails environment and testing framework
 require "#{File.dirname(__FILE__)}/../app_root/config/environment"
 require 'rspec/rails'
-require 'database_cleaner'
 
-DatabaseCleaner.strategy = :truncation
+# DatabaseCleaner.strategy = :truncation
 
 require 'rspec_candy/helpers'
 
@@ -21,9 +20,9 @@ ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
 print "\033[0m"
 
 RSpec.configure do |config|
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
-  config.before(:each) do
-    DatabaseCleaner.clean
-  end
+  #config.before(:each) do
+  #  DatabaseCleaner.clean
+  #end
 end
