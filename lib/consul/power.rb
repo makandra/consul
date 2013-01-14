@@ -13,12 +13,17 @@ module Consul
       if record.nil?
         !!power_value
       else
+        # record is given
         if power_value.nil?
           false
-        elsif scope?(power_value)
-          power_ids_name = self.class.power_ids_name(name)
-          send(power_ids_name, *args).include?(record.id)
-        elsif collection?(power_value)
+        elsif Util.scope?(power_value)
+          if Util.scope_selects_all_records?(power_value)
+            true
+          else
+            power_ids_name = self.class.power_ids_name(name)
+            send(power_ids_name, *args).include?(record.id)
+          end
+        elsif Util.collection?(power_value)
           power_value.include?(record)
         else
           raise Consul::NoCollection, "can only call #include? on a collection, but power was of type #{power_value.class.name}"
@@ -34,14 +39,6 @@ module Consul
 
     def boolean_or_nil?(value)
       [TrueClass, FalseClass, NilClass].include?(value.class)
-    end
-
-    def scope?(value)
-      value.respond_to?(:scoped)
-    end
-
-    def collection?(value)
-      value.is_a?(Array) || value.is_a?(Set)
     end
 
     module ClassMethods
@@ -81,11 +78,7 @@ module Consul
         define_method(ids_method) do |*args|
           scope = send(name, *args)
           scope = scope.scoped(:select => "`#{scope.table_name}`.`id`")
-          query = if scope.respond_to?(:to_sql)
-            scope.to_sql
-          else
-            scope.construct_finder_sql({})
-          end
+          query = Util.scope_to_sql(scope)
           ::ActiveRecord::Base.connection.select_values(query).collect(&:to_i)
         end
         memoize ids_method

@@ -1,0 +1,39 @@
+module Consul
+  module Util
+    extend self
+
+    def scope_to_sql(scope)
+      if scope.respond_to?(:to_sql)
+        scope.to_sql
+      else
+        scope.send(:construct_finder_sql, {})
+      end
+    end
+
+    def scope_selects_all_records?(scope)
+      scope = scope.scoped({})
+      scope_sql = scope_to_sql(scope)
+      quoted_table_name = Regexp.quote(scope.connection.quote_table_name(scope.table_name))
+      all_sql_pattern = /\ASELECT (#{quoted_table_name}\.)?\* FROM #{quoted_table_name}\z/
+      scope_sql.squish =~ all_sql_pattern
+    end
+
+    def scope?(value)
+      value.respond_to?(:scoped)
+    end
+
+    def collection?(value)
+      value.is_a?(Array) || value.is_a?(Set)
+    end
+
+    def define_scope(klass, name, options)
+      if Rails.version.to_i < 3
+        klass.send(:named_scope, name, options)
+      else
+        klass.send(:scope, name, options)
+      end
+    end
+
+  end
+end
+

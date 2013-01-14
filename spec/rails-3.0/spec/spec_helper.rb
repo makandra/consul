@@ -4,13 +4,13 @@ $: << File.join(File.dirname(__FILE__), "/../../lib" )
 ENV['RAILS_ENV'] ||= 'test'
 ENV['RAILS_ROOT'] = 'app_root'
 
+FileUtils.rm(Dir.glob("db/*.db"), :force => true)
+
 # Load the Rails environment and testing framework
 require "#{File.dirname(__FILE__)}/../app_root/config/environment"
 require 'rspec/rails'
 
 require 'rspec_candy/helpers'
-
-FileUtils.rm(Dir.glob("#{Rails.root}/db/*.db"), :force => true)
 
 # Run the migrations
 print "\033[30m" # dark gray text

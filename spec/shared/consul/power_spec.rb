@@ -112,6 +112,26 @@ describe Consul::Power do
           @user.power.client?(@deleted_client)
         end
 
+        it 'should trigger a query if the scope defines a condition' do
+          ActiveRecord::Base.connection.should_receive(:select_values).and_return([])
+          @user.power.client?(@client1)
+        end
+
+        it 'should not trigger a query if the scope defines no conditions' do
+          ActiveRecord::Base.connection.should_not_receive(:select_values)
+          @user.power.all_client?(@client1)
+        end
+
+        it 'should always trigger a query if a returned model has a default scope, even if it defines no additional conditions' do
+          ActiveRecord::Base.connection.should_receive(:select_values).and_return([])
+          @user.power.song?(Song.new)
+        end
+
+        it 'should trigger query if a returned model has a default scope and defines additional conditions' do
+          ActiveRecord::Base.connection.should_receive(:select_values).and_return([])
+          @user.power.recent_song?(Song.new)
+        end
+
       end
 
     end

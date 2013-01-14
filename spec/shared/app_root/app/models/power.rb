@@ -9,6 +9,10 @@ class Power
     Client.active unless guest?
   end
 
+  power :all_clients do
+    Client
+  end
+
   power :client_notes do |client|
     client.notes
   end
@@ -59,6 +63,14 @@ class Power
 
   power :shorthand1, :shorthand2, :shorthand3 do
     'shorthand'
+  end
+
+  power :songs do
+    Song
+  end
+
+  power :recent_songs do
+    Song.recent
   end
 
   private
