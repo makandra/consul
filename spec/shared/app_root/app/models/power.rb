@@ -57,6 +57,10 @@ class Power
     'secret-api-key' unless guest?
   end
 
+  power :shorthand1, :shorthand2, :shorthand3 do
+    'shorthand'
+  end
+
   private
 
   attr_accessor :user

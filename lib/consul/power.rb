@@ -46,7 +46,32 @@ module Consul
 
     module ClassMethods
 
-      def power(name, &block)
+      def power(*names, &block)
+        names.each do |name|
+          define_power(name, &block)
+        end
+      end
+
+      def power_ids_name(name)
+        "#{name.to_s.singularize}_ids"
+      end
+
+      attr_accessor :current
+
+      def with_power(inner_power, &block)
+        unless inner_power.is_a?(self)
+          inner_power = new(inner_power)
+        end
+        old_power = current
+        self.current = inner_power
+        block.call
+      ensure
+        self.current = old_power
+      end
+
+      private
+
+      def define_power(name, &block)
         define_method(name, &block)
         define_method("#{name.to_s}?") { |*args| include?(name, *args) }
         define_method("#{name.to_s}!") { |*args| include!(name, *args) }
@@ -65,23 +90,6 @@ module Consul
         end
         memoize ids_method
         name
-      end
-
-      def power_ids_name(name)
-        "#{name.to_s.singularize}_ids"
-      end
-
-      attr_accessor :current
-
-      def with_power(inner_power, &block)
-        unless inner_power.is_a?(self)
-          inner_power = new(inner_power)
-        end
-        old_power = current
-        self.current = inner_power
-        block.call
-      ensure
-        self.current = old_power
       end
 
     end

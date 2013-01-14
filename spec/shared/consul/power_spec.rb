@@ -351,6 +351,16 @@ describe Consul::Power do
 
   end
 
+  describe '.power' do
+
+    it 'should allow to define multiple powers at once' do
+      @user.power.shorthand1.should == 'shorthand'
+      @user.power.shorthand2.should == 'shorthand'
+      @user.power.shorthand3.should == 'shorthand'
+    end
+
+  end
+
   describe '.current' do
 
     it 'should provide a class method to set and get the current Power' do

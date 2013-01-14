@@ -141,6 +141,21 @@ You can query it like any other power. E.g. if a non-admin queries this power sh
     power.assignable_note_state!('published') # => raises Consul::Powerless
 
 
+Defining multiple powers at once
+--------------------------------
+
+You can define multiple powers at once by giving multiple power names:
+
+    class Power
+      ...
+
+      power :destroyable_users, updatable_users do
+        User if admin?
+      end
+
+    end
+
+
 Role-based permissions
 ----------------------
 
