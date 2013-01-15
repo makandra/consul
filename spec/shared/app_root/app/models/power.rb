@@ -74,13 +74,16 @@ class Power
   end
 
   power :deals do
-    'deals'
+    'deals power' unless guest?
   end
 
   power :updatable_deals do
-    'updatable_deals'
+    'updatable_deals power' unless guest?
   end
 
+  power :deal_items do
+    'deal_items power'
+  end
 
   private
 

@@ -434,15 +434,15 @@ describe Consul::Power do
   describe '#for_model' do
 
     it 'should return the power corresponding to the given model' do
-      @user.power.for_model(Deal).should == 'deals'
+      @user.power.for_model(Deal).should == 'deals power'
     end
 
     it 'should return the correct power for a namespaced model' do
-      @user.power.for_model(Deal::Item).should == 'deal_items'
+      @user.power.for_model(Deal::Item).should == 'deal_items power'
     end
 
     it 'should allow to prefix the power with an adjective' do
-      @user.power.for_model(:updatable, Deal).should == 'updatable_deals'
+      @user.power.for_model(:updatable, Deal).should == 'updatable_deals power'
     end
 
   end
@@ -453,13 +453,13 @@ describe Consul::Power do
 
       it 'should return the power corresponding to the given model' do
         Power.with_power(Power.new) do
-          Power.for_model(Deal).should == 'deals'
+          Power.for_model(Deal).should == 'deals power'
         end
       end
 
       it 'should allow to prefix the power with an adjective' do
         Power.with_power(Power.new) do
-          Power.for_model(:updatable, Deal).should == 'updatable_deals'
+          Power.for_model(:updatable, Deal).should == 'updatable_deals power'
         end
       end
 
@@ -479,10 +479,45 @@ describe Consul::Power do
 
   end
 
+  describe '#include_model?' do
+
+    it 'should return if the given model corresponds to a non-nil power' do
+      @user.role = 'guest'
+      @user.power.include_model?(Client).should be_false
+      @user.role = 'admin'
+      @user.power.include_model?(Client).should be_true
+    end
+
+  end
+
+  describe '.include_model?' do
+
+    context 'when Power.current is present' do
+
+      it 'should return whether the given model corresponds to a non-nil power' do
+        Power.with_power(@user.power) do
+          @user.role = 'guest'
+          Power.include_model?(Deal).should be_false
+          @iser.role = 'admin'
+          Power.include_model?(Deal).should be_true
+        end
+      end
+    end
+
+    context 'when Power.current is nil' do
+
+      it 'should return true' do
+        Power.include_model?(Deal).should be_true
+      end
+
+    end
+
+  end
+
   describe '#for_record' do
 
     it 'should return the power corresponding to the class of the given record' do
-      @user.power.for_record(Deal.new).should == 'deals'
+      @user.power.for_record(Deal.new).should == 'deals power'
     end
 
   end
@@ -493,13 +528,13 @@ describe Consul::Power do
 
       it 'should return the power corresponding to the class of the given record' do
         Power.with_power(Power.new) do
-          Power.for_record(Deal.new).should == 'deals'
+          Power.for_record(Deal.new).should == 'deals power'
         end
       end
 
       it 'should allow to prefix the power with an adjective' do
         Power.with_power(Power.new) do
-          Power.for_record(:updatable, Deal.new).should == 'updatable_deals'
+          Power.for_record(:updatable, Deal.new).should == 'updatable_deals power'
         end
       end
 
@@ -507,16 +542,50 @@ describe Consul::Power do
 
     context 'when Power.current is nil' do
 
-      it 'should return the given model' do
+      it 'should return true' do
         Power.for_record(Deal.new).should == Deal
       end
 
-      it 'should return the given model even if the model was prefixed with an adjective' do
+      it 'should return true even if the model was prefixed with an adjective' do
         Power.for_record(:updatable, Deal.new).should == Deal
       end
 
     end
 
   end
+
+  describe '#include_record?' do
+
+    it 'should return if the given record is included in the power corresponding to the class of the given record' do
+      @user.power.include_record?(@deleted_client).should be_false
+      @user.power.include_record?(@client1).should be_false
+    end
+
+  end
+
+  describe '.include_record?' do
+
+    context 'when Power.current is present' do
+
+      it 'should return whether the class of the given record corresponds to a non-nil power' do
+        Power.with_power(@user.power) do
+          @user.role = 'guest'
+          Power.include_record?(Deal.new).should be_false
+          @iser.role = 'admin'
+          Power.include_record?(Deal.new).should be_true
+        end
+      end
+    end
+
+    context 'when Power.current is nil' do
+
+      it 'should return true' do
+        Power.include_record?(Deal.new).should be_true
+      end
+
+    end
+
+  end
+
 
 end
