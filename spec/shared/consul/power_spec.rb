@@ -452,13 +452,13 @@ describe Consul::Power do
     context 'when Power.current is present' do
 
       it 'should return the power corresponding to the given model' do
-        Power.with_power(Power.new) do
+        Power.with_power(@user.power) do
           Power.for_model(Deal).should == 'deals power'
         end
       end
 
       it 'should allow to prefix the power with an adjective' do
-        Power.with_power(Power.new) do
+        Power.with_power(@user.power) do
           Power.for_model(:updatable, Deal).should == 'updatable_deals power'
         end
       end
@@ -498,7 +498,7 @@ describe Consul::Power do
         Power.with_power(@user.power) do
           @user.role = 'guest'
           Power.include_model?(Deal).should be_false
-          @iser.role = 'admin'
+          @user.role = 'admin'
           Power.include_model?(Deal).should be_true
         end
       end
@@ -527,13 +527,13 @@ describe Consul::Power do
     context 'when Power.current is present' do
 
       it 'should return the power corresponding to the class of the given record' do
-        Power.with_power(Power.new) do
+        Power.with_power(@user.power) do
           Power.for_record(Deal.new).should == 'deals power'
         end
       end
 
       it 'should allow to prefix the power with an adjective' do
-        Power.with_power(Power.new) do
+        Power.with_power(@user.power) do
           Power.for_record(:updatable, Deal.new).should == 'updatable_deals power'
         end
       end
@@ -558,7 +558,7 @@ describe Consul::Power do
 
     it 'should return if the given record is included in the power corresponding to the class of the given record' do
       @user.power.include_record?(@deleted_client).should be_false
-      @user.power.include_record?(@client1).should be_false
+      @user.power.include_record?(@client1).should be_true
     end
 
   end
@@ -567,12 +567,10 @@ describe Consul::Power do
 
     context 'when Power.current is present' do
 
-      it 'should return whether the class of the given record corresponds to a non-nil power' do
+      it 'should return whether the given record is included in the the power corresponding to the class of the given record' do
         Power.with_power(@user.power) do
-          @user.role = 'guest'
-          Power.include_record?(Deal.new).should be_false
-          @iser.role = 'admin'
-          Power.include_record?(Deal.new).should be_true
+          Power.include_record?(@deleted_client).should be_false
+          Power.include_record?(@client1).should be_true
         end
       end
     end

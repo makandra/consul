@@ -41,7 +41,7 @@ module Consul
     end
 
     def for_record(*args)
-      send(name_fo_record(*args))
+      send(name_for_record(*args))
     end
 
     def include_record?(*args)
@@ -112,12 +112,44 @@ module Consul
         end
       end
 
+      def include_model?(*args)
+        if current
+          current.include_model?(*args)
+        else
+          true
+        end
+      end
+
+      def include_model!(*args)
+        if current
+          current.include_model!(*args)
+        else
+          true
+        end
+      end
+
       def for_record(*args)
         if current
           current.for_record(*args)
         else
           adjective, record = Util.adjective_and_argument(*args)
           record.class
+        end
+      end
+
+      def include_record?(*args)
+        if current
+          current.include_record?(*args)
+        else
+          true
+        end
+      end
+
+      def include_record!(*args)
+        if current
+          current.include_record!(*args)
+        else
+          true
         end
       end
 
