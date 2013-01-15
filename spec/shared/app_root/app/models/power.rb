@@ -73,6 +73,15 @@ class Power
     Song.recent
   end
 
+  power :deals do
+    'deals'
+  end
+
+  power :updatable_deals do
+    'updatable_deals'
+  end
+
+
   private
 
   attr_accessor :user

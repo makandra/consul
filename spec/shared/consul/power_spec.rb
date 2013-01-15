@@ -403,7 +403,7 @@ describe Consul::Power do
         spy.observe(Power.current)
       end
       Power.current.should == 'outer power'
-      Power.current = nil # clean up for subsequent specs -- to bad we can't use .with_power :)
+      Power.current = nil # clean up for subsequent specs -- too bad we can't use .with_power :)
     end
 
     it 'should restore an existing power even if the block raises an error' do
@@ -417,6 +417,7 @@ describe Consul::Power do
         # do nothing
       end
       Power.current.should == 'outer power'
+      Power.current = nil # clean up for subsequent specs -- too bad we can't use .with_power :)
     end
 
     it 'should call instantiate a new Power if the given argument is not already a power' do
@@ -426,6 +427,94 @@ describe Consul::Power do
       Power.with_power('argument') do
         spy.observe(Power.current)
       end
+    end
+
+  end
+
+  describe '#for_model' do
+
+    it 'should return the power corresponding to the given model' do
+      @user.power.for_model(Deal).should == 'deals'
+    end
+
+    it 'should return the correct power for a namespaced model' do
+      @user.power.for_model(Deal::Item).should == 'deal_items'
+    end
+
+    it 'should allow to prefix the power with an adjective' do
+      @user.power.for_model(:updatable, Deal).should == 'updatable_deals'
+    end
+
+  end
+
+  describe '.for_model' do
+
+    context 'when Power.current is present' do
+
+      it 'should return the power corresponding to the given model' do
+        Power.with_power(Power.new) do
+          Power.for_model(Deal).should == 'deals'
+        end
+      end
+
+      it 'should allow to prefix the power with an adjective' do
+        Power.with_power(Power.new) do
+          Power.for_model(:updatable, Deal).should == 'updatable_deals'
+        end
+      end
+
+    end
+
+    context 'when Power.current is nil' do
+
+      it 'should return the given model' do
+        Power.for_model(Deal).should == Deal
+      end
+
+      it 'should return the given model even if the model was prefixed with an adjective' do
+        Power.for_model(:updatable, Deal).should == Deal
+      end
+
+    end
+
+  end
+
+  describe '#for_record' do
+
+    it 'should return the power corresponding to the class of the given record' do
+      @user.power.for_record(Deal.new).should == 'deals'
+    end
+
+  end
+
+  describe '.for_record' do
+
+    context 'when Power.current is present' do
+
+      it 'should return the power corresponding to the class of the given record' do
+        Power.with_power(Power.new) do
+          Power.for_record(Deal.new).should == 'deals'
+        end
+      end
+
+      it 'should allow to prefix the power with an adjective' do
+        Power.with_power(Power.new) do
+          Power.for_record(:updatable, Deal.new).should == 'updatable_deals'
+        end
+      end
+
+    end
+
+    context 'when Power.current is nil' do
+
+      it 'should return the given model' do
+        Power.for_record(Deal.new).should == Deal
+      end
+
+      it 'should return the given model even if the model was prefixed with an adjective' do
+        Power.for_record(:updatable, Deal.new).should == Deal
+      end
+
     end
 
   end

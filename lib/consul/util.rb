@@ -34,6 +34,17 @@ module Consul
       end
     end
 
+    def adjective_and_argument(*args)
+      if args.size > 1
+        adjective = args[0]
+        record = args[1]
+      else
+        adjective = nil
+        record = args[0]
+      end
+      [adjective, record]
+    end
+
   end
 end
 

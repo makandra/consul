@@ -35,7 +35,19 @@ module Consul
       include?(*args) or raise Consul::Powerless.new("No power to #{args.inspect}")
     end
 
+    def for_record(*args)
+      adjective, record = Util.adjective_and_argument(*args)
+      for_model(adjective, record.class)
+    end
+
+    def for_model(*args)
+      adjective, model_class = Util.adjective_and_argument(*args)
+      collection_name = model_class.name.underscore.gsub('/', '_').pluralize
+      [adjective, collection_name].select(&:present?).join('_')
+    end
+
     private
+
 
     def boolean_or_nil?(value)
       [TrueClass, FalseClass, NilClass].include?(value.class)
@@ -64,6 +76,24 @@ module Consul
         block.call
       ensure
         self.current = old_power
+      end
+
+      def for_model(*args)
+        if current
+          current.for_model(*args)
+        else
+          adjective, model = Util.adjective_and_argument(*args)
+          model
+        end
+      end
+
+      def for_record(*args)
+        if current
+          current.for_record(*args)
+        else
+          adjective, record = Util.adjective_and_argument(*args)
+          record.class
+        end
       end
 
       private

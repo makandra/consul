@@ -1,0 +1,3 @@
+class Deal
+
+end
