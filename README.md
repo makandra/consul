@@ -59,13 +59,6 @@ Here is how to do all of that:
     power.note?(Note.last) # => returns whether the given Note is in the Power#notes scope. Caches the result for subsequent queries.
     power.note!(Note.last) # => raises Consul::Powerless unless the given Note is in the Power#notes scope
 
-You can also write power checks like this:
-
-    power.include?(:notes)
-    power.include!(:notes)
-    power.include?(:notes, Note.last)
-    power.include!(:notes, Note.last)
-
 
 Boolean powers
 --------------
@@ -342,6 +335,113 @@ The `authorize_values_for` macro comes with many useful options and details best
     assignable_values_for :field, :through => lambda { Power.current }
 
 
+Dynamic power access
+--------------------
+
+Consul gives you a way to dynamically access and query powers for a given name, model class or record.
+A common use case for this are generic helper methods, e.g. a method to display an "edit" link for any given record
+if the user is authorized to change that record:
+
+    module CrudHelper
+
+      def edit_record_action(record)
+        if current_power.include_record?(:updatable, record)
+          link_to 'Edit', [:edit, record]
+        end
+      end
+
+    end
+
+You can find a full list of available dynamic calls below:
+
+| Dynamic call                                            | Equivalent                                 |
+|---------------------------------------------------------|--------------------------------------------|
+| `Power.current.send(:notes)`                            | `Power.current.notes`                      |
+| `Power.current.include?(:notes)`                        | `Power.current.notes?`                     |
+| `Power.current.include!(:notes)`                        | `Power.current.notes!`                     |
+| `Power.current.include?(:notes, Note.last)`             | `Power.current.note?(Note.last)`           |
+| `Power.current.include!(:notes, Note.last)`             | `Power.current.note!(Note.last)`           |
+| `Power.current.for_record(Note.last)`                   | `Power.current.notes`                      |
+| `Power.current.for_record(:updatable, Note.last)`       | `Power.current.updatable_notes`            |
+| `Power.current.for_model(Note)`                         | `Power.current.notes`                      |
+| `Power.current.for_model(:updatable, Note)`             | `Power.current.updatable_notes`            |
+| `Power.current.include_model?(Note)`                    | `Power.current.notes?`                     |
+| `Power.current.include_model?(:updatable, Note)`        | `Power.current.updatable_notes?`           |
+| `Power.current.include_model!(Note)`                    | `Power.current.notes!`                     |
+| `Power.current.include_model!(:updatable, Note)`        | `Power.current.updatable_notes!`           |
+| `Power.current.include_record?(Note.last)`              | `Power.current.note?(Note.last)`           |
+| `Power.current.include_record?(:updatable, Note.last)`  | `Power.current.updatable_note?(Note.last)` |
+| `Power.current.include_record!(Note.last)`              | `Power.current.note!(Note.last)`           |
+| `Power.current.include_record!(:updatable, Note.last)`  | `Power.current.updatable_note!(Note.last)` |
+| `Power.current.name_for_model(Note)`                    | `:notes`                                   |
+| `Power.current.name_for_model(:updatable, Note)`        | `:updatable_notes`                         |
+| `Power.current.name_for_record(Note.last)`              | `:notes`                                   |
+| `Power.current.name_for_record(:updatable, Note.last)`  | `:updatable_notes`                         |
+
+
+
+Querying a power that might be nil
+----------------------------------
+
+You will often want to access `Power.current` from another model, to e.g. iterate through the list of accessible users:
+
+    class UserReport
+
+      def data
+        Power.current.users.collect do |user|
+          [user.name, user.email, user.income]
+        end
+      end
+
+    end
+
+Good practice is for your model to not crash when `Power.current` is `nil`. This is the case when your model isn't
+called as part of processing a browser request, e.g. on the console, during tests and during batch processes.
+In such cases your model should simply skip authorization and assume that all users are accessible:
+
+    class UserReport
+
+      def data
+        accessible_users = Power.current.present? Power.current.users || User
+        accessible_users.collect do |user|
+          [user.name, user.email, user.income]
+        end
+      end
+
+    end
+
+Because this pattern is so common, the `Power` class comes with a number of class methods you can use to either query
+`Power.current` or, if it is not set, just assume that everything is accessible:
+
+    class UserReport
+
+      def data
+        Power.for_model(user).collect do |user|
+          [user.name, user.email, user.income]
+        end
+      end
+
+    end
+
+There is a long selection of class methods that behave neutrally in case `Power.current` is `nil`:
+
+| Call                                                     | Equivalent                                                          |
+|----------------------------------------------------------|---------------------------------------------------------------------|
+| `Power.for_model(Note)`                                  | `Power.current.present? ? Power.current.notes : Note`               |
+| `Power.for_model(:updatable, Note)`                      | `Power.current.present? ? Power.current.updatable_notes : Note`     |
+| `Power.include_model?(Note)`                             | `Power.current.present? ? Power.notes? : true`                      |
+| `Power.include_model?(:updatable, Note)`                 | `Power.current.present? ? Power.updatable_notes? : true`            |
+| `Power.include_model!(Note)`                             | `Power.notes! if Power.current.present?`                            |
+| `Power.include_model!(:updatable, Note)`                 | `Power.updatable_notes! if Power.current.present?`                  |
+| `Power.for_record(Note.last)`                            | `Power.current.present? ? Power.current.notes : Note`               |
+| `Power.for_record(:updatable, Note.last)`                | `Power.current.present? ? Power.current.updatable_notes : Note`     |
+| `Power.include_record?(Note.last)`                       | `Power.current.present? ? Power.note?(Note.last) : true`            |
+| `Power.include_record?(:updatable, Note.last)`           | `Power.current.present? ? Power.updatable_note?(Note.last?) : true` |
+| `Power.include_record!(Note.last)`                       | `Power.note!(Note.last) if Power.current.present?`                  |
+| `Power.include_record!(:updatable, Note.last)`           | `Power.updatable_note!(Note.last) if Power.current.present?`        |
+
+
+
 Testing
 -------
 
@@ -387,6 +487,10 @@ A nice shortcut is that when you call `with_power` with an argument that is not 
     Power.with_power(admin) do
       # run code that uses Power.current
     end
+
+
+
+
 
 
 Installation
