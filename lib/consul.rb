@@ -1,4 +1,5 @@
 require 'memoizer'
+require 'edge_rider'
 require 'consul/util'
 require 'consul/power'
 require 'consul/errors'

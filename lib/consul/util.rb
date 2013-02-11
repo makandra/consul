@@ -2,17 +2,9 @@ module Consul
   module Util
     extend self
 
-    def scope_to_sql(scope)
-      if scope.respond_to?(:to_sql)
-        scope.to_sql
-      else
-        scope.send(:construct_finder_sql, {})
-      end
-    end
-
     def scope_selects_all_records?(scope)
       scope = scope.scoped({})
-      scope_sql = scope_to_sql(scope)
+      scope_sql = scope.to_sql
       quoted_table_name = Regexp.quote(scope.connection.quote_table_name(scope.table_name))
       all_sql_pattern = /\ASELECT (#{quoted_table_name}\.)?\* FROM #{quoted_table_name}\z/
       scope_sql.squish =~ all_sql_pattern

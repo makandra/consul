@@ -78,6 +78,10 @@ module Consul
       [TrueClass, FalseClass, NilClass].include?(value.class)
     end
 
+    def database_touched
+      # spy for tests
+    end
+
     module ClassMethods
 
       def power(*names, &block)
@@ -164,9 +168,8 @@ module Consul
         ids_method = power_ids_name(name)
         define_method(ids_method) do |*args|
           scope = send(name, *args)
-          scope = scope.scoped(:select => "`#{scope.table_name}`.`id`")
-          query = Util.scope_to_sql(scope)
-          ::ActiveRecord::Base.connection.select_values(query).collect(&:to_i)
+          database_touched
+          scope.collect_ids
         end
         memoize ids_method
         name

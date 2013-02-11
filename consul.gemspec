@@ -17,12 +17,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency('memoizer')
   s.add_dependency('rails')
-
-  ## s.add_development_dependency('assignable_values')
-  #s.add_development_dependency('assignable_values')
-  #s.add_development_dependency('rails', '~>2.3')
-  #s.add_development_dependency('rspec', '~>1.3')
-  #s.add_development_dependency('rspec-rails', '~>1.3')
-  #s.add_development_dependency('shoulda-matchers')
-  #s.add_development_dependency('sqlite3')
+  s.add_dependency('edge_rider')
 end
