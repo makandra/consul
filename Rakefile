@@ -4,6 +4,18 @@ require 'bundler/gem_tasks'
 desc 'Default: Run all specs.'
 task :default => 'all:spec'
 
+namespace :travis_ci do
+
+  desc 'Things to do before Travis CI begins'
+  task :prepare => :slimgems
+
+  desc 'Install slimgems'
+  task :slimgems do
+    system('gem install slimgems')
+  end
+
+end
+
 namespace :all do
 
   desc "Run specs on all spec apps"
