@@ -416,7 +416,7 @@ Because this pattern is so common, the `Power` class comes with a number of clas
     class UserReport
 
       def data
-        Power.for_model(user).collect do |user|
+        Power.for_model(User).collect do |user|
           [user.name, user.email, user.income]
         end
       end
