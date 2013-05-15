@@ -14,7 +14,7 @@ module Consul
       value.respond_to?(:scoped)
     end
 
-    def collection?(value)
+    def ruby_collection?(value)
       value.is_a?(Array) || value.is_a?(Set)
     end
 

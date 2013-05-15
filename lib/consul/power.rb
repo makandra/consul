@@ -8,31 +8,16 @@ module Consul
 
     def self.included(base)
       base.extend ClassMethods
-      base.send :include, Memoizer
+      #base.send :include, Memoizer
     end
 
     def include?(name, *args)
       args = args.dup
       record = args.shift
-      power_value = send(name)
       if record.nil?
-        !!power_value
+        browser.collection_included?(name)
       else
-        # record is given
-        if power_value.nil?
-          false
-        elsif Util.scope?(power_value)
-          if Util.scope_selects_all_records?(power_value)
-            true
-          else
-            power_ids_name = self.class.power_ids_name(name)
-            send(power_ids_name, *args).include?(record.id)
-          end
-        elsif Util.collection?(power_value)
-          power_value.include?(record)
-        else
-          raise Consul::NoCollection, "can only call #include? on a collection, but power was of type #{power_value.class.name}"
-        end
+        browser.record_included?(name, record)
       end
     end
 
@@ -47,8 +32,8 @@ module Consul
 
     private
 
-    def repository
-      self.class.send(:repository)
+    def browser
+      @browser ||= Browser.new(self, self.class.send(:definitions))
     end
 
     def boolean_or_nil?(value)
@@ -86,10 +71,10 @@ module Consul
       def define_power(name, &block)
         name = Consul::Power::Name.new(name)
 
-        repository.store_collection_source(name.collection_name, block)
+        definitions.store_collection_source(name.collection_name, block)
 
         define_method(name.collection_name) do |*args|
-          repository.retrieve_collection(self, name.collection_name, *args)
+          browser.retrieve_collection(name.collection_name, *args)
         end
 
         define_method("#{name.collection_name}?") { |*args| include?(name.collection_name, *args) }
@@ -98,14 +83,14 @@ module Consul
         define_method("#{name.member_name}!") { |*args| include!(name.collection_name, *args) }
 
         define_method(name.ids_name) do |*args|
-          repository.retrieve_ids(self, name.collection_name, *args)
+          browser.retrieve_ids(name.collection_name, *args)
         end
-        memoize name.ids_name
+        #memoize name.ids_name
         name
       end
 
-      def repository
-        @repository ||= Consul::Power::Repository.new
+      def definitions
+        @definitions ||= Consul::Power::Definitions.new
       end
 
     end
