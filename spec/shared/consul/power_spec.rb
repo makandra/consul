@@ -106,6 +106,8 @@ describe Consul::Power do
           @user.power.client?(@deleted_client).should be_false
         end
 
+        it 'should work with scopes that have arguments'
+
         it 'should only trigger a single query for multiple checks on the same scope' do
           Consul::Power::Browser.should_receive(:database_touched).once
           @user.power.client?(@client1)
@@ -155,6 +157,8 @@ describe Consul::Power do
         it 'should not raise Consul::Powerless when the record is outside a scope' do
           expect { @user.power.client!(@client1) }.to_not raise_error
         end
+
+        it 'should work with scopes that have arguments'
 
       end
 

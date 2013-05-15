@@ -68,10 +68,21 @@ module Consul
           browser.retrieve_collection(name.collection_name, *args)
         end
 
-        define_method("#{name.collection_name}?") { |*args| include?(name.collection_name, *args) }
-        define_method("#{name.collection_name}!") { |*args| include!(name.collection_name, *args) }
-        define_method("#{name.member_name}?") { |*args| include?(name.collection_name, *args) }
-        define_method("#{name.member_name}!") { |*args| include!(name.collection_name, *args) }
+        define_method("#{name.collection_name}?") do |*args|
+          include?(name.collection_name)
+        end
+
+        define_method("#{name.collection_name}!") do |*args|
+          include!(name.collection_name, *args)
+        end
+
+        define_method("#{name.member_name}?") do |*args|
+          include?(name.collection_name, *args)
+        end
+
+        define_method("#{name.member_name}!") do |*args|
+          include!(name.collection_name, *args)
+        end
 
         define_method(name.ids_name) do |*args|
           browser.retrieve_ids(name.collection_name, *args)
