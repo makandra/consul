@@ -23,6 +23,8 @@ module Consul
         end
       end
 
+      #def include_collection?
+
       def store_collection_source(collection_name, source)
         @collection_sources[collection_name.to_s] = source
       end
