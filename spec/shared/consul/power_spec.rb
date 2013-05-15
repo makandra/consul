@@ -107,28 +107,28 @@ describe Consul::Power do
         end
 
         it 'should only trigger a single query for multiple checks on the same scope' do
-          @user.power.should_receive(:database_touched).once
+          Consul::Power::Repository.should_receive(:database_touched).once
           @user.power.client?(@client1)
           @user.power.client?(@deleted_client)
         end
 
         it 'should trigger a query only if the scope defines a condition' do
-          @user.power.should_receive(:database_touched).once
+          Consul::Power::Repository.should_receive(:database_touched).once
           @user.power.client?(@client1)
         end
 
         it 'should not trigger a query if the scope defines no conditions' do
-          @user.power.should_not_receive(:database_touched)
+          Consul::Power::Repository.should_not_receive(:database_touched)
           @user.power.all_client?(@client1)
         end
 
         it 'should always trigger a query if a returned model has a default scope, even if it defines no additional conditions' do
-          @user.power.should_receive(:database_touched).once
+          Consul::Power::Repository.should_receive(:database_touched).once
           @user.power.song?(Song.new)
         end
 
         it 'should trigger query if a returned model has a default scope and defines additional conditions' do
-          @user.power.should_receive(:database_touched).once
+          Consul::Power::Repository.should_receive(:database_touched).once
           @user.power.recent_song?(Song.new)
         end
 
@@ -167,7 +167,7 @@ describe Consul::Power do
       end
 
       it 'should cache scope ids' do
-        @user.power.should_receive(:clients).once.and_return(double('scope', :construct_finder_sql => 'SELECT 1', :to_sql => 'SELECT 1').as_null_object)
+        @user.power.should_receive_chain(:repository, :retrieve_ids).once.and_return(double('scope', :construct_finder_sql => 'SELECT 1', :to_sql => 'SELECT 1').as_null_object)
         2.times { @user.power.client_ids }
       end
 

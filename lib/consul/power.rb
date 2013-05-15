@@ -1,3 +1,7 @@
+require 'consul/power/name'
+require 'consul/power/repository'
+require 'consul/power/dynamic_access'
+
 module Consul
   module Power
     include Consul::Power::DynamicAccess::InstanceMethods
@@ -43,12 +47,12 @@ module Consul
 
     private
 
-    def boolean_or_nil?(value)
-      [TrueClass, FalseClass, NilClass].include?(value.class)
+    def repository
+      self.class.send(:repository)
     end
 
-    def database_touched
-      # spy for tests
+    def boolean_or_nil?(value)
+      [TrueClass, FalseClass, NilClass].include?(value.class)
     end
 
     module ClassMethods
@@ -80,19 +84,28 @@ module Consul
       private
 
       def define_power(name, &block)
-        define_method(name, &block)
-        define_method("#{name.to_s}?") { |*args| include?(name, *args) }
-        define_method("#{name.to_s}!") { |*args| include!(name, *args) }
-        define_method("#{name.to_s.singularize}?") { |*args| include?(name, *args) }
-        define_method("#{name.to_s.singularize}!") { |*args| include!(name, *args) }
-        ids_method = power_ids_name(name)
-        define_method(ids_method) do |*args|
-          scope = send(name, *args)
-          database_touched
-          scope.collect_ids
+        name = Consul::Power::Name.new(name)
+
+        repository.store_collection_source(name.collection_name, block)
+
+        define_method(name.collection_name) do |*args|
+          repository.retrieve_collection(self, name.collection_name, *args)
         end
-        memoize ids_method
+
+        define_method("#{name.collection_name}?") { |*args| include?(name.collection_name, *args) }
+        define_method("#{name.collection_name}!") { |*args| include!(name.collection_name, *args) }
+        define_method("#{name.member_name}?") { |*args| include?(name.collection_name, *args) }
+        define_method("#{name.member_name}!") { |*args| include!(name.collection_name, *args) }
+
+        define_method(name.ids_name) do |*args|
+          repository.retrieve_ids(self, name.collection_name, *args)
+        end
+        memoize name.ids_name
         name
+      end
+
+      def repository
+        @repository ||= Consul::Power::Repository.new
       end
 
     end
