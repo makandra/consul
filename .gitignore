@@ -4,6 +4,3 @@ pkg
 .idea
 *.db
 app_root/log/*
-Gemfile.lock
-
-
