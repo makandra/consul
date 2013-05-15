@@ -3,7 +3,11 @@ module Consul
     extend self
 
     def scope_selects_all_records?(scope)
-      scope = scope.scoped({})
+      if Rails.version.to_i < 3
+        scope = scope.scoped({})
+      else
+        scope = scope.scoped
+      end
       scope_sql = scope.to_sql
       quoted_table_name = Regexp.quote(scope.connection.quote_table_name(scope.table_name))
       all_sql_pattern = /\ASELECT (#{quoted_table_name}\.)?\* FROM #{quoted_table_name}\z/

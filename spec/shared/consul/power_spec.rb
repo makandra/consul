@@ -132,6 +132,19 @@ describe Consul::Power do
           @user.power.recent_song?(Song.new)
         end
 
+        it 'should work with powers that have arguments' do
+          @user.power.client_note?(@client1, @client1_note1).should be_true
+          @user.power.client_note?(@client1, @client2_note1).should be_false
+        end
+
+      end
+
+      context 'when a power with arguments is given insufficient context' do
+
+        it 'should raise an error' do
+          expect { @user.power.client_notes? }.to raise_error(Consul::InsufficientContext)
+        end
+
       end
 
     end
@@ -156,6 +169,11 @@ describe Consul::Power do
           expect { @user.power.client!(@client1) }.to_not raise_error
         end
 
+        it 'should work with scopes that have arguments' do
+          expect { @user.power.client_note!(@client1, @client1_note1) }.to_not raise_error
+          expect { @user.power.client_note!(@client1, @client2_note1) }.to raise_error(Consul::Powerless)
+        end
+
       end
 
     end
@@ -173,6 +191,10 @@ describe Consul::Power do
 
       it 'should return ids when the scope joins another table (bugfix)' do
         expect { @user.power.note_ids }.to_not raise_error
+      end
+
+      it 'should work with scopes that have arguments' do
+        @user.power.client_note_ids(@client1).should =~ [@client1_note1.id, @client1_note2.id]
       end
 
     end

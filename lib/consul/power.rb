@@ -9,8 +9,10 @@ module Consul
 
     def include?(name, *args)
       args = args.dup
-      record = args.shift
-      power_value = send(name)
+
+      context, record = context_and_record_from_args(args, name)
+
+      power_value = send(name, *context)
       if record.nil?
         !!power_value
       else
@@ -22,7 +24,7 @@ module Consul
             true
           else
             power_ids_name = self.class.power_ids_name(name)
-            send(power_ids_name, *args).include?(record.id)
+            send(power_ids_name, *context).include?(record.id)
           end
         elsif Util.collection?(power_value)
           power_value.include?(record)
@@ -36,12 +38,18 @@ module Consul
       include?(*args) or raise Consul::Powerless.new("No power to #{args.inspect}")
     end
 
-    def name_for_record(*args)
-      adjective, record = Util.adjective_and_argument(*args)
-      name_for_model(adjective, record.class)
-    end
-
     private
+
+    def context_and_record_from_args(args, name)
+      context_count = send(self.class.context_count_name(name))
+      context = []
+      context_count.times do
+        arg = args.shift or raise Consul::InsufficientContext, "Insufficient context for parametrized power: #{name}"
+        context << arg
+      end
+      record = args.shift
+      [context, record]
+    end
 
     def boolean_or_nil?(value)
       [TrueClass, FalseClass, NilClass].include?(value.class)
@@ -58,6 +66,10 @@ module Consul
         names.each do |name|
           define_power(name, &block)
         end
+      end
+
+      def context_count_name(name)
+        "#{name}_context_count"
       end
 
       def power_ids_name(name)
@@ -85,6 +97,9 @@ module Consul
         define_method("#{name.to_s}!") { |*args| include!(name, *args) }
         define_method("#{name.to_s.singularize}?") { |*args| include?(name, *args) }
         define_method("#{name.to_s.singularize}!") { |*args| include!(name, *args) }
+        context_count_method = context_count_name(name)
+        define_method(context_count_method) { block.arity >= 0 ? block.arity : 0 }
+        private context_count_method
         ids_method = power_ids_name(name)
         define_method(ids_method) do |*args|
           scope = send(name, *args)
