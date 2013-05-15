@@ -36,6 +36,11 @@ module Consul
           include!(name_for_model(*args))
         end
 
+        def name_for_record(*args)
+          adjective, record = Util.adjective_and_argument(*args)
+          name_for_model(adjective, record.class)
+        end
+
       end
 
       module ClassMethods

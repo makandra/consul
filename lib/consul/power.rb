@@ -25,11 +25,6 @@ module Consul
       include?(*args) or raise Consul::Powerless.new("No power to #{args.inspect}")
     end
 
-    def name_for_record(*args)
-      adjective, record = Util.adjective_and_argument(*args)
-      name_for_model(adjective, record.class)
-    end
-
     private
 
     def browser
@@ -47,10 +42,6 @@ module Consul
         names.each do |name|
           define_power(name, &block)
         end
-      end
-
-      def power_ids_name(name)
-        "#{name.to_s.singularize}_ids"
       end
 
       attr_accessor :current
