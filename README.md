@@ -149,6 +149,28 @@ You can define multiple powers at once by giving multiple power names:
     end
 
 
+Powers that require context (arguments)
+---------------------------------------
+
+Sometimes it can be useful to define powers that require context. To do so, just take an argument in your `power` block:
+
+    class Power
+      ...
+
+      power :assignable_story_states do |story|
+        if story.finished?
+          %w[delivered archived]
+        else
+          %w[committed started finished]
+        end
+      end
+
+When querying such a power, you always need to provide the context, e.g.:
+
+    story = ...
+    Power.current_assignable_story_state?(story, 'finished')
+
+
 Role-based permissions
 ----------------------
 
