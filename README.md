@@ -164,11 +164,13 @@ Sometimes it can be useful to define powers that require context. To do so, just
           %w[committed started finished]
         end
       end
+      
+    end
 
 When querying such a power, you always need to provide the context, e.g.:
 
     story = ...
-    Power.current_assignable_story_state?(story, 'finished')
+    Power.current.assignable_story_state?(story, 'finished')
 
 
 Role-based permissions
