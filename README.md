@@ -99,11 +99,11 @@ Note how the power in the example below returns `nil` unless the user is an admi
 
 When a non-admin queries the `:users` power, she will get the following behavior:
 
-    power.notes # => returns nil
-    power.notes? # => returns false
-    power.notes! # => raises Consul::Powerless
-    power.note?(Note.last) # => returns false
-    power.note!(Note.last) # => raises Consul::Powerless
+    power.users # => returns nil
+    power.users? # => returns false
+    power.users! # => raises Consul::Powerless
+    power.user?(User.last) # => returns false
+    power.user!(User.last) # => raises Consul::Powerless
 
 
 Other types of powers
