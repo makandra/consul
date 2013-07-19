@@ -7,48 +7,41 @@ module Consul
       base.send :include, Memoizer
     end
 
-    def include?(name, *args)
-      args = args.dup
-
-      context, record = context_and_record_from_args(args, name)
-
-      power_value = send(name, *context)
-      if record.nil?
-        !!power_value
-      else
-        # record is given
-        if power_value.nil?
-          false
-        elsif Util.scope?(power_value)
-          if Util.scope_selects_all_records?(power_value)
-            true
-          else
-            power_ids_name = self.class.power_ids_name(name)
-            send(power_ids_name, *context).include?(record.id)
-          end
-        elsif Util.collection?(power_value)
-          power_value.include?(record)
-        else
-          raise Consul::NoCollection, "can only call #include? on a collection, but power was of type #{power_value.class.name}"
-        end
-      end
-    end
-
-    def include!(*args)
-      include?(*args) or raise Consul::Powerless.new("No power to #{args.inspect}")
-    end
-
     private
 
-    def context_and_record_from_args(args, name)
-      context_count = send(self.class.context_count_name(name))
-      context = []
-      context_count.times do
-        arg = args.shift or raise Consul::InsufficientContext, "Insufficient context for parametrized power: #{name}"
-        context << arg
+    def default_include_power?(power_name, *context)
+      # Everything that is not nil is considered as included
+      !!send(power_name, *context)
+    end
+
+    def default_include_object?(power_name, *args)
+      object = args.pop
+      context = args
+      power_value = send(power_name, *context)
+      if power_value.nil?
+        false
+      elsif Util.scope?(power_value)
+        if Util.scope_selects_all_records?(power_value)
+          true
+        else
+          power_ids_name = self.class.power_ids_name(power_name)
+          send(power_ids_name, *context).include?(object.id)
+        end
+      elsif Util.collection?(power_value)
+        power_value.include?(object)
+      else
+        raise Consul::NoCollection, "can only call #include_object? on a collection, but power was of type #{power_value.class.name}"
       end
-      record = args.shift
-      [context, record]
+    end
+
+    def default_power_ids(power_name, *args)
+      scope = send(power_name, *args)
+      database_touched
+      scope.collect_ids
+    end
+
+    def powerless!(*args)
+      raise Consul::Powerless.new("No power to #{[*args].inspect}")
     end
 
     def boolean_or_nil?(value)
@@ -89,28 +82,31 @@ module Consul
         self.current = old_power
       end
 
-      private
+      def define_query_and_bang_methods(name, &query)
+        query_method = "#{name}?"
+        bang_method = "#{name}!"
+        define_method(query_method, &query)
+        define_method(bang_method) { |*args| send(query_method, *args) or powerless!(name, *args) }
+      end
 
       def define_power(name, &block)
-        define_method(name, &block)
-        define_method("#{name.to_s}?") { |*args| include?(name, *args) }
-        define_method("#{name.to_s}!") { |*args| include!(name, *args) }
-        define_method("#{name.to_s.singularize}?") { |*args| include?(name, *args) }
-        define_method("#{name.to_s.singularize}!") { |*args| include!(name, *args) }
-        context_count_method = context_count_name(name)
-        define_method(context_count_method) { block.arity >= 0 ? block.arity : 0 }
-        private context_count_method
-        ids_method = power_ids_name(name)
-        define_method(ids_method) do |*args|
-          scope = send(name, *args)
-          database_touched
-          scope.collect_ids
+        name = name.to_s
+        if name.ends_with?('?')
+          name_without_suffix = name.chop
+          define_query_and_bang_methods(name_without_suffix, &block)
+        else
+          define_method(name, &block)
+          define_query_and_bang_methods(name) { |*args| default_include_power?(name, *args) }
+          if name.singularize != name
+            define_query_and_bang_methods(name.singularize) { |*args| default_include_object?(name, *args) }
+          end
+          ids_method = power_ids_name(name)
+          define_method(ids_method) { |*args| default_power_ids(name, *args) }
+          memoize ids_method
         end
-        memoize ids_method
         name
       end
 
     end
-
   end
 end

@@ -86,7 +86,7 @@ module Consul
         private
 
         define_method :check_power do
-          send(power_method).include!(power_name_for_current_action)
+          send(power_method).include_power!(power_name_for_current_action)
         end
 
         if direct_access_method

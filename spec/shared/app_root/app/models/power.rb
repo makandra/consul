@@ -13,8 +13,28 @@ class Power
     Client
   end
 
+  power :fast_clients do
+    Client.active
+  end
+
+  power :fast_client? do |client|
+    !client.deleted?
+  end
+
   power :client_notes do |client|
     client.notes
+  end
+
+  power :fast_client_notes do |client|
+    client.notes
+  end
+
+  power :fast_client_note? do |client, note|
+    note.client_id == client.id
+  end
+
+  power :fast_client_note_without_collection? do |client, note|
+    note.client_id == client.id
   end
 
   power :notes do

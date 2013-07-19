@@ -24,7 +24,7 @@ describe Consul::Power do
 
   context 'nil powers' do
 
-    describe '#include?' do
+    describe 'query methods' do
 
       context 'when no record is given' do
 
@@ -49,7 +49,7 @@ describe Consul::Power do
 
     end
 
-    describe '#include!' do
+    describe 'bang methods' do
 
       context 'when no record is given' do
 
@@ -86,7 +86,7 @@ describe Consul::Power do
       @user.power.client_notes(@client1).should == [@client1_note1, @client1_note2]
     end
 
-    describe '#include?' do
+    describe 'query methods' do
 
       context 'when no record is given' do
 
@@ -137,19 +137,55 @@ describe Consul::Power do
           @user.power.client_note?(@client1, @client2_note1).should be_false
         end
 
-      end
+        context 'optimization through additional definition of a Ruby method' do
 
-      context 'when a power with arguments is given insufficient context' do
+          it 'should not affect collection access' do
+            @user.power.fast_clients.to_a.should =~ [@client1, @client2]
+            @user.power.fast_client_ids.to_a.should =~ [@client1.id, @client2.id]
+            @user.power.fast_clients?.should be_true
+          end
 
-        it 'should raise an error' do
-          expect { @user.power.client_notes? }.to raise_error(Consul::InsufficientContext)
+          it 'should no longer access the database when checking inclusion of a single record' do
+            @user.power.should_not_receive(:database_touched)
+            @user.power.fast_client?(@client1).should be_true
+            @user.power.fast_client?(@deleted_client).should be_false
+          end
+
+          it 'is used by and bang methods' do
+            @user.power.should_not_receive(:database_touched)
+            expect { @user.power.fast_client!(@client1) }.to_not raise_error
+            expect { @user.power.fast_client!(@deleted_client) }.to raise_error(Consul::Powerless)
+          end
+
+          it 'works with parametrized powers' do
+            @user.power.should_not_receive(:database_touched)
+            @user.power.fast_client_note?(@client1, @client1_note1).should be_true
+            @user.power.fast_client_note?(@client1, @client2_note1).should be_false
+            expect { @user.power.fast_client_note!(@client1, @client1_note1) }.to_not raise_error
+            expect { @user.power.fast_client_note!(@client1, @client2_note1) }.to raise_error(Consul::Powerless)
+          end
+
+          it 'works when only the optimized power is defined, without a collection power' do
+            @user.power.should_not_receive(:database_touched)
+            @user.power.fast_client_note_without_collection?(@client1, @client1_note1).should be_true
+            @user.power.fast_client_note_without_collection?(@client1, @client2_note1).should be_false
+          end
+
         end
 
       end
 
+      #context 'when a power with arguments is given insufficient context' do
+      #
+      #  it 'should raise an error' do
+      #    expect { @user.power.client_notes? }.to raise_error(ArgumentError)
+      #  end
+      #
+      #end
+
     end
 
-    describe '#include!' do
+    describe 'bang methods' do
 
       context 'when no record is given' do
 
@@ -207,7 +243,7 @@ describe Consul::Power do
       @user.power.key_figures.should == %w[amount working_costs]
     end
 
-    describe '#include?' do
+    describe 'query methods' do
 
       context 'when no record is given' do
 
@@ -237,7 +273,7 @@ describe Consul::Power do
 
     end
 
-    describe '#include!' do
+    describe 'bang methods' do
 
       context 'when no record is given' do
 
@@ -275,7 +311,7 @@ describe Consul::Power do
       @user.power.always_false.should == false
     end
 
-    describe '#include?' do
+    describe 'query methods' do
 
       context 'when no record is given' do
 
@@ -295,15 +331,15 @@ describe Consul::Power do
 
       context 'with a given record' do
 
-        it 'should raise Consul::NoCollection' do
-          expect { @user.power.always_true?('foo') }.to raise_error(Consul::NoCollection)
-        end
+        #it 'should raise Consul::NoCollection' do
+        #  expect { @user.power.always_true?('foo') }.to raise_error(Consul::NoCollection)
+        #end
 
       end
 
     end
 
-    describe '#include!' do
+    describe 'bang methods' do
 
       context 'when no record is given' do
 
@@ -323,9 +359,10 @@ describe Consul::Power do
 
       context 'with a given record' do
 
-        it 'should raise Consul::NoCollection' do
-          expect { @user.power.always_true!('foo') }.to raise_error(Consul::NoCollection)
-        end
+        #it 'should raise Consul::NoCollection' do
+        #  expect { @user.power.always_true!('foo') }.to raise_error(Consul::NoCollection)
+        #end
+
       end
 
     end
@@ -339,7 +376,7 @@ describe Consul::Power do
       @user.power.api_key.should == 'secret-api-key'
     end
 
-    describe '#include?' do
+    describe 'query methods' do
 
       context 'when no record is given' do
 
@@ -357,15 +394,15 @@ describe Consul::Power do
 
       context 'with a given record' do
 
-        it 'should raise Consul::NoCollection' do
-          expect { @user.power.api_key?('foo') }.to raise_error(Consul::NoCollection)
-        end
+        #it 'should raise Consul::NoCollection' do
+        #  expect { @user.power.api_key?('foo') }.to raise_error(Consul::NoCollection)
+        #end
 
       end
 
     end
 
-    describe '#include!' do
+    describe 'bang methods' do
 
       context 'when no record is given' do
 
@@ -383,9 +420,9 @@ describe Consul::Power do
 
       context 'with a given record' do
 
-        it 'should raise Consul::NoCollection' do
-          expect { @user.power.api_key!('foo') }.to raise_error(Consul::NoCollection)
-        end
+        #it 'should raise Consul::NoCollection' do
+        #  expect { @user.power.api_key!('foo') }.to raise_error(Consul::NoCollection)
+        #end
 
       end
 
