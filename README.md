@@ -1,19 +1,25 @@
-Consul - A scope-based authorization solution
-=============================================
+Consul - A next gen authorization solution
+==========================================
 
 [![Build Status](https://secure.travis-ci.org/makandra/consul.png?branch=master)](https://travis-ci.org/makandra/consul)
 
-Consul is a authorization solution for Ruby on Rails that uses scopes to control what a user can see or edit.
+Consul is a authorization solution for Ruby on Rails where you describe *sets of accessible things* to control what a user can see or edit.
 
 We have used Consul in combination with [assignable_values](https://github.com/makandra/assignable_values) to solve a variety of authorization requirements ranging from boring to bizarre.
-
 Also see our crash course video: [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/).
 
 
-Describing a power for your application
----------------------------------------
+Describing access to your application
+-------------------------------------
 
-You describe access to your application by putting a `Power` model into `app/models/power.rb`:
+You describe access to your application by putting a `Power` model into `app/models/power.rb`.
+Inside your `Power` you can talk about what is accessible for the current user, e.g.
+
+- [A scope of records a user may see](#scope-powers-relations)
+- [Whether the user is allowed to use a particular screen](#boolean-powers)
+- [A list of values a user may assign to a particular attribute](#validating-assignable-values)
+
+A `Power` might look like this:
 
     class Power
       include Consul::Power
@@ -21,6 +27,39 @@ You describe access to your application by putting a `Power` model into `app/mod
       def initialize(user)
         @user = user
       end
+
+      power :users do
+        User if @user.admin?
+      end
+
+      power :notes do
+        Note.by_author(@user)
+      end
+
+      power :dashboard do
+        true # not a scope, but a boolean power. This is useful to control access to stuff that doesn't live in the database.
+      end
+
+    end
+
+There are no restrictions on the name or constructor arguments of your this class.
+
+You can deposit all kinds of objects in your power. See the sections below for details.
+
+
+### Scope powers (relations)
+
+
+A typical use case in a Rails application is to restrict access to your ActiveRecord models. For example:
+
+- Anonymous visitors may only see public posts
+- Users may only see their own notes
+- Only admins may edit users
+
+You do this by making your powers return an ActiveRecord scope (or "relation"):
+
+    class Power
+      ...
 
       power :notes do
         Note.by_author(@user)
@@ -30,38 +69,60 @@ You describe access to your application by putting a `Power` model into `app/mod
         User if @user.admin?
       end
 
-      power :dashboard do
-        true # not a scope, but a boolean power. This is useful to control access to stuff that doesn't live in the database.
+    end
+
+You can now query these powers in order to retrieve the scope:
+
+    power = Power.new(user)
+    power.notes  # => returns an ActiveRecord::Scope
+
+Or you can ask if the power is given (meaning it's not `nil`):
+
+    power.notes? # => returns true if Power#notes returns a scope and not nil
+
+Or you can raise an error unless a power its given, e.g. to guard access into a controller action:
+
+    power.notes? # => returns true if Power#notes returns a scope, even if it's empty
+
+Or you ask whether a given record is included in its scope (can be [optimized](#optimizing-record-checks-for-scope-powers)):
+
+    power.note?(Note.last) # => returns whether the given Note is in the Power#notes scope. Caches the result for subsequent queries.
+
+Or you can raise an error unless a given record is included in its scope:
+
+    power.note!(Note.last) # => raises Consul::Powerless unless the given Note is in the Power#notes scope
+
+See our crash course video [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/) for many different use cases you can cover with this pattern.
+
+
+
+### Defining different powers for different actions
+
+If you have different access rights for e.g. viewing or updating posts, simply use different powers:
+
+
+    class Power
+      ...
+
+      power :notes do
+        Note.published
+      end
+
+      power :updatable_notes do
+        Note.by_author(@user)
+      end
+
+      power :destroyable_notes do
+        Note if @user.admin?
       end
 
     end
 
-There are no restrictions on the name or constructor arguments of your power class.
+There is also a [shortcut to map different powers to RESTful controller actions](#protect-entry-into-controller-actions).
 
 
-Querying a power
-----------------
 
-Common things you might want from a power:
-
-1. Get its scope
-2. Ask whether it is there
-3. Raise an error unless it its there
-4. Ask whether a given record is included in its scope
-5. Raise an error unless a given record is included in its scope
-
-Here is how to do all of that:
-
-    power = Power.new(user)
-    power.notes # => returns an ActiveRecord::Scope
-    power.notes? # => returns true if Power#notes returns a scope
-    power.notes! # => raises Consul::Powerless unless Power#notes returns a scope
-    power.note?(Note.last) # => returns whether the given Note is in the Power#notes scope. Caches the result for subsequent queries.
-    power.note!(Note.last) # => raises Consul::Powerless unless the given Note is in the Power#notes scope
-
-
-Boolean powers
---------------
+### Boolean powers
 
 Boolean powers are useful to control access to stuff that doesn't live in the database:
 
@@ -76,12 +137,12 @@ Boolean powers are useful to control access to stuff that doesn't live in the da
 
 You can query it like the other powers:
 
+    power = Power.new(@user)
     power.dashboard? # => true
     power.dashboard! # => raises Consul::Powerless unless Power#dashboard? returns true
 
 
-Powers that give no access at all
----------------------------------
+### Powers that give no access at all
 
 Note that there is a difference between having access to an empty list of records, and having no access at all.
 If you want to express that a user has no access at all, make the respective power return `nil`.
@@ -99,6 +160,7 @@ Note how the power in the example below returns `nil` unless the user is an admi
 
 When a non-admin queries the `:users` power, she will get the following behavior:
 
+    power = Power.new(@user)
     power.users # => returns nil
     power.users? # => returns false
     power.users! # => raises Consul::Powerless
@@ -106,8 +168,32 @@ When a non-admin queries the `:users` power, she will get the following behavior
     power.user!(User.last) # => raises Consul::Powerless
 
 
-Other types of powers
----------------------
+
+### Powers that only check a given object
+
+Sometimes it is not convenient to define powers as a collection. Sometimes you only want to store a method that
+checks whether a given object is accessible.
+
+To do so, simply define a power that ends in a question mark:
+
+
+    class Power
+      ...
+
+      power :updatable_post? do |post|
+        post.author == @user
+      end
+
+    end
+
+You can query such an power as always:
+
+    power = Power.new(@user)
+    power.updatable_post?(Post.last) # return true if the author of the post is @user
+    power.updatable_post!(Post.last) # raises Consul::Powerless unless the author of the post is @user
+
+
+### Other types of powers
 
 A power can return any type of object. For instance, you often want to return an array:
 
@@ -134,23 +220,21 @@ You can query it like any other power. E.g. if a non-admin queries this power sh
     power.assignable_note_state!('published') # => raises Consul::Powerless
 
 
-Defining multiple powers at once
---------------------------------
+### Defining multiple powers at once
 
 You can define multiple powers at once by giving multiple power names:
 
     class Power
       ...
 
-      power :destroyable_users, updatable_users do
+      power :destroyable_users, :updatable_users do
         User if admin?
       end
 
     end
 
 
-Powers that require context (arguments)
----------------------------------------
+### Powers that require context (arguments)
 
 Sometimes it can be useful to define powers that require context. To do so, just take an argument in your `power` block:
 
@@ -171,6 +255,45 @@ When querying such a power, you always need to provide the context, e.g.:
 
     story = ...
     Power.current.assignable_story_state?(story, 'finished')
+
+
+### Optimizing record checks for scope powers
+
+You can query a scope power for a given record, e.g.
+
+    class Power
+      ...
+
+      power :posts do |post|
+        Post.where(:author_id => @user.id)
+      end
+    end
+
+    power = Power.new(@user)
+    power.post?(Post.last)
+
+What Consul does internally is fetch **all** the IDs of the `power.posts` scope and test if the given
+record's ID is among them. This list of IDs is cached for subsequent calls, so you will only touch the database once.
+
+As scary as it might sound, fetching all IDs of a scope scales quiet nicely for many thousand records. There will
+however be the point where you want to optimize this.
+
+What you can do in Consul is to define a second power that checks a given record in plain Ruby:
+
+    class Power
+      ...
+
+      power :posts do |post|
+        Post.where(:author_id => @user.id)
+      end
+
+      power :post? do |post|
+        post.author_id == @user.id
+      end
+
+    end
+
+This way you do not need to touch the database at all.
 
 
 Role-based permissions
@@ -381,10 +504,10 @@ You can find a full list of available dynamic calls below:
 | Dynamic call                                            | Equivalent                                 |
 |---------------------------------------------------------|--------------------------------------------|
 | `Power.current.send(:notes)`                            | `Power.current.notes`                      |
-| `Power.current.include?(:notes)`                        | `Power.current.notes?`                     |
-| `Power.current.include!(:notes)`                        | `Power.current.notes!`                     |
-| `Power.current.include?(:notes, Note.last)`             | `Power.current.note?(Note.last)`           |
-| `Power.current.include!(:notes, Note.last)`             | `Power.current.note!(Note.last)`           |
+| `Power.current.include_power?(:notes)`                  | `Power.current.notes?`                     |
+| `Power.current.include_power!(:notes)`                  | `Power.current.notes!`                     |
+| `Power.current.include_object?(:notes, Note.last)`      | `Power.current.note?(Note.last)`           |
+| `Power.current.include_object!(:notes, Note.last)`      | `Power.current.note!(Note.last)`           |
 | `Power.current.for_record(Note.last)`                   | `Power.current.notes`                      |
 | `Power.current.for_record(:updatable, Note.last)`       | `Power.current.updatable_notes`            |
 | `Power.current.for_model(Note)`                         | `Power.current.notes`                      |
