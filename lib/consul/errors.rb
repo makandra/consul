@@ -5,5 +5,5 @@ module Consul
   class UnmappedAction < Error; end
   class UnreachablePower < Error; end
   class NoCollection < Error; end
-  class InsufficientContext < Error; end
+  class MissingContext < Error; end
 end

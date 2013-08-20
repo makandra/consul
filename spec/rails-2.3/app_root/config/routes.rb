@@ -12,4 +12,10 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :colors
 
+  map.resources :notes
+
+  map.resources :clients do
+    map.resources :notes
+  end
+
 end

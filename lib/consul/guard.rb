@@ -64,11 +64,11 @@ module Consul
     end
 
     def power_value(controller, action_name)
-      repository(controller).send(power_name(action_name))
+      repository(controller).send(*power_name_with_context(controller, action_name))
     end
 
     def ensure!(controller, action_name)
-      repository(controller).include_power!(power_name(action_name))
+      repository(controller).include_power!(*power_name_with_context(controller, action_name))
     end
 
     def filter_options
@@ -85,12 +85,28 @@ module Consul
       @map.power_name(action_name)
     end
 
+    def power_name_with_context(controller, action_name)
+      [power_name(action_name), *context(controller)]
+    end
+
     def repository(controller)
       controller.send(repository_method)
     end
 
     def repository_method
       @options[:power] || :current_power
+    end
+
+    def context(controller)
+      context = []
+      Array.wrap(@options[:context]).each do |context_method|
+        arg = controller.send(context_method)
+        if arg.nil?
+          raise Consul::MissingContext
+        end
+        context << arg
+      end
+      context
     end
 
   end
