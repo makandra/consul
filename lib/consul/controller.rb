@@ -57,12 +57,11 @@ module Consul
 
         before_filter :check_power, guard.filter_options
 
-        private
-
         if guard.direct_access_method
           define_method guard.direct_access_method do
             guard.power_value(self, action_name)
           end
+          private guard.direct_access_method
         end
 
       end
