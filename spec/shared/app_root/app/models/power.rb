@@ -1,8 +1,9 @@
 class Power
   include Consul::Power
 
-  def initialize(user = nil)
-    @user = user
+  def initialize(*args)
+    @options = args.extract_options!
+    @user = args.first
   end
 
   power :clients do
@@ -103,6 +104,14 @@ class Power
 
   power :deal_items do
     'deal_items power'
+  end
+
+  power :red do
+    'red' if @options[:red]
+  end
+
+  power :blue do
+    'blue' if @options[:blue]
   end
 
   private

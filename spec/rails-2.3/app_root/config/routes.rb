@@ -10,4 +10,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :cakes, :member => { :custom_action => :get }
 
+  map.resources :colors
+
 end

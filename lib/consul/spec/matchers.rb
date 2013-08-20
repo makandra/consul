@@ -11,7 +11,7 @@ module Consul
         def matches?(controller)
           @controller_class = controller.class
           @actual_args = @controller_class.instance_variable_get('@consul_power_args')
-          @actual_args == @expected_args
+          @actual_args.present? && @actual_args.include?(@expected_args)
         end
 
         def failure_message

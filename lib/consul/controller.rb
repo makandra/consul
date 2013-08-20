@@ -31,6 +31,7 @@ module Consul
         before_filter :unchecked_power, options
       end
 
+      # This is badly named, since it doesn't actually skip the :check_power filter
       def skip_power_check(options = {})
         skip_before_filter :unchecked_power, options
       end
@@ -41,62 +42,27 @@ module Consul
         helper_method :current_power
       end
 
+      def consul_guards
+        @consul_guards ||= []
+      end
+
       def power(*args)
 
-        args_copy = args.dup
-        options = args_copy.extract_options!
-        default_power = args_copy.shift # might be nil
-
-        filter_options = options.slice(:except, :only)
-        skip_power_check filter_options
-
-        power_method = options[:power] || :current_power
-
-        actions_map = (options[:map] || {})
-
-        if crud_resource = options[:crud]
-          default_power ||= crud_resource
-          actions_map[[:show, :index]] = crud_resource.to_sym
-          actions_map[[:new, :create]] = "creatable_#{crud_resource}".to_sym
-          actions_map[[:edit, :update]] = "updatable_#{crud_resource}".to_sym
-          actions_map[:destroy] = "destroyable_#{crud_resource}".to_sym
-        end
-
-        direct_access_method = options[:as]
+        guard = Consul::Guard.new(*args)
+        consul_guards << guard
+        skip_power_check guard.filter_options
 
         # Store arguments for testing
-        @consul_power_args = args
+        (@consul_power_args ||= []) << args
 
-        before_filter :check_power, filter_options
-
-        singleton_class.send(:define_method, :power_name_for_action) do |action_name|
-          action_name = action_name.to_s
-          key = actions_map.keys.detect do |actions|
-            Array(actions).collect(&:to_s).include?(action_name)
-          end
-          if key
-            actions_map[key]
-          elsif default_power
-            default_power
-          else
-            raise Consul::UnmappedAction, "Could not map the action ##{action_name} to a power"
-          end
-        end
+        before_filter :check_power, guard.filter_options
 
         private
 
-        define_method :check_power do
-          send(power_method).include_power!(power_name_for_current_action)
-        end
-
-        if direct_access_method
-          define_method direct_access_method do
-            send(power_method).send(power_name_for_current_action)
+        if guard.direct_access_method
+          define_method guard.direct_access_method do
+            guard.power_value(self, action_name)
           end
-        end
-
-        define_method :power_name_for_current_action do
-          self.class.power_name_for_action(action_name)
         end
 
       end
@@ -106,6 +72,12 @@ module Consul
     module InstanceMethods
 
       private
+
+      define_method :check_power do
+        self.class.send(:consul_guards).each do |guard|
+          guard.ensure!(self, action_name)
+        end
+      end
 
       def unchecked_power
         raise Consul::UncheckedPower, "This controller does not check against a power"

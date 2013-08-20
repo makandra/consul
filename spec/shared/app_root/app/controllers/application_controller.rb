@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
     Power.new(User.new)
   end
 
-
   private
 
   def render_nothing
