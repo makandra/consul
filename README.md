@@ -171,8 +171,8 @@ When a non-admin queries the `:users` power, she will get the following behavior
 
 ### Powers that only check a given object
 
-Sometimes it is not convenient to define powers as a collection. Sometimes you only want to store a method that
-checks whether a given object is accessible.
+Sometimes it is not convenient to define powers as a collection or scope (relation).
+Sometimes you only want to store a method that checks whether a given object is accessible.
 
 To do so, simply define a power that ends in a question mark:
 
@@ -241,20 +241,17 @@ Sometimes it can be useful to define powers that require context. To do so, just
     class Power
       ...
 
-      power :assignable_story_states do |story|
-        if story.finished?
-          %w[delivered archived]
-        else
-          %w[committed started finished]
-        end
+      power :client_notes do |client|
+        client.notes.where(:state => 'published')
       end
       
     end
 
 When querying such a power, you always need to provide the context, e.g.:
 
-    story = ...
-    Power.current.assignable_story_state?(story, 'finished')
+    client = ...
+    note = ...
+    Power.current.client_note?(client, note)
 
 
 ### Optimizing record checks for scope powers
@@ -386,22 +383,90 @@ Because this pattern is so common, there is a shortcut `:crud` to do the same:
     end
 
 
+And if your power [requires context](#powers-that-require-context-arguments) (is parametrized), you can give it using the `:context` method:
+
+    class ClientNotesController < ApplicationController
+
+      scope :client_notes, :context => :load_client
+
+      private
+
+      def load_client
+        @client ||= Client.find(params[:client_id])
+      end
+
+    end
+
+
+
 ### Auto-mapping a power scope to a controller method
 
 It is often convenient to map a power scope to a private controller method:
 
     class NotesController < ApplicationController
 
-      power :notes, :as => end_of_association_chain
+      power :notes, :as => note_scope
 
       def show
-        @note = end_of_association_chain.find(params[:id])
+        @note = note_scope.find(params[:id])
       end
 
     end
 
 This is especially useful when you are using a RESTful controller library like [resource_controller](https://github.com/jamesgolick/resource_controller). The mapped method is aware of the `:map` option.
 
+
+### Multiple power-mappings for nested resources
+
+When using [nested resources](http://guides.rubyonrails.org/routing.html#nested-resources) you probably want two power
+checks and method mappings: One for the parent resource, another for the child resource.
+
+Say you have the following routes:
+
+    resources :clients do
+      resources :notes
+    end
+
+And the following power definitions:
+
+    class Power
+      ...
+
+      power :clients do |client|
+        Client.active if signed_in?
+      end
+
+      power :client_notes do |client|
+        client.notes.where(:state => 'published')
+      end
+
+    end
+
+You can now check and map both powers in the nested `NotesController`:
+
+    class NotesController < ApplicationController
+
+      power :clients, :as => :client_scope
+      power :client_notes, :context => :load_client, :as => :note_scope
+
+      def show
+        load_note
+      end
+
+      private
+
+      def load_client
+        @client ||= client_scope.find(params[:client_id])
+      end
+
+      def load_note
+        @note ||= note_scope.find(params[:id])
+      end
+
+    end
+
+Note how we provide the `Client` parameter for the `:client_notes` power by using the `:context => :load_client`
+option in the `power` directive.
 
 ### How to never forget a power check
 
