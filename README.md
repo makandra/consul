@@ -387,7 +387,7 @@ And if your power [requires context](#powers-that-require-context-arguments) (is
 
     class ClientNotesController < ApplicationController
 
-      scope :client_notes, :context => :load_client
+      power :client_notes, :context => :load_client
 
       private
 
