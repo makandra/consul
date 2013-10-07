@@ -10,8 +10,15 @@ module Consul
     private
 
     def default_include_power?(power_name, *context)
-      # Everything that is not nil is considered as included
-      !!send(power_name, *context)
+      result = send(power_name, *context)
+      # Everything that is not nil is considered as included.
+      # We are short-circuiting for #scoped first since sometimes
+      # has_many associations (which behave scopish) trigger their query
+      # when you try to negate them, compare them or even retrieve their
+      # class. Unfortunately we can only reproduce this in live Rails
+      # apps, not in Consul tests. Might be some standard gem that is not
+      # loaded in Consul tests.
+      result.respond_to?(:scoped) || !!result
     end
 
     def default_include_object?(power_name, *args)
