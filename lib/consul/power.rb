@@ -18,7 +18,7 @@ module Consul
       # class. Unfortunately we can only reproduce this in live Rails
       # apps, not in Consul tests. Might be some standard gem that is not
       # loaded in Consul tests.
-      result.respond_to?(:scoped) || !!result
+      result.respond_to?(:load_target, true) || !!result
     end
 
     def default_include_object?(power_name, *args)

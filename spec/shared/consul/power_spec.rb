@@ -94,16 +94,11 @@ describe Consul::Power do
           @user.power.clients?.should be_true
         end
 
-        it 'should not trigger a query if the power returns a scope' do
-          Client.count.should > 0 # show that we have records in the database
-          Client.should_not_receive(:new) # show that no query was triggered by showing that no record was instantiated
-          @user.power.clients?
-        end
-
         it 'should not trigger a query if the power returns a has many association' do
           Note.count.should > 0 # show that we have records in the database
-          Note.should_not_receive(:new) # show that no query was triggered by showing that no record was instantiated
-          @user.power.client_notes?(@client1.reload)
+          @client1.reload
+          @user.power.client_notes?(@client1)
+          @client1.notes.loaded?.should be_false
         end
 
       end
