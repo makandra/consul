@@ -370,8 +370,8 @@ Note that in moderately complex authorization scenarios you will often find your
 
     class NotesController < ApplicationController
       power :notes, :map => {
-        [:edit, :update] => :updatable_notes
-        [:new, :create] => :creatable_notes
+        [:edit, :update] => :updatable_notes,
+        [:new, :create] => :creatable_notes,
         [:destroy] => :destroyable_notes
       }
     end
