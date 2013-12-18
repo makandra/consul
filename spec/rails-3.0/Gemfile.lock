@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    consul (0.10.1)
+    consul (0.10.2)
       edge_rider
       memoizer
       rails
@@ -44,8 +44,8 @@ GEM
     builder (2.1.2)
     columnize (0.3.6)
     diff-lcs (1.2.4)
-    edge_rider (0.2.1)
-      rails
+    edge_rider (0.2.3)
+      activerecord
     erubis (2.6.6)
       abstract (>= 1.0.0)
     i18n (0.5.0)

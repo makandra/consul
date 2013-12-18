@@ -79,7 +79,7 @@ module Consul
       attr_accessor :current
 
       def with_power(inner_power, &block)
-        unless inner_power.is_a?(self)
+        unless inner_power.is_a?(self) || inner_power.nil?
           inner_power = new(inner_power)
         end
         old_power = current
@@ -87,6 +87,10 @@ module Consul
         block.call
       ensure
         self.current = old_power
+      end
+
+      def without_power(&block)
+        with_power(nil, &block)
       end
 
       def define_query_and_bang_methods(name, &query)

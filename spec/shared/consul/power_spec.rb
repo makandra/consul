@@ -495,6 +495,15 @@ describe Consul::Power do
       end
     end
 
+    it 'should not instantiate a new Power if the given argument is nil' do
+      spy = double
+      Power.should_not_receive(:new)
+      spy.should_receive(:observe).with(nil)
+      Power.with_power(nil) do
+        spy.observe(Power.current)
+      end
+    end
+
   end
 
   describe '#for_model' do

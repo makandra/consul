@@ -700,9 +700,11 @@ A nice shortcut is that when you call `with_power` with an argument that is not 
       # run code that uses Power.current
     end
 
+There is also a method `.without_power` that runs a block without a current Power:
 
-
-
+    Power.without_power do
+      # run code that should not see a Power
+    end
 
 
 Installation
