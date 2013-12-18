@@ -7,6 +7,5 @@ gem 'rspec-rails'
 gem 'shoulda-matchers', '<2'
 gem 'sqlite3'
 gem 'rspec_candy'
-gem 'ruby-debug', :platforms => :mri_18
 
 gem 'consul', :path => '../..'

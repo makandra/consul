@@ -21,13 +21,10 @@ GEM
     activesupport (2.3.18)
     assignable_values (0.7.1)
       activerecord
-    columnize (0.3.6)
     edge_rider (0.2.3)
       activerecord
     hoe (2.8.0)
       rake (>= 0.8.7)
-    linecache (0.46)
-      rbx-require-relative (> 0.0.4)
     memoizer (1.0.1)
     rack (1.1.6)
     rails (2.3.18)
@@ -38,7 +35,6 @@ GEM
       activesupport (= 2.3.18)
       rake (>= 0.8.3)
     rake (10.0.4)
-    rbx-require-relative (0.0.9)
     rspec (1.3.2)
     rspec-rails (1.3.4)
       rack (>= 1.0.0)
@@ -46,11 +42,6 @@ GEM
     rspec_candy (0.2.9)
       rspec
       sneaky-save
-    ruby-debug (0.10.4)
-      columnize (>= 0.1)
-      ruby-debug-base (~> 0.10.4.0)
-    ruby-debug-base (0.10.4)
-      linecache (>= 0.3)
     shoulda-matchers (1.0.0)
     sneaky-save (0.0.2)
       activerecord (>= 2.3.2)
@@ -69,7 +60,6 @@ DEPENDENCIES
   rspec (~> 1.3)
   rspec-rails (~> 1.3)
   rspec_candy
-  ruby-debug
   shoulda-matchers (< 2)
   sqlite3
   test-unit (~> 1.2)
