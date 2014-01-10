@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 gem 'assignable_values'
 gem 'rails', '~>3.0.17'
