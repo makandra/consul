@@ -31,7 +31,9 @@ namespace :all do
   desc "Bundle all spec apps"
   task :bundle do
     for_each_directory_of('spec/**/Gemfile') do |directory|
-      system("cd #{directory} && bundle install")
+      Bundler.with_clean_env do
+        system("cd #{directory} && bundle install")
+      end
     end
   end
 
