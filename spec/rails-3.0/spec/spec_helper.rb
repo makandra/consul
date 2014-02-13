@@ -4,7 +4,7 @@ $: << File.join(File.dirname(__FILE__), "/../../lib" )
 ENV['RAILS_ENV'] ||= 'test'
 ENV['RAILS_ROOT'] = 'app_root'
 
-FileUtils.rm(Dir.glob("db/*.db"), :force => true)
+FileUtils.rm(Dir.glob("app_root/db/*.db"), :force => true)
 
 # Load the Rails environment and testing framework
 require "#{File.dirname(__FILE__)}/../app_root/config/environment"
