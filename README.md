@@ -293,6 +293,52 @@ What you can do in Consul is to define a second power that checks a given record
 This way you do not need to touch the database at all.
 
 
+Expensive scopes
+----------------
+
+In certain situations, calculating a scope might be expensive itself. Say you have a power like this:
+
+    class Power
+      ...
+
+      power :updatable_clients do
+        if @user.admin?
+          Client.where(:id => some_complicated_computation)
+        else
+          false
+        end
+      end
+
+    end
+
+Now, if you are an admin, even checking `power.updatable_clients?` is expensive, although it actually only depends
+on whether `@user.admin?` is true or not. (Remember: Even if a scope has no records, the `power` method
+will return `true`)
+
+You can improve this by using the `allowed` method:
+
+    class Power
+      ...
+
+      power :updatable_clients do
+        if @user.admin?
+          allowed do
+            Client.where(:id => some_complicated_computation)
+          end
+        else
+          false
+        end
+      end
+
+    end
+
+`power.updatable_clients?` will never execute the allowed block, but just return `true` if an `allowed` block is returned.
+On the other hand, `power.updatable_client?(some_client`)` will evaluate the block and work as usual.
+
+Please be aware this is only an optimization for the `power.updatable_clients?` use case. If you call the power multiple times,
+Consul will usually evaluate the block several times. You might need to do some additional memoization.
+
+
 Role-based permissions
 ----------------------
 
