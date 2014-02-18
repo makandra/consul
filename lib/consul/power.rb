@@ -15,7 +15,8 @@ module Consul
     def default_include_power?(power_name, *context)
       result = send(power_name, *context)
       # Everything that is not nil is considered as included.
-      # Check for scopes, since even negating a scope can trigger a query
+      # Check for scopes, since sometimes has_many association that look scopish
+      # can trigger queries, even when negating them
       looks_like_a_scope?(result) || !!result
     end
 
