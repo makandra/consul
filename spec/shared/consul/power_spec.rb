@@ -223,13 +223,32 @@ describe Consul::Power do
 
     describe 'retrieving scope_ids' do
 
+      let(:null_scope) { double('scope', :construct_finder_sql => 'SELECT 1', :to_sql => 'SELECT 1').as_null_object }
+
       it 'should return record ids that match the registered scope' do
         @user.power.client_ids.should == [@client1.id, @client2.id]
       end
 
       it 'should cache scope ids' do
-        @user.power.should_receive(:clients).once.and_return(double('scope', :construct_finder_sql => 'SELECT 1', :to_sql => 'SELECT 1').as_null_object)
+        @user.power.should_receive(:clients).once.and_return(null_scope)
         2.times { @user.power.client_ids }
+      end
+
+      it 'should cache depending on power name' do
+        @user.power.should_receive(:clients).once.and_return(null_scope)
+        @user.power.should_receive(:all_clients).once.and_return(null_scope)
+        @user.power.client_ids
+        @user.power.client_ids
+        @user.power.all_client_ids
+        @user.power.all_client_ids
+      end
+
+      it 'should cache depending on parameters' do
+        @user.power.should_receive(:client_notes).twice.and_return(null_scope)
+        @user.power.client_note_ids(@client1)
+        @user.power.client_note_ids(@client1)
+        @user.power.client_note_ids(@client2)
+        @user.power.client_note_ids(@client2)
       end
 
       it 'should return ids when the scope joins another table (bugfix)' do
@@ -374,6 +393,103 @@ describe Consul::Power do
 
     end
 
+  end
+
+  context 'powers returning "allowed" procs' do
+
+    it 'should return the underlying scope' do
+      @user.power.complicated_clients.all.should == [@client1, @client2]
+    end
+
+    it 'should allow to register scopes with arguments' do
+      @user.power.complicated_client_notes(@client1).should == [@client1_note1, @client1_note2]
+    end
+
+    it 'should run the code in the block once' do
+      @user.power.should_receive(:intense_calculation).exactly(:once)
+      @user.power.complicated_clients
+    end
+
+    describe 'query methods' do
+
+      context 'when no record is given' do
+
+        it 'should return true' do
+          @user.power.complicated_clients?.should be_true
+        end
+
+        it 'should not run the code in the block' do
+          @user.power.should_not_receive(:intense_calculation)
+          @user.power.complicated_clients?
+        end
+
+      end
+
+      context 'with a given record' do
+
+        it 'should return true if the record belongs to the scope' do
+          @user.power.complicated_client?(@client1).should be_true
+        end
+
+        it 'should return false if the record does not belong to the scope' do
+          @user.power.complicated_client?(@deleted_client).should be_false
+        end
+
+        it 'should run the code in the block once' do
+          @user.power.should_receive(:intense_calculation).exactly(:once)
+          @user.power.complicated_client?(@client1)
+        end
+
+      end
+
+    end
+
+    describe 'bang methods' do
+
+      context 'when no record is given' do
+
+        it 'should not raise Consul::Powerless' do
+          expect { @user.power.complicated_clients! }.to_not raise_error
+        end
+
+        it 'should not run the code in the block' do
+          @user.power.should_not_receive(:intense_calculation)
+          @user.power.complicated_clients!
+        end
+
+      end
+
+      context 'with a given record' do
+
+        it 'should raise Consul::Powerless when record belongs is inside the scope' do
+          expect { @user.power.complicated_client!(@deleted_client) }.to raise_error(Consul::Powerless)
+        end
+
+        it 'should not raise Consul::Powerless when the record is outside a scope' do
+          expect { @user.power.complicated_client!(@client1) }.to_not raise_error
+        end
+
+        it 'should work with scopes that have arguments' do
+          expect { @user.power.complicated_client_note!(@client1, @client1_note1) }.to_not raise_error
+          expect { @user.power.complicated_client_note!(@client1, @client2_note1) }.to raise_error(Consul::Powerless)
+        end
+
+        it 'should run the code in the block once' do
+          @user.power.should_receive(:intense_calculation).exactly(:once)
+          @user.power.complicated_client!(@client1)
+        end
+
+      end
+
+    end
+
+  end
+
+  context 'powers returning regular procs' do
+
+    it 'should return the proc, unevaluated' do
+      @user.power.power_returning_a_proc.should be_a(Proc)
+    end
 
   end
 

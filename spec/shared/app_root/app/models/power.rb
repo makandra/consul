@@ -114,6 +114,27 @@ class Power
     'blue' if @options[:blue]
   end
 
+  power :complicated_clients do
+    allowed do
+      intense_calculation
+      Client.active
+    end
+  end
+
+  power :complicated_client_notes do |client|
+    allowed do
+      intense_calculation
+      client.notes
+    end
+  end
+
+  power :power_returning_a_proc do
+    Proc.new {
+      intense_calculation
+      "foo"
+    }
+  end
+
   private
 
   attr_accessor :user
@@ -128,6 +149,10 @@ class Power
 
   def guest?
     user.role == 'guest'
+  end
+
+  def intense_calculation
+    1 + 1
   end
 
 end
