@@ -5,7 +5,7 @@ module Consul
       module InstanceMethods
 
         def include?(power_name, *args)
-          warn "makandra/consul: #include? ist deprececated. Use #include_power? and #include_object? instead."
+          warn "makandra/consul: #include? is deprececated. Use #include_power? and #include_object? instead."
           if args.size == 0
             include_power?(power_name, *args)
           else
@@ -14,7 +14,7 @@ module Consul
         end
 
         def include!(power_name, *args)
-          warn "makandra/consul: #include! ist deprececated. Use #include_power! and #include_object! instead."
+          warn "makandra/consul: #include! is deprececated. Use #include_power! and #include_object! instead."
           if args.size == 0
             include_power!(power_name, *args)
           else
