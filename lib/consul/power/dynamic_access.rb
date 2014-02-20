@@ -32,12 +32,12 @@ module Consul
 
         def include_object?(power_name, *context_and_object)
           power_name = power_name.to_s
-          send("#{power_name.singularize}?", *context_and_object)
+          send("#{singularize_power_name(power_name)}?", *context_and_object)
         end
 
         def include_object!(power_name, *context_and_object)
           power_name = power_name.to_s
-          send("#{power_name.singularize}!", *context_and_object)
+          send("#{singularize_power_name(power_name)}!", *context_and_object)
         end
 
         def for_record(*args)

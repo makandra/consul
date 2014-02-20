@@ -59,6 +59,12 @@ module Consul
       # spy for tests
     end
 
+    def singularize_power_name(name)
+      self.class.singularize_power_name(name)
+    end
+
+
+
     module ClassMethods
       include Consul::Power::DynamicAccess::ClassMethods
 
@@ -108,14 +114,28 @@ module Consul
         else
           define_method(name, &block)
           define_query_and_bang_methods(name) { |*args| default_include_power?(name, *args) }
-          if name.singularize != name
-            define_query_and_bang_methods(name.singularize) { |*args| default_include_object?(name, *args) }
+          begin
+            singular = singularize_power_name(name)
+            define_query_and_bang_methods(singular) { |*args| default_include_object?(name, *args) }
+          rescue Consul::PowerNotSingularizable
+            # We do not define singularized power methods if it would
+            # override the collection method
           end
           ids_method = power_ids_name(name)
           define_method(ids_method) { |*args| default_power_ids(name, *args) }
           memoize ids_method
         end
         name
+      end
+
+      def singularize_power_name(name)
+        name = name.to_s
+        singularized = name.singularize
+        if singularized == name
+          raise Consul::PowerNotSingularizable, "Power name can not have an singular form: #{name}"
+        else
+          singularized
+        end
       end
 
     end
