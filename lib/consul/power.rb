@@ -119,7 +119,7 @@ module Consul
       def define_power_method(name, raw_power_name)
         define_method(name) do |*args|
           result = send(raw_power_name, *args)
-          if !looks_like_a_scope?(result) and result.is_a?(AllowedProc)
+          if !looks_like_a_scope?(result) and result.class == AllowedProc
             instance_exec(&result)
           else
             result

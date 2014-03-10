@@ -1,6 +1,26 @@
 require 'spec_helper'
 
+module ScopeLoaded
+
+  def self.extended(by)
+    unless by.respond_to?(:loaded?)
+      by.extend(BackportFor2_3)
+    end
+  end
+
+  module BackportFor2_3
+    def loaded?
+      !!@found
+    end
+  end
+end
+
 describe Consul::Power do
+
+  def loaded?(scopish)
+    scopish.extend(ScopeLoaded) unless scopish.respond_to?(:load_target) # does not work for associations
+    scopish.loaded?
+  end
 
   before :each do
     @user = User.create!
@@ -86,6 +106,11 @@ describe Consul::Power do
       @user.power.client_notes(@client1).should == [@client1_note1, @client1_note2]
     end
 
+    it 'should not trigger a query if the power returns a scope' do
+      scope = @user.power.clients
+      loaded?(scope).should be_false
+    end
+
     describe 'query methods' do
 
       context 'when no record is given' do
@@ -98,7 +123,13 @@ describe Consul::Power do
           Note.count.should > 0 # show that we have records in the database
           @client1.reload
           @user.power.client_notes?(@client1)
-          @client1.notes.loaded?.should be_false
+          loaded?(@client1.notes).should be_false
+        end
+
+        it 'should not trigger a query if the power returns a scope' do
+          Client.count.should > 0 # show that we have records in the database
+          @user.power.clients?
+          loaded?(@user.power.clients).should be_false
         end
 
       end
