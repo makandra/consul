@@ -614,7 +614,7 @@ In such cases your model should simply skip authorization and assume that all us
     class UserReport
 
       def data
-        accessible_users = Power.current.present? Power.current.users || User
+        accessible_users = Power.current.present? ? Power.current.users : User
         accessible_users.collect do |user|
           [user.name, user.email, user.income]
         end
