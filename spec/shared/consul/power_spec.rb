@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'thread'
 
 describe Consul::Power do
 
@@ -453,6 +454,17 @@ describe Consul::Power do
       Power.current = 'current power'
       Power.current.should == 'current power'
       Power.current = nil
+      Power.current.should be_nil
+    end
+
+  end
+
+  describe '.current=' do
+
+    it 'should set the given Power for the current thread only' do
+      Thread.new do
+        Power.current = 'some power'
+      end.join
       Power.current.should be_nil
     end
 
