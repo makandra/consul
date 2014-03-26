@@ -74,10 +74,6 @@ module Consul
         end
       end
 
-      def context_count_name(name)
-        "#{name}_context_count"
-      end
-
       def power_ids_name(name)
         "#{name.to_s.singularize}_ids"
       end
