@@ -39,7 +39,11 @@ class Power
   end
 
   power :notes do
-    Note.scoped(:joins => :client)
+    if Rails.version.to_i < 3
+      Note.scoped(:joins => :client)
+    else
+      Note.joins(:client)
+    end
   end
 
   power :always_true do
