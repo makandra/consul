@@ -82,7 +82,7 @@ Or you can ask if the power is given (meaning it's not `nil`):
 
 Or you can raise an error unless a power its given, e.g. to guard access into a controller action:
 
-    power.notes! # => returns true if Power#notes returns a scope, even if it's empty
+    power.notes! # => raises Consul::Powerless unless Power#notes returns a scope (even if it's empty)
 
 Or you ask whether a given record is included in its scope (can be [optimized](#optimizing-record-checks-for-scope-powers)):
 
