@@ -361,7 +361,7 @@ You can use `:except` and `:only` options like in before filters.
 You can also map different powers to different actions:
 
     class NotesController < ApplicationController
-      power :notes, :map => { [:edit, :update, :destroy] => :changable_notes }
+      power :notes, :map => { [:edit, :update, :destroy] => :changeable_notes }
     end
 
 Actions that are not listed in `:map` will get the default action `:notes`.
