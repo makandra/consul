@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    consul (0.11.1)
+    consul (0.11.2)
       edge_rider
       memoizer
       rails
@@ -21,7 +21,7 @@ GEM
     activesupport (2.3.18)
     assignable_values (0.7.1)
       activerecord
-    edge_rider (0.2.3)
+    edge_rider (0.2.4)
       activerecord
     hoe (2.8.0)
       rake (>= 0.8.7)

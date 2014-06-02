@@ -80,7 +80,7 @@ describe Consul::Power do
   context 'scope powers' do
 
     it 'should return the registered scope' do
-      @user.power.clients.all.should == [@client1, @client2]
+      @user.power.clients.to_a.should == [@client1, @client2]
     end
 
     it 'should allow to register scopes with arguments' do

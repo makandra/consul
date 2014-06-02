@@ -3,10 +3,14 @@ module Consul
     extend self
 
     def scope_selects_all_records?(scope)
-      if Rails.version.to_i < 3
+      rails_version = Rails.version.to_i
+      if rails_version < 3
         scope = scope.scoped({})
-      else
+      elsif rails_version < 4
         scope = scope.scoped
+      else
+        # see https://github.com/rails/rails/issues/12756
+        scope = scope.where(nil)
       end
       scope_sql = scope.to_sql
       quoted_table_name = Regexp.quote(scope.connection.quote_table_name(scope.table_name))
@@ -26,7 +30,7 @@ module Consul
       if Rails.version.to_i < 3
         klass.send(:named_scope, name, options)
       else
-        klass.send(:scope, name, options)
+        klass.send(:scope, name, lambda {options})
       end
     end
 
