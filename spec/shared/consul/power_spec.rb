@@ -32,7 +32,7 @@ describe Consul::Power do
         it 'should return false' do
           @user.role = 'guest'
           @user.power.clients.should be_nil
-          @user.power.clients?.should be_false
+          @user.power.clients?.should == false
         end
 
       end
@@ -43,7 +43,7 @@ describe Consul::Power do
           client = Client.create!
           @user.role = 'guest'
           @user.power.clients.should be_nil
-          @user.power.client?(client).should be_false
+          @user.power.client?(client).should == false
         end
 
       end
@@ -92,14 +92,14 @@ describe Consul::Power do
       context 'when no record is given' do
 
         it 'should return true if the power returns a scope (which might or might not match records)' do
-          @user.power.clients?.should be_true
+          @user.power.clients?.should == true
         end
 
         it 'should not trigger a query if the power returns a has many association' do
           Note.count.should > 0 # show that we have records in the database
           @client1.reload
           @user.power.client_notes?(@client1)
-          @client1.notes.loaded?.should be_false
+          @client1.notes.loaded?.should == false
         end
 
       end
@@ -107,11 +107,11 @@ describe Consul::Power do
       context 'with a given record' do
 
         it 'should return true if the record belongs to the scope' do
-          @user.power.client?(@client1).should be_true
+          @user.power.client?(@client1).should == true
         end
 
         it 'should return false if the record does not belong to the scope' do
-          @user.power.client?(@deleted_client).should be_false
+          @user.power.client?(@deleted_client).should == false
         end
 
         it 'should only trigger a single query for multiple checks on the same scope' do
@@ -141,8 +141,8 @@ describe Consul::Power do
         end
 
         it 'should work with powers that have arguments' do
-          @user.power.client_note?(@client1, @client1_note1).should be_true
-          @user.power.client_note?(@client1, @client2_note1).should be_false
+          @user.power.client_note?(@client1, @client1_note1).should == true
+          @user.power.client_note?(@client1, @client2_note1).should == false
         end
 
         context 'optimization through additional definition of a Ruby method' do
@@ -150,13 +150,13 @@ describe Consul::Power do
           it 'should not affect collection access' do
             @user.power.fast_clients.to_a.should =~ [@client1, @client2]
             @user.power.fast_client_ids.to_a.should =~ [@client1.id, @client2.id]
-            @user.power.fast_clients?.should be_true
+            @user.power.fast_clients?.should == true
           end
 
           it 'should no longer access the database when checking inclusion of a single record' do
             @user.power.should_not_receive(:database_touched)
-            @user.power.fast_client?(@client1).should be_true
-            @user.power.fast_client?(@deleted_client).should be_false
+            @user.power.fast_client?(@client1).should == true
+            @user.power.fast_client?(@deleted_client).should == false
           end
 
           it 'is used by and bang methods' do
@@ -167,16 +167,16 @@ describe Consul::Power do
 
           it 'works with parametrized powers' do
             @user.power.should_not_receive(:database_touched)
-            @user.power.fast_client_note?(@client1, @client1_note1).should be_true
-            @user.power.fast_client_note?(@client1, @client2_note1).should be_false
+            @user.power.fast_client_note?(@client1, @client1_note1).should == true
+            @user.power.fast_client_note?(@client1, @client2_note1).should == false
             expect { @user.power.fast_client_note!(@client1, @client1_note1) }.to_not raise_error
             expect { @user.power.fast_client_note!(@client1, @client2_note1) }.to raise_error(Consul::Powerless)
           end
 
           it 'works when only the optimized power is defined, without a collection power' do
             @user.power.should_not_receive(:database_touched)
-            @user.power.fast_client_note_without_collection?(@client1, @client1_note1).should be_true
-            @user.power.fast_client_note_without_collection?(@client1, @client2_note1).should be_false
+            @user.power.fast_client_note_without_collection?(@client1, @client1_note1).should == true
+            @user.power.fast_client_note_without_collection?(@client1, @client2_note1).should == false
           end
 
         end
@@ -256,13 +256,13 @@ describe Consul::Power do
       context 'when no record is given' do
 
         it 'should return true if the returns an enumerable (which might or might not be empty)' do
-          @user.power.key_figures?.should be_true
+          @user.power.key_figures?.should == true
         end
 
         it 'should return false if the power returns nil' do
           @user.role = 'guest'
           @user.power.key_figures.should be_nil
-          @user.power.key_figures?.should be_false
+          @user.power.key_figures?.should == false
         end
 
       end
@@ -270,11 +270,11 @@ describe Consul::Power do
       context 'with a given record' do
 
         it 'should return true if the power contains the given record' do
-          @user.power.key_figure?('amount').should be_true
+          @user.power.key_figure?('amount').should == true
         end
 
         it 'should return false if the power does not contain the given record' do
-          @user.power.key_figure?('xyz').should be_false
+          @user.power.key_figure?('xyz').should == false
         end
 
       end
@@ -324,15 +324,15 @@ describe Consul::Power do
       context 'when no record is given' do
 
         it 'should return true when the queried power returns true' do
-          @user.power.always_true?.should be_true
+          @user.power.always_true?.should == true
         end
 
         it 'should return false when the queried power returns false' do
-          @user.power.always_false?.should be_false
+          @user.power.always_false?.should == false
         end
 
         it 'should return false when the queried power returns nil' do
-          @user.power.always_nil?.should be_false
+          @user.power.always_nil?.should == false
         end
 
       end
@@ -389,13 +389,13 @@ describe Consul::Power do
       context 'when no record is given' do
 
         it 'should return true if the power is not nil' do
-          @user.power.api_key?.should be_true
+          @user.power.api_key?.should == true
         end
 
         it 'should return false if the power is nil' do
           @user.role = 'guest'
           @user.power.api_key.should be_nil
-          @user.power.api_key?.should be_false
+          @user.power.api_key?.should == false
         end
 
       end
@@ -570,9 +570,9 @@ describe Consul::Power do
 
     it 'should return if the given model corresponds to a non-nil power' do
       @user.role = 'guest'
-      @user.power.include_model?(Client).should be_false
+      @user.power.include_model?(Client).should == false
       @user.role = 'admin'
-      @user.power.include_model?(Client).should be_true
+      @user.power.include_model?(Client).should == true
     end
 
   end
@@ -584,9 +584,9 @@ describe Consul::Power do
       it 'should return whether the given model corresponds to a non-nil power' do
         Power.with_power(@user.power) do
           @user.role = 'guest'
-          Power.include_model?(Deal).should be_false
+          Power.include_model?(Deal).should == false
           @user.role = 'admin'
-          Power.include_model?(Deal).should be_true
+          Power.include_model?(Deal).should == true
         end
       end
     end
@@ -594,7 +594,7 @@ describe Consul::Power do
     context 'when Power.current is nil' do
 
       it 'should return true' do
-        Power.include_model?(Deal).should be_true
+        Power.include_model?(Deal).should == true
       end
 
     end
@@ -644,8 +644,8 @@ describe Consul::Power do
   describe '#include_record?' do
 
     it 'should return if the given record is included in the power corresponding to the class of the given record' do
-      @user.power.include_record?(@deleted_client).should be_false
-      @user.power.include_record?(@client1).should be_true
+      @user.power.include_record?(@deleted_client).should == false
+      @user.power.include_record?(@client1).should == true
     end
 
   end
@@ -656,8 +656,8 @@ describe Consul::Power do
 
       it 'should return whether the given record is included in the the power corresponding to the class of the given record' do
         Power.with_power(@user.power) do
-          Power.include_record?(@deleted_client).should be_false
-          Power.include_record?(@client1).should be_true
+          Power.include_record?(@deleted_client).should == false
+          Power.include_record?(@client1).should == true
         end
       end
     end
@@ -665,7 +665,7 @@ describe Consul::Power do
     context 'when Power.current is nil' do
 
       it 'should return true' do
-        Power.include_record?(Deal.new).should be_true
+        Power.include_record?(Deal.new).should == true
       end
 
     end
