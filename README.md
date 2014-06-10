@@ -1,4 +1,4 @@
-Consul - A next gen authorization solution
+Consul — A next gen authorization solution
 ==========================================
 
 [![Build Status](https://secure.travis-ci.org/makandra/consul.png?branch=master)](https://travis-ci.org/makandra/consul) [![Code Climate](https://codeclimate.com/github/makandra/consul.png)](https://codeclimate.com/github/makandra/consul)
