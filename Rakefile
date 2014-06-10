@@ -7,11 +7,13 @@ task :default => 'all:spec'
 namespace :travis_ci do
 
   desc 'Things to do before Travis CI begins'
-  task :prepare => :slimgems
+  task :prepare => [:compatible_rubygems]
 
-  desc 'Install slimgems'
-  task :slimgems do
-    system('gem install slimgems')
+  desc 'Ensure compatible Rubygems version for Ruby 1.8'
+  task :compatible_rubygems do
+    if RUBY_VERSION == '1.8.7'
+      system "rvm rubygems latest-1.8 --force"
+    end
   end
 
 end
