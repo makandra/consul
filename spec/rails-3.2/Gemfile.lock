@@ -1,8 +1,8 @@
 PATH
   remote: ../..
   specs:
-    consul (0.11.1)
-      edge_rider
+    consul (0.11.2)
+      edge_rider (>= 0.3.0)
       memoizer
       rails
 
@@ -43,7 +43,7 @@ GEM
       mocha (~> 0.13.2)
     builder (3.0.4)
     diff-lcs (1.2.4)
-    edge_rider (0.2.3)
+    edge_rider (0.3.0)
       activerecord
     erubis (2.7.0)
     hike (1.2.2)

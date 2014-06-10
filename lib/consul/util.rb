@@ -22,11 +22,27 @@ module Consul
       value.is_a?(Array) || value.is_a?(Set)
     end
 
-    def define_scope(klass, name, options)
-      if Rails.version.to_i < 3
-        klass.send(:named_scope, name, options)
+    def define_scope(klass, name, lambda)
+      if Rails.version.to_i < 4 # Rails 2/3
+        scope_definition = Rails.version.to_i < 3 ? :named_scope : :scope
+        klass.send scope_definition, name, lambda
       else
-        klass.send(:scope, name, options)
+        klass.send :scope, name, lambda { |*args|
+          options = lambda.call(*args)
+          klass.scoped(options.slice :conditions)
+        }
+      end      
+    end
+    
+    # This method does not support dynamic default scopes via lambdas
+    # (as does #define_scope), because it is currently not required.
+    def define_default_scope(klass, conditions)
+      if Rails.version.to_i < 4 # Rails 2/3
+        klass.send :default_scope, conditions
+      else
+        klass.send :default_scope do
+          klass.scoped(conditions)
+        end
       end
     end
 

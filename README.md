@@ -3,10 +3,12 @@ Consul - A next gen authorization solution
 
 [![Build Status](https://secure.travis-ci.org/makandra/consul.png?branch=master)](https://travis-ci.org/makandra/consul) [![Code Climate](https://codeclimate.com/github/makandra/consul.png)](https://codeclimate.com/github/makandra/consul)
 
-Consul is a authorization solution for Ruby on Rails where you describe *sets of accessible things* to control what a user can see or edit.
+Consul is an authorization solution for Ruby on Rails where you describe *sets of accessible things* to control what a user can see or edit.
 
 We have used Consul in combination with [assignable_values](https://github.com/makandra/assignable_values) to solve a variety of authorization requirements ranging from boring to bizarre.
 Also see our crash course video: [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/).
+
+Consul is tested with Rails 2.3, 3.0, 3.2 and 4.1 on Ruby 1.8.7, 1.9.3 and 2.1.0.
 
 
 Describing access to your application
