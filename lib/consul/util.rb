@@ -29,7 +29,7 @@ module Consul
       else
         klass.send :scope, name, lambda { |*args|
           options = lambda.call(*args)
-          klass.scoped(options.slice :conditions)
+          klass.scoped(options.slice *EdgeRider::Scoped::VALID_FIND_OPTIONS)
         }
       end      
     end
