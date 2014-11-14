@@ -18,9 +18,11 @@ module Consul
           "expected #{@controller_class} to check against power #{@expected_args.inspect} but it checked against #{@actual_args.inspect}"
         end
 
-        def negative_failure_message
+        def failure_message_when_negated
           "expected #{@controller_class} to not check against power #{@expected_args.inspect}"
         end
+        # Compatibility for older rspec versions
+        alias_method :negative_failure_message, :failure_message_when_negated
 
         def description
           description = "check against power #{@expected_args.inspect}"
