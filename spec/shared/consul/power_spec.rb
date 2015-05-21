@@ -468,6 +468,18 @@ describe Consul::Power do
       Power.current.should be_nil
     end
 
+    it 'should keep multiple powers separated' do
+      FrontendPower = Class.new(Power)
+      BackendPower = Class.new(Power)
+      frontend_power = FrontendPower.new
+      backend_power = BackendPower.new
+      FrontendPower.current = frontend_power
+      BackendPower.current = backend_power
+
+      FrontendPower.current.should == frontend_power
+      BackendPower.current.should == backend_power
+    end
+
   end
 
   describe '.with_power' do
