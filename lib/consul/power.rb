@@ -78,14 +78,16 @@ module Consul
         "#{name.to_s.singularize}_ids"
       end
 
-      THREAD_KEY = :'Power.current'
+      def self.thread_key(klass)
+        "consul|#{klass.to_s}.current"
+      end
 
       def current
-        Thread.current[THREAD_KEY]
+        Thread.current[ClassMethods.thread_key(self)]
       end
 
       def current=(power)
-        Thread.current[THREAD_KEY] = power
+        Thread.current[ClassMethods.thread_key(self)] = power
       end
 
       def with_power(inner_power, &block)
