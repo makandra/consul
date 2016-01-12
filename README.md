@@ -466,7 +466,7 @@ It is often convenient to map a power scope to a private controller method:
 ```rb
 class NotesController < ApplicationController
 
-  power :notes, :as => note_scope
+  power :notes, :as => :note_scope
 
   def show
     @note = note_scope.find(params[:id])
