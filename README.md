@@ -408,7 +408,7 @@ class NotesController < ApplicationController
 end
 ```
 
-You can use `:except` and `:only` options like in before filters.
+You can use `:except` and `:only` options like in before\_actions.
 
 You can also map different powers to different actions:
 
