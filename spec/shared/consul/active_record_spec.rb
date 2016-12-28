@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe Consul::ActiveRecord do
-
   describe '.authorize_values_for' do
-
     it 'should be a shortcut for .assignable_values_for :attribute, :through => lambda { ::Power.current }' do
       klass = Note.disposable_copy
       klass.should_receive(:assignable_values_for).with(:attribute, :option => 'option', :through => kind_of(Proc))
@@ -26,12 +24,12 @@ describe Consul::ActiveRecord do
       klass = User.disposable_copy do
         authorize_values_for :role
       end
-      user = klass.new
-      user.assignable_roles.should =~ %w[guest admin]
-      user.should allow_value('guest').for(:role)
-      user.should_not allow_value('invalid-value').for(:role)
+      user_0 = klass.new(role: "guest")
+      user_0.assignable_roles.should =~ %w[guest admin]
+      expect(user_0.valid?).to be true
+
+      user_1 = klass.new(role: "invalid-value")
+      expect(user_1.valid?).to be false
     end
-
   end
-
 end
