@@ -26,10 +26,10 @@ describe Consul::ActiveRecord do
       end
       user_0 = klass.new(:role => "guest")
       user_0.assignable_roles.should =~ %w[guest admin]
-      expect(user_0.valid?).to be true
+      user_0.valid?.should be(true)
 
       user_1 = klass.new(:role => "invalid-value")
-      expect(user_1.valid?).to be false
+      user_1.valid?.should be(false)
     end
   end
 end
