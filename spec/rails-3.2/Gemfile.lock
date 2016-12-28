@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    consul (0.12.1)
+    consul (0.12.3)
       edge_rider (>= 0.3.0)
       memoizer
       rails
@@ -43,7 +43,7 @@ GEM
       mocha (~> 0.13.2)
     builder (3.0.4)
     diff-lcs (1.2.4)
-    edge_rider (0.3.0)
+    edge_rider (0.3.1)
       activerecord
     erubis (2.7.0)
     hike (1.2.2)
@@ -53,7 +53,7 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    memoizer (1.0.1)
+    memoizer (1.0.2)
     metaclass (0.0.1)
     mime-types (1.23)
     mocha (0.13.3)
@@ -133,3 +133,6 @@ DEPENDENCIES
   rspec_candy
   shoulda-matchers (< 2)
   sqlite3
+
+BUNDLED WITH
+   1.13.6
