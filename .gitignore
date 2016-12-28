@@ -5,3 +5,4 @@ pkg
 *.db
 app_root/log/*
 .bundle
+spec/shared/app_root/db/*.sqlite3

@@ -45,11 +45,14 @@ def for_each_directory_of(path, &block)
   Dir[path].sort.each do |rakefile|
     directory = File.dirname(rakefile)
     puts '', "\033[4;34m# #{directory}\033[0m", '' # blue underline
-    
+
     if directory.include?('rails-2.3') and RUBY_VERSION != '1.8.7'
       puts 'Skipping - Rails 2.3 requires Ruby 1.8.7'
-    elsif directory.include?('rails-4.1') and RUBY_VERSION == '1.8.7'
-      puts 'Skipping - Rails 4.1 does not support Ruby 1.8'
+    elsif directory.include?('rails-3.2') && RUBY_VERSION != '2.1.0'
+      puts 'Skipping - Rails 3.2.13 does not support Ruby 2.2.6'
+    elsif (directory.include?('rails-4.1') || directory.include?('rails-4.2.7')) &&
+      RUBY_VERSION == '1.8.7'
+      puts 'Skipping - Rails 4 requires Ruby 1.9.3 or higher'
     else
       block.call(directory)
     end
