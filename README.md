@@ -8,7 +8,7 @@ Consul is an authorization solution for Ruby on Rails where you describe *sets o
 We have used Consul in combination with [assignable_values](https://github.com/makandra/assignable_values) to solve a variety of authorization requirements ranging from boring to bizarre.
 Also see our crash course video: [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/).
 
-Consul is tested with Rails 2.3, 3.0, 3.2 and 4.1 on Ruby 1.8.7, 1.9.3 and 2.1.0.
+Consul is tested with Rails 2.3, 3.2, 4.1, and 4.2.7 on Ruby 1.8.7, 2.1.0, and 2.2.6.
 
 
 Describing access to your application
@@ -281,7 +281,7 @@ class Power
   power :client_notes do |client|
     client.notes.where(:state => 'published')
   end
-  
+
 end
 ```
 
@@ -824,7 +824,8 @@ Development
 Test applications for various Rails versions lives in `spec`. You can run specs from the project root by saying:
 
 ```
-bundle exec rake all:spec
+rake all:bundle
+rake all:spec
 ```
 
 If you would like to contribute:
