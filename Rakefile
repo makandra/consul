@@ -48,11 +48,12 @@ def for_each_directory_of(path, &block)
 
     if directory.include?('rails-2.3') and RUBY_VERSION != '1.8.7'
       puts 'Skipping - Rails 2.3 requires Ruby 1.8.7'
-    elsif directory.include?('rails-3.2') && RUBY_VERSION != '2.1.0'
-      puts 'Skipping - Rails 3.2.13 does not support Ruby 2.2.6'
-    elsif (directory.include?('rails-4.1') || directory.include?('rails-4.2.7')) &&
-      RUBY_VERSION == '1.8.7'
-      puts 'Skipping - Rails 4 requires Ruby 1.9.3 or higher'
+    elsif directory.include?('rails-3.2') && RUBY_VERSION >= '2.2.0'
+      puts 'Skipping - Rails 3.2.13 does not support Ruby 2.2+'
+    elsif directory.include?('rails-4.2') && (RUBY_VERSION < '1.9.3' || RUBY_VERSION >= '2.4.0')
+      puts 'Skipping - Rails 4.2 requires Ruby 1.9.3+ .. 2.3.x'
+    elsif directory.include?('rails-5.1.1') && RUBY_VERSION < '2.2.2'
+      puts 'Skipping - Rails 5 requires Ruby 2.2.2+'
     else
       block.call(directory)
     end

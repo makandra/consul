@@ -1,4 +1,4 @@
-class CreateClients < ActiveRecord::Migration
+class CreateClients < ConsulMigration
 
   def self.up
     create_table :clients do |t|

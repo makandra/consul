@@ -13,8 +13,15 @@ describe DashboardsController, :type => :controller do
 
   it "should set the current power before the request, and nilify it after the request" do
     controller.send(:current_power).should be_nil
-    Power.should_receive_and_execute(:current=).ordered.with(kind_of(Power))
-    Power.should_receive_and_execute(:current=).ordered.with(nil)
+
+    if Rails.version.to_i < 5
+      Power.should_receive_and_execute(:current=).ordered.with(kind_of(Power))
+      Power.should_receive_and_execute(:current=).ordered.with(nil)
+    else
+      Power.should_receive(:current=).ordered.with(kind_of(Power)).and_call_original
+      Power.should_receive(:current=).ordered.with(nil).and_call_original
+    end
+
     get :show
   end
 

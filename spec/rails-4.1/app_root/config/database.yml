@@ -1,4 +1,0 @@
-test:
-  adapter: sqlite3
-  database: db/consul_test.db
-  verbosity: quiet
