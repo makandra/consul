@@ -11,9 +11,16 @@ require 'rspec/rails'
 require 'rspec_candy/helpers'
 
 # Run the migrations
+ConsulMigration = ActiveRecord::Migration
 print "\033[30m" # dark gray text
 ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
 print "\033[0m"
+
+module ControllerSpecHelpers
+  def wrap_params(params)
+    params
+  end
+end
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
@@ -24,4 +31,5 @@ RSpec.configure do |config|
   config.mock_with :rspec do |c|
     c.syntax = [:should, :expect]
   end
+  config.include ControllerSpecHelpers
 end

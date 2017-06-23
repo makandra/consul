@@ -8,7 +8,7 @@ Consul is an authorization solution for Ruby on Rails where you describe *sets o
 We have used Consul in combination with [assignable_values](https://github.com/makandra/assignable_values) to solve a variety of authorization requirements ranging from boring to bizarre.
 Also see our crash course video: [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/).
 
-Consul is tested with Rails 2.3, 3.2, 4.1, and 4.2.7 on Ruby 1.8.7, 2.1.0, and 2.2.6.
+Consul is tested with Rails 2.3, 3.2, 4.1, 4.2.7, and 5.1.1 on Ruby 1.8.7, 2.1.0, 2.2.6, and 2.4.1 (only if supported, for each Ruby/Rails combination).
 
 
 Describing access to your application

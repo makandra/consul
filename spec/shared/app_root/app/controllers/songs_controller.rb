@@ -8,6 +8,7 @@ class SongsController < ApplicationController
   end
 
   def update
+    byebug
     render_nothing
   end
 

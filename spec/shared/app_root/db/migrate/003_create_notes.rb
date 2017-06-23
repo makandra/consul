@@ -1,4 +1,4 @@
-class CreateNotes < ActiveRecord::Migration
+class CreateNotes < ConsulMigration
 
   def self.up
     create_table :notes do |t|

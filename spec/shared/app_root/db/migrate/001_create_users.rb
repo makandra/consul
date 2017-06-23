@@ -1,4 +1,4 @@
-class CreateUsers < ActiveRecord::Migration
+class CreateUsers < ConsulMigration
 
   def self.up
     create_table :users do |t|

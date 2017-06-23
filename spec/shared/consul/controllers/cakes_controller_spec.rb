@@ -5,7 +5,7 @@ describe CakesController, :type => :controller do
   describe '#show' do
     it 'should get the power :cakes' do
       controller.should_receive(:observe_end_of_association_chain).with(:cakes)
-      get :show, :id => 'id'
+      get :show, wrap_params(:id => 'id')
     end
   end
 
@@ -33,28 +33,28 @@ describe CakesController, :type => :controller do
   describe '#edit' do
     it 'should get the power :updatable_cakes' do
       controller.should_receive(:observe_end_of_association_chain).with(:updatable_cakes)
-      get :edit, :id => 'id'
+      get :edit, wrap_params(:id => 'id')
     end
   end
 
   describe '#update' do
     it 'should get the power :updatable_cakes' do
       controller.should_receive(:observe_end_of_association_chain).with(:updatable_cakes)
-      put :update, :id => 'id'
+      put :update, wrap_params(:id => 'id')
     end
   end
 
   describe '#destroy' do
     it 'should get the power :destroyable_cakes' do
       controller.should_receive(:observe_end_of_association_chain).with(:destroyable_cakes)
-      delete :destroy, :id => '1'
+      delete :destroy, wrap_params(:id => '1')
     end
   end
 
   describe '#custom_action' do
     it 'should get the power :cakes' do
       controller.should_receive(:observe_end_of_association_chain).with(:cakes)
-      get :custom_action, :id => '1'
+      get :custom_action, wrap_params(:id => '1')
     end
   end
 

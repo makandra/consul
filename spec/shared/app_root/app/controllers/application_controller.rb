@@ -10,7 +10,11 @@ class ApplicationController < ActionController::Base
   private
 
   def render_nothing
-    render :nothing => true
+    if Rails.version.to_i < 5
+      render :nothing => true
+    else
+      render :body => ''
+    end
   end
   
 end

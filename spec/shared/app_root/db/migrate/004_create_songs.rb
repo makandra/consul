@@ -1,4 +1,4 @@
-class CreateSongs < ActiveRecord::Migration
+class CreateSongs < ConsulMigration
 
   def self.up
     create_table :songs do |t|
