@@ -19,7 +19,7 @@ print "\033[0m"
 
 module ControllerSpecHelpers
   def wrap_params(params)
-    params
+    params # Specs serve multiple Rails/Rspec versions, and Controller spec syntax for params changes in later versions
   end
 end
 

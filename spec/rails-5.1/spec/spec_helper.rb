@@ -20,7 +20,7 @@ print "\033[0m"
 
 module ControllerSpecHelpers
   def wrap_params(params)
-    { :params => params }
+    { :params => params } # Ancient Rails/RSpec did not need the extra :params key (and our specs support them, too)
   end
 end
 

@@ -46,6 +46,10 @@ module Consul
         elsif Rails.version.to_i < 5
           skip_before_action :unchecked_power, options
         else
+          # Every `power` in a controller will skip the power check filter. After the 1st time, Rails 5+ will raise
+          # an error because there is no `unchecked_power` action to skip any more.
+          # To avoid this, we add the following extra option. Note that it must not be added in Rails 4 to avoid errors.
+          # See http://api.rubyonrails.org/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-skip_callback
           skip_before_action :unchecked_power, { :raise => false }.merge!(options)
         end
       end
