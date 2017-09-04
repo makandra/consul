@@ -75,7 +75,7 @@ class Power
   end
 
   power :key_figures do
-    %w[amount working_costs] unless guest?
+    compute_key_figures
   end
 
   power :api_key do
@@ -128,6 +128,10 @@ class Power
 
   def guest?
     user.role == 'guest'
+  end
+
+  def compute_key_figures
+    %w[amount working_costs] unless guest?
   end
 
 end

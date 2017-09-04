@@ -251,6 +251,11 @@ describe Consul::Power do
       @user.power.key_figures.should == %w[amount working_costs]
     end
 
+    it 'should memoize the collection' do
+      @user.power.should_receive(:compute_key_figures).once
+      2.times { @user.power.key_figures }
+    end
+
     describe 'query methods' do
 
       context 'when no record is given' do
@@ -582,9 +587,9 @@ describe Consul::Power do
 
     it 'should return if the given model corresponds to a non-nil power' do
       @user.role = 'guest'
-      @user.power.include_model?(Client).should == false
+      Power.new(@user).include_model?(Client).should == false
       @user.role = 'admin'
-      @user.power.include_model?(Client).should == true
+      Power.new(@user).include_model?(Client).should == true
     end
 
   end
@@ -594,10 +599,13 @@ describe Consul::Power do
     context 'when Power.current is present' do
 
       it 'should return whether the given model corresponds to a non-nil power' do
-        Power.with_power(@user.power) do
-          @user.role = 'guest'
+        @user.role = 'guest'
+        Power.with_power(Power.new(@user)) do
           Power.include_model?(Deal).should == false
-          @user.role = 'admin'
+        end
+
+        @user.role = 'admin'
+        Power.with_power(Power.new(@user)) do
           Power.include_model?(Deal).should == true
         end
       end

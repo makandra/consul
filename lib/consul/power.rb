@@ -63,8 +63,6 @@ module Consul
       self.class.singularize_power_name(name)
     end
 
-
-
     module ClassMethods
       include Consul::Power::DynamicAccess::ClassMethods
 
@@ -109,16 +107,34 @@ module Consul
         query_method = "#{name}?"
         bang_method = "#{name}!"
         define_method(query_method, &query)
+        memoize query_method
         define_method(bang_method) { |*args| send(query_method, *args) or powerless!(name, *args) }
+        # We don't memoize the bang method since memoizer can't memoize a thrown exception
+      end
+
+      def define_ids_method(name)
+        ids_method = power_ids_name(name)
+        define_method(ids_method) { |*args| default_power_ids(name, *args) }
+        # Memoize `ids_method` in addition to the collection method itself, since
+        # #default_include_object? directly accesses `ids_method`.
+        memoize ids_method
+      end
+
+      def define_main_method(name, &block)
+        define_method(name, &block)
+        memoize name
       end
 
       def define_power(name, &block)
         name = name.to_s
         if name.ends_with?('?')
+          # The developer is trying to register an optimized query method
+          # for singular object queries.
           name_without_suffix = name.chop
           define_query_and_bang_methods(name_without_suffix, &block)
         else
-          define_method(name, &block)
+          define_main_method(name, &block)
+          define_ids_method(name)
           define_query_and_bang_methods(name) { |*args| default_include_power?(name, *args) }
           begin
             singular = singularize_power_name(name)
@@ -127,9 +143,6 @@ module Consul
             # We do not define singularized power methods if it would
             # override the collection method
           end
-          ids_method = power_ids_name(name)
-          define_method(ids_method) { |*args| default_power_ids(name, *args) }
-          memoize ids_method
         end
         name
       end
