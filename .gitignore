@@ -3,6 +3,6 @@ pkg
 *.gem
 .idea
 *.db
-app_root/log/*
+*.log
 .bundle
 spec/shared/app_root/db/*.sqlite3
