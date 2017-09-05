@@ -628,6 +628,25 @@ The `authorize_values_for` macro comes with many useful options and details best
 assignable_values_for :field, :through => lambda { Power.current }
 ```
 
+Memoization
+-----------
+
+All power methods are [memoized](https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby-and-one-gem/) for performance reasons. Multiple calls to the same method will only call your block the first time, and return a cached result afterwards:
+
+```
+power = Power.new
+power.projects! # calls the `power :projects { ... }` block
+power.projects! # returns the cached result from earlier
+power.projects! # returns the cached result from earlier
+```
+
+If you want to discard all cached results, call `#unmemoize_all`:
+
+```
+power.unmemoize_all
+```
+
+
 Dynamic power access
 --------------------
 
