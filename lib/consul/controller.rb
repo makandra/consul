@@ -61,7 +61,10 @@ module Consul
         else
           around_action :with_current_power
         end
-        helper_method :current_power
+
+        if respond_to?(:helper_method)
+          helper_method :current_power
+        end
       end
 
       def consul_guards
@@ -132,5 +135,5 @@ module Consul
     end
 
   end
-  
+
 end
