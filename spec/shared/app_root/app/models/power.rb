@@ -131,7 +131,7 @@ class Power
   end
 
   def compute_key_figures
-    %w[amount working_costs] unless guest?
+    %w[amount working_costs] + [nil] unless guest?
   end
 
 end

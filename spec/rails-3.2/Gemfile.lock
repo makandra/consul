@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    consul (0.12.4)
+    consul (0.14.0)
       edge_rider (>= 0.3.0)
       memoizer
       rails
@@ -135,4 +135,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.13.7
+   1.15.1

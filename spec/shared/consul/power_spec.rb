@@ -106,6 +106,10 @@ describe Consul::Power do
 
       context 'with a given record' do
 
+        it 'should return false if the record is blank' do
+          @user.power.client?(nil).should == false
+        end
+
         it 'should return true if the record belongs to the scope' do
           @user.power.client?(@client1).should == true
         end
@@ -205,11 +209,15 @@ describe Consul::Power do
 
       context 'with a given record' do
 
-        it 'should raise Consul::Powerless when record belongs is inside the scope' do
+        it 'should raise Consul::Powerless when the record is blank' do
+          expect { @user.power.client!(nil) }.to raise_error(Consul::Powerless)
+        end
+
+        it 'should raise Consul::Powerless when the record does not belong to the scope' do
           expect { @user.power.client!(@deleted_client) }.to raise_error(Consul::Powerless)
         end
 
-        it 'should not raise Consul::Powerless when the record is outside a scope' do
+        it 'should not raise Consul::Powerless when the record belongs to the scope' do
           expect { @user.power.client!(@client1) }.to_not raise_error
         end
 
@@ -248,7 +256,7 @@ describe Consul::Power do
   context 'collection powers' do
 
     it 'should return the registered collection' do
-      @user.power.key_figures.should == %w[amount working_costs]
+      @user.power.key_figures.should == ['amount','working_costs', nil]
     end
 
     it 'should memoize the collection' do
@@ -276,6 +284,9 @@ describe Consul::Power do
 
         it 'should return true if the power contains the given record' do
           @user.power.key_figure?('amount').should == true
+          # nil is handled specially for scope powers, but should still be
+          # allowed to use in collection powers
+          @user.power.key_figure?(nil).should == true
         end
 
         it 'should return false if the power does not contain the given record' do
@@ -305,7 +316,8 @@ describe Consul::Power do
       context 'with a given record' do
 
         it 'should not raise Consul::Powerless if the power contains the given record' do
-          expect { @user.power.key_figure?('amount') }.to_not raise_error
+          expect { @user.power.key_figure!('amount') }.to_not raise_error
+          expect { @user.power.key_figure!(nil) }.to_not raise_error
         end
 
         it 'should raise Consul::Powerless if the power does not contain the given record' do
