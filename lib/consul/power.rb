@@ -28,6 +28,8 @@ module Consul
       if power_value.nil?
         false
       elsif Util.scope?(power_value)
+        return false if object.nil?
+
         if Util.scope_selects_all_records?(power_value)
           true
         else

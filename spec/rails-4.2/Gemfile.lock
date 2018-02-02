@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    consul (0.12.4)
+    consul (0.14.0)
       edge_rider (>= 0.3.0)
       memoizer
       rails
@@ -50,7 +50,7 @@ GEM
     builder (3.2.2)
     concurrent-ruby (1.0.4)
     diff-lcs (1.2.5)
-    edge_rider (0.3.1)
+    edge_rider (0.3.2)
       activerecord
     erubis (2.7.0)
     globalid (0.3.7)
@@ -61,7 +61,7 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
-    memoizer (1.0.2)
+    memoizer (1.0.3)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
@@ -152,4 +152,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.13.7
+   1.16.0
