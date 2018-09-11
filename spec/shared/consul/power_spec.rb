@@ -145,6 +145,10 @@ describe Consul::Power do
           @user.power.client_note?(@client1, @client2_note1).should == false
         end
 
+        it 'should raise an error with helpful message when powers are called with wrong arguments' do
+          expect { @user.power.client_note?(@client1_note1) }.to raise_error(ArgumentError, 'wrong number of arguments (given 1, expected 2)')
+        end
+
         context 'optimization through additional definition of a Ruby method' do
 
           it 'should not affect collection access' do

@@ -22,6 +22,7 @@ module Consul
     end
 
     def default_include_object?(power_name, *args)
+      check_number_of_arguments_in_include_object(power_name, args.length)
       object = args.pop
       context = args
       power_value = send(power_name, *context)
@@ -61,6 +62,16 @@ module Consul
 
     def singularize_power_name(name)
       self.class.singularize_power_name(name)
+    end
+
+    def check_number_of_arguments_in_include_object(power_name, given_arguments)
+      # check unmemoized methods as Memoizer wraps methods and masks the arity.
+      unmemoized_power_name = respond_to?("_unmemoized_#{power_name}") ? "_unmemoized_#{power_name}" : power_name
+      power_arity = method(unmemoized_power_name).arity
+      expected_arity = power_arity + 1 # one additional argument for the context
+      if power_arity >= 0 && expected_arity != given_arguments
+        raise ArgumentError.new("wrong number of arguments (given #{given_arguments}, expected #{expected_arity})")
+      end
     end
 
     module ClassMethods
