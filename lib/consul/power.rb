@@ -114,12 +114,23 @@ module Consul
         with_power(nil, &block)
       end
 
-      def define_query_and_bang_methods(name, &query)
+      def define_query_and_bang_methods(name, options, &query)
+        is_plural = options.fetch(:is_plural)
         query_method = "#{name}?"
         bang_method = "#{name}!"
         define_method(query_method, &query)
         memoize query_method
-        define_method(bang_method) { |*args| send(query_method, *args) or powerless!(name, *args) }
+        define_method(bang_method) do |*args|
+          if is_plural
+            if send(query_method, *args)
+              send(name, *args)
+            else
+              powerless!(name, *args)
+            end
+          else
+            send(query_method, *args) or powerless!(name, *args)
+          end
+        end
         # We don't memoize the bang method since memoizer can't memoize a thrown exception
       end
 
@@ -142,14 +153,14 @@ module Consul
           # The developer is trying to register an optimized query method
           # for singular object queries.
           name_without_suffix = name.chop
-          define_query_and_bang_methods(name_without_suffix, &block)
+          define_query_and_bang_methods(name_without_suffix, :is_plural => false, &block)
         else
           define_main_method(name, &block)
           define_ids_method(name)
-          define_query_and_bang_methods(name) { |*args| default_include_power?(name, *args) }
+          define_query_and_bang_methods(name, :is_plural => true) { |*args| default_include_power?(name, *args) }
           begin
             singular = singularize_power_name(name)
-            define_query_and_bang_methods(singular) { |*args| default_include_object?(name, *args) }
+            define_query_and_bang_methods(singular, :is_plural => false) { |*args| default_include_object?(name, *args) }
           rescue Consul::PowerNotSingularizable
             # We do not define singularized power methods if it would
             # override the collection method
