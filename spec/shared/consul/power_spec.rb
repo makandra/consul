@@ -17,8 +17,8 @@ describe Consul::Power do
   describe 'integration scenario' do
 
     it 'should work with real records' do
-      Client.active.should == [@client1, @client2]
-      @client1.notes.should == [@client1_note1, @client1_note2]
+      Client.active.to_a.should =~ [@client1, @client2]
+      @client1.notes.to_a.should =~ [@client1_note1, @client1_note2]
     end
 
   end
@@ -80,11 +80,11 @@ describe Consul::Power do
   context 'scope powers' do
 
     it 'should return the registered scope' do
-      @user.power.clients.all.should == [@client1, @client2]
+      @user.power.clients.all.to_a.should =~ [@client1, @client2]
     end
 
     it 'should allow to register scopes with arguments' do
-      @user.power.client_notes(@client1).should == [@client1_note1, @client1_note2]
+      @user.power.client_notes(@client1).to_a.should =~ [@client1_note1, @client1_note2]
     end
 
     describe 'query methods' do
@@ -210,7 +210,7 @@ describe Consul::Power do
         end
 
         it 'should return the scope' do
-          @user.power.clients!.should == [@client1, @client2]
+          @user.power.clients!.to_a.should =~ [@client1, @client2]
         end
 
       end
@@ -239,7 +239,7 @@ describe Consul::Power do
     describe 'retrieving scope_ids' do
 
       it 'should return record ids that match the registered scope' do
-        @user.power.client_ids.should == [@client1.id, @client2.id]
+        @user.power.client_ids.should =~ [@client1.id, @client2.id]
       end
 
       it 'should cache scope ids' do
@@ -262,7 +262,7 @@ describe Consul::Power do
   context 'collection powers' do
 
     it 'should return the registered collection' do
-      @user.power.key_figures.should == %w[amount working_costs]
+      @user.power.key_figures.should =~ %w[amount working_costs]
     end
 
     it 'should memoize the collection' do
@@ -309,7 +309,7 @@ describe Consul::Power do
         end
 
         it 'should return the registered collection' do
-          @user.power.key_figures!.should == %w[amount working_costs]
+          @user.power.key_figures!.should =~ %w[amount working_costs]
         end
 
         it 'should raise Consul::Powerless if the power returns nil' do
