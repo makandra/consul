@@ -11,6 +11,13 @@ Gem::Specification.new do |s|
   s.description = s.summary
   s.license = 'MIT'
 
+  if RUBY_VERSION.to_f >= 2.0
+    s.metadata = {
+      'bug_tracker_uri' => 'https://github.com/makandra/consul/issues',
+      'changelog_uri' => 'https://github.com/makandra/consul/blob/master/CHANGELOG.md',
+    }
+  end
+
   s.files         = `git ls-files`.split("\n").reject { |f| f.match(%r{^(test|spec|features)/}) }
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
