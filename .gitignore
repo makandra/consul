@@ -5,4 +5,5 @@ pkg
 *.db
 *.log
 .bundle
-spec/shared/app_root/db/*.sqlite3
+spec/support/database.yml
+

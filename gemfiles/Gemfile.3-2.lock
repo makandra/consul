@@ -1,7 +1,7 @@
 PATH
-  remote: ../..
+  remote: ..
   specs:
-    consul (0.12.4)
+    consul (0.13.2)
       edge_rider (>= 0.3.0)
       memoizer
       rails
@@ -43,9 +43,10 @@ GEM
       mocha (~> 0.13.2)
     builder (3.0.4)
     diff-lcs (1.2.4)
-    edge_rider (0.3.2)
+    edge_rider (0.3.3)
       activerecord
     erubis (2.7.0)
+    gemika (0.3.4)
     hike (1.2.2)
     i18n (0.6.1)
     journey (1.0.4)
@@ -127,6 +128,7 @@ PLATFORMS
 DEPENDENCIES
   assignable_values
   consul!
+  gemika
   rails (~> 3.2.0)
   rspec
   rspec-rails
@@ -135,4 +137,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.13.7
+   1.16.1

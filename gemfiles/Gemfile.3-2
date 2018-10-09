@@ -1,11 +1,16 @@
 source 'https://rubygems.org'
 
+# Runtime dependencies
 gem 'assignable_values'
 gem 'rails', '~>3.2.0'
+
+# Development dependencies
 gem 'rspec'
 gem 'rspec-rails'
 gem 'shoulda-matchers', '<2'
 gem 'sqlite3'
 gem 'rspec_candy'
+gem 'gemika'
 
-gem 'consul', :path => '../..'
+# Gem under test
+gem 'consul', :path => '..'
