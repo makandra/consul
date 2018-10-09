@@ -7,14 +7,6 @@ class ApplicationController < ActionController::Base
     Power.new(User.new)
   end
 
-  def routes
-    Rails.application.routes
-  end
-
-  def _routes
-    Rails.application.routes
-  end
-
   private
 
   def render_nothing

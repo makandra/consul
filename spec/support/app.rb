@@ -8,9 +8,10 @@ if defined?(Rails.application.secrets)
   Rails.application.secrets.secret_token = 'secret'
 end
 
-Rails.application.routes.draw do
-  get ':controller(/:action(/:id(.:format)))'
+class ActionController::Base
+  def _routes
+    Rails.application.routes
+  end
 end
 
-Dir["#{File.dirname(__FILE__)}/../app/controllers/**/*.rb"].sort.each {|f| require f}
-Dir["#{File.dirname(__FILE__)}/../app/models/**/*.rb"].sort.each {|f| require f}
+Dir["#{File.dirname(__FILE__)}/../app/**/*.rb"].sort.each {|f| require f}
