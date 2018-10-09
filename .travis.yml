@@ -10,17 +10,12 @@ rvm:
   - 2.4.1
 
 gemfile:
-  - gemfiles/Gemfile.2-3
   - gemfiles/Gemfile.3-2
   - gemfiles/Gemfile.4-2
   - gemfiles/Gemfile.5-1
 
 matrix:
   exclude:
-    - gemfile: gemfiles/Gemfile.2-3
-      rvm: 2.1.8
-    - gemfile: gemfiles/Gemfile.2-3
-      rvm: 2.4.1
     - gemfile: gemfiles/Gemfile.3-2
       rvm: 2.4.1
     - gemfile: gemfiles/Gemfile.4-2
