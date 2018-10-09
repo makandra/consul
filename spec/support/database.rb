@@ -16,7 +16,7 @@ database.rewrite_schema! do
 
   create_table :songs do |t|
     t.boolean :trashed
-    t.timestamps
+    t.timestamps :null => false
   end
 
 end
