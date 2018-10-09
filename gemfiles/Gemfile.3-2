@@ -5,11 +5,12 @@ gem 'assignable_values'
 gem 'rails', '~>3.2.0'
 
 # Development dependencies
-gem 'rspec'
+gem 'rspec', '~>3.4'
 gem 'rspec-rails'
 gem 'shoulda-matchers', '<2'
 gem 'sqlite3'
 gem 'rspec_candy'
+gem 'database_cleaner'
 gem 'gemika'
 
 # Gem under test

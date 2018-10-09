@@ -49,6 +49,7 @@ GEM
       activerecord (>= 2.3)
     builder (3.2.2)
     concurrent-ruby (1.0.4)
+    database_cleaner (1.7.0)
     diff-lcs (1.2.5)
     edge_rider (0.3.3)
       activerecord
@@ -145,6 +146,7 @@ PLATFORMS
 DEPENDENCIES
   assignable_values
   consul!
+  database_cleaner
   gemika
   rails (= 4.2.7.1)
   rspec
