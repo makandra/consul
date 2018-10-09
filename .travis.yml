@@ -12,7 +12,7 @@ rvm:
 gemfile:
   - gemfiles/Gemfile.3-2
   - gemfiles/Gemfile.4-2
-  - gemfiles/Gemfile.5-1
+  - gemfiles/Gemfile.5-2
 
 matrix:
   exclude:

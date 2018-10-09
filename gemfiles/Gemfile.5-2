@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Runtime dependencies
-gem 'rails', '~> 5.1.1'
+gem 'rails', '~> 5.2.0'
 gem 'assignable_values'
 
 # Development dependencies
