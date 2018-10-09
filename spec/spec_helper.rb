@@ -34,7 +34,7 @@ Dir["#{File.dirname(__FILE__)}/app/models/**/*.rb"].sort.each {|f| require f}
 
 module ControllerSpecHelpers
   def wrap_params(params)
-    params # Specs serve multiple Rails/Rspec versions, and Controller spec syntax for params changes in later versions
+    { :params => params  } # Specs serve multiple Rails/Rspec versions, and Controller spec syntax for params changes in later versions
   end
 end
 
