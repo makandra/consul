@@ -12,7 +12,7 @@ gem 'sqlite3'
 gem 'rspec_candy'
 gem 'test-unit', '~>1.2', :platforms => :ruby_19
 gem 'hoe', '=2.8.0', :platforms => :ruby_19
-gem 'database_cleaner'
+gem 'database_cleaner', '~>1.4.1'
 gem 'gemika'
 
 # Gem under test

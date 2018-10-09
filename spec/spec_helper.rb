@@ -2,8 +2,16 @@ require 'gemika'
 
 # require "active_record/railtie"
 # require "action_controller/railtie"
-require 'rails/all'
-require 'rspec/rails'
+
+if Gemika::Env.gem?('rails', '<3')
+  require 'action_controller'
+  require 'action_view'
+  require 'spec/rails'
+else
+  require 'rails/all'
+  require 'rspec/rails'
+end
+
 require 'rspec_candy/helpers'
 require 'assignable_values'
 require 'database_cleaner'
