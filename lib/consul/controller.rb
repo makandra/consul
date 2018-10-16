@@ -67,8 +67,18 @@ module Consul
         end
       end
 
+      attr_writer :consul_guards
+
       def consul_guards
-        @consul_guards ||= []
+        unless @consul_guards_initialized
+          if superclass && superclass.respond_to?(:consul_guards, true)
+            @consul_guards = superclass.send(:consul_guards).dup
+          else
+            @consul_guards = []
+          end
+          @consul_guards_initialized = true
+        end
+        @consul_guards
       end
 
       def power(*args)
