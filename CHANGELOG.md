@@ -13,6 +13,22 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 -
 
+## 0.14.1 - 2017-11-13
+
+### Compatible changes
+
+- inherit power guards upon controller inheritance (fixes #40)
+
+## 0.14.0 - 2017-10-09
+
+### Breaking changes
+
+- drop support for Rails 2.3
+
+### Compatible changes
+
+- migrate tests to Gemika
+
 ## 0.13.2 - 2017-10-02
 
 ### Compatible changes
