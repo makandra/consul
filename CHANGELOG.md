@@ -13,13 +13,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 -
 
-## 0.14.1 - 2017-11-13
+## 0.14.1 - 2018-11-13
 
 ### Compatible changes
 
 - inherit power guards upon controller inheritance (fixes #40)
 
-## 0.14.0 - 2017-10-09
+## 0.14.0 - 2018-10-09
 
 ### Breaking changes
 
@@ -29,7 +29,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - migrate tests to Gemika
 
-## 0.13.2 - 2017-10-02
+## 0.13.2 - 2018-10-02
 
 ### Compatible changes
 
