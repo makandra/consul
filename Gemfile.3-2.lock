@@ -1,5 +1,5 @@
 PATH
-  remote: ..
+  remote: .
   specs:
     consul (0.14.1)
       edge_rider (>= 0.3.0)

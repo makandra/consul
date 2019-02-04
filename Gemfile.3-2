@@ -16,4 +16,4 @@ gem 'database_cleaner', '~>1.4.1'
 gem 'gemika'
 
 # Gem under test
-gem 'consul', :path => '..'
+gem 'consul', :path => '.'
