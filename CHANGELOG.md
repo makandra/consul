@@ -13,6 +13,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 -
 
+## Unreleased
+
+### Breaking changes
+
+- Removed `Power.for_record(record)`. Use `Power.for_model(record.class)` instead.
+- Removed `Power#for_record(record)`. Use `Power#for_model(record.class)` instead.
+- Removed `Power#name_for_record(record)`. Use `Power#name_for_model(record.class)` instead.
+
+
+
 ## 0.14.1 - 2018-11-13
 
 ### Compatible changes

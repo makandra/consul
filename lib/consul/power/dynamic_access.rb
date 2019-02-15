@@ -40,18 +40,14 @@ module Consul
           send("#{singularize_power_name(power_name)}!", *context_and_object)
         end
 
-        def for_record(*args)
-          send(name_for_record(*args))
-        end
-
         def include_record?(*args)
           adjective, record = Util.adjective_and_argument(*args)
-          include_object?(name_for_record(*args), record)
+          include_object?(name_for_model(adjective, record.class), record)
         end
 
         def include_record!(*args)
           adjective, record = Util.adjective_and_argument(*args)
-          include_object!(name_for_record(*args), record)
+          include_object!(name_for_model(adjective, record.class), record)
         end
 
         def name_for_model(*args)
@@ -70,11 +66,6 @@ module Consul
 
         def include_model!(*args)
           include_power!(name_for_model(*args))
-        end
-
-        def name_for_record(*args)
-          adjective, record = Util.adjective_and_argument(*args)
-          name_for_model(adjective, record.class)
         end
 
       end
@@ -103,15 +94,6 @@ module Consul
             current.include_model!(*args)
           else
             true
-          end
-        end
-
-        def for_record(*args)
-          if current
-            current.for_record(*args)
-          else
-            adjective, record = Util.adjective_and_argument(*args)
-            record.class
           end
         end
 

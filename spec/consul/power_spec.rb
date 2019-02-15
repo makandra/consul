@@ -651,46 +651,6 @@ describe Consul::Power do
 
   end
 
-  describe '#for_record' do
-
-    it 'should return the power corresponding to the class of the given record' do
-      @user.power.for_record(Deal.new).should == 'deals power'
-    end
-
-  end
-
-  describe '.for_record' do
-
-    context 'when Power.current is present' do
-
-      it 'should return the power corresponding to the class of the given record' do
-        Power.with_power(@user.power) do
-          Power.for_record(Deal.new).should == 'deals power'
-        end
-      end
-
-      it 'should allow to prefix the power with an adjective' do
-        Power.with_power(@user.power) do
-          Power.for_record(:updatable, Deal.new).should == 'updatable_deals power'
-        end
-      end
-
-    end
-
-    context 'when Power.current is nil' do
-
-      it 'should return true' do
-        Power.for_record(Deal.new).should == Deal
-      end
-
-      it 'should return true even if the model was prefixed with an adjective' do
-        Power.for_record(:updatable, Deal.new).should == Deal
-      end
-
-    end
-
-  end
-
   describe '#include_record?' do
 
     it 'should return if the given record is included in the power corresponding to the class of the given record' do

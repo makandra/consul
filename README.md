@@ -675,8 +675,6 @@ You can find a full list of available dynamic calls below:
 | `Power.current.include_power!(:notes)`                  | `Power.current.notes!`                     |
 | `Power.current.include_object?(:notes, Note.last)`      | `Power.current.note?(Note.last)`           |
 | `Power.current.include_object!(:notes, Note.last)`      | `Power.current.note!(Note.last)`           |
-| `Power.current.for_record(Note.last)`                   | `Power.current.notes`                      |
-| `Power.current.for_record(:updatable, Note.last)`       | `Power.current.updatable_notes`            |
 | `Power.current.for_model(Note)`                         | `Power.current.notes`                      |
 | `Power.current.for_model(:updatable, Note)`             | `Power.current.updatable_notes`            |
 | `Power.current.include_model?(Note)`                    | `Power.current.notes?`                     |
@@ -689,8 +687,6 @@ You can find a full list of available dynamic calls below:
 | `Power.current.include_record!(:updatable, Note.last)`  | `Power.current.updatable_note!(Note.last)` |
 | `Power.current.name_for_model(Note)`                    | `:notes`                                   |
 | `Power.current.name_for_model(:updatable, Note)`        | `:updatable_notes`                         |
-| `Power.current.name_for_record(Note.last)`              | `:notes`                                   |
-| `Power.current.name_for_record(:updatable, Note.last)`  | `:updatable_notes`                         |
 
 
 
@@ -753,8 +749,6 @@ There is a long selection of class methods that behave neutrally in case `Power.
 | `Power.include_model?(:updatable, Note)`                 | `Power.current.present? ? Power.updatable_notes? : true`            |
 | `Power.include_model!(Note)`                             | `Power.notes! if Power.current.present?`                            |
 | `Power.include_model!(:updatable, Note)`                 | `Power.updatable_notes! if Power.current.present?`                  |
-| `Power.for_record(Note.last)`                            | `Power.current.present? ? Power.current.notes : Note`               |
-| `Power.for_record(:updatable, Note.last)`                | `Power.current.present? ? Power.current.updatable_notes : Note`     |
 | `Power.include_record?(Note.last)`                       | `Power.current.present? ? Power.note?(Note.last) : true`            |
 | `Power.include_record?(:updatable, Note.last)`           | `Power.current.present? ? Power.updatable_note?(Note.last?) : true` |
 | `Power.include_record!(Note.last)`                       | `Power.note!(Note.last) if Power.current.present?`                  |
