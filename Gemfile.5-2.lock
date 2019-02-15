@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    consul (0.14.1)
+    consul (1.0.0)
       edge_rider (>= 0.3.0)
       memoizer
       rails (>= 3.2)
