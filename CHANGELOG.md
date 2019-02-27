@@ -13,6 +13,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 -
 
+## 1.0.1 - 2019-02-27
+
+### Compatible changes
+
+- Methods defined with `power` now preserve the [arity](https://apidock.com/ruby/Method/arity) of their block.
+
+
+
 ## 1.0.0 - 2019-02-15
 
 ### Breaking changes

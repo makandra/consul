@@ -4,7 +4,7 @@ module Consul
 
     def self.included(base)
       base.extend ClassMethods
-      base.send :include, Memoizer
+      base.send :include, Memoized
     end
 
     private

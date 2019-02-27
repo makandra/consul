@@ -87,6 +87,10 @@ describe Consul::Power do
       @user.power.client_notes(@client1).to_a.should =~ [@client1_note1, @client1_note2]
     end
 
+    it 'should preserve the arity of a power block with arguments' do
+      @user.power.method(:client_notes).arity.should == 1
+    end
+
     describe 'query methods' do
 
       context 'when no record is given' do

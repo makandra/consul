@@ -1,4 +1,4 @@
-require 'memoizer'
+require 'memoized'
 require 'edge_rider'
 require 'consul/util'
 require 'consul/power/dynamic_access'

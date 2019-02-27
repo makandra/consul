@@ -3,7 +3,7 @@ PATH
   specs:
     consul (1.0.0)
       edge_rider (>= 0.3.0)
-      memoizer
+      memoized
       rails (>= 3.2)
 
 GEM
@@ -64,7 +64,7 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
-    memoizer (1.0.3)
+    memoized (1.0.0)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
@@ -155,4 +155,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.16.3
+   1.17.3
