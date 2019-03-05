@@ -173,7 +173,7 @@ module Consul
         name = name.to_s
         singularized = name.singularize
         if singularized == name
-          raise Consul::PowerNotSingularizable, "Power name can not have an singular form: #{name}"
+          raise Consul::PowerNotSingularizable, "Power name can not have a singular form: #{name}"
         else
           singularized
         end
