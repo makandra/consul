@@ -763,6 +763,16 @@ This section Some hints for testing authorization with Consul.
 
 ### Test that a controller checks against a power
 
+Include the Consul Matcher `spec/support/consul_matcher.rb`:
+
+```
+require 'consul/spec/matchers'
+
+RSpec.configure do |c|
+  c.include Consul::Spec::Matchers
+end
+```
+
 You can say this in any controller spec:
 
 ```rb
