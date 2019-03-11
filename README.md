@@ -844,12 +844,12 @@ Now run `bundle install` to lock the gem into your project.
 Development
 -----------
 
-Test applications for various Rails versions lives in `spec`. You can run specs from the project root by saying:
-
-```
-rake all:bundle
-rake all:spec
-```
+- There are tests in `spec`. We only accept PRs with tests.
+- We currently develop using Ruby 2.3.8 (see `.ruby-version`) since that version works for all versions of ActiveRecord that we support. Travis CI will test additional Ruby versions (2.4.5 and 2.5.3).
+- Put your database credentials into `spec/support/database.yml`. There's a `database.sample.yml` you can use as a template.
+- There are gem bundles in the project root for each rails version that we support.
+- You can bundle all test applications by saying `bundle exec rake matrix:install`
+- You can run specs from the project root by saying `bundle exec rake matrix:spec`. This will run all gemfiles compatible with your current Ruby.
 
 If you would like to contribute:
 
