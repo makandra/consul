@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency('memoized')
+  s.add_dependency('memoized', '>=1.0.2')
   s.add_dependency('rails', '>=3.2')
   s.add_dependency('edge_rider', '>= 0.3.0')
 end
