@@ -1,5 +1,7 @@
 language: ruby
 
+dist: trusty
+
 sudo: false
 
 cache: bundler
@@ -35,6 +37,3 @@ install:
 
 script: bundle exec rake current_rspec
 
-notifications:
-  email:
-    - fail@makandra.de
