@@ -32,35 +32,17 @@ module Consul
       private
 
       def require_power_check(options = {})
-        if Rails.version.to_i < 4
-          before_filter :unchecked_power, options
-        else
-          before_action :unchecked_power, options
-        end
+        Util.before_action(self, :unchecked_power, options)
       end
 
       # This is badly named, since it doesn't actually skip the :check_power filter
       def skip_power_check(options = {})
-        if Rails.version.to_i < 4
-          skip_before_filter :unchecked_power, options
-        elsif Rails.version.to_i < 5
-          skip_before_action :unchecked_power, options
-        else
-          # Every `power` in a controller will skip the power check filter. After the 1st time, Rails 5+ will raise
-          # an error because there is no `unchecked_power` action to skip any more.
-          # To avoid this, we add the following extra option. Note that it must not be added in Rails 4 to avoid errors.
-          # See http://api.rubyonrails.org/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-skip_callback
-          skip_before_action :unchecked_power, { :raise => false }.merge!(options)
-        end
+        Util.skip_before_action(self, :unchecked_power, options)
       end
 
       def current_power(&initializer)
         self.current_power_initializer = initializer
-        if Rails.version.to_i < 4
-          around_filter :with_current_power
-        else
-          around_action :with_current_power
-        end
+        Util.around_action(self, :with_current_power)
 
         if respond_to?(:helper_method)
           helper_method :current_power
@@ -93,14 +75,8 @@ module Consul
         # TODO: Why do we have this array and also consul_guards?
         (@consul_power_args ||= []) << args
 
-        if Rails.version.to_i < 4
-          before_filter guard.filter_options do |controller|
-            guard.ensure!(controller, controller.action_name)
-          end
-        else
-          before_action guard.filter_options do |controller|
-            guard.ensure!(controller, controller.action_name)
-          end
+        Util.before_action(self, guard.filter_options) do |controller|
+          guard.ensure!(controller, controller.action_name)
         end
 
         if guard.direct_access_method
