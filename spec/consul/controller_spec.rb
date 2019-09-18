@@ -14,17 +14,12 @@ describe ApplicationController, :type => :controller do
           power :power3
 
           def index
-            if Rails.version >= '5'
-              render :plain => 'ok'
-            else
-              render :text => 'ok', content_type: 'text/plain'
-            end
+            Consul::Util.render_ok(self)
           end
         end
 
-        it 'calls the right powers' do
-
-          power_class = Class.new do
+        let :power_class do
+          Class.new do
             include Consul::Power
 
             power :power1 do
@@ -39,8 +34,9 @@ describe ApplicationController, :type => :controller do
               true
             end
           end
+        end
 
-
+        it 'calls the right powers' do
           power = power_class.new
           controller.stub :current_power => power
 
@@ -63,17 +59,12 @@ describe ApplicationController, :type => :controller do
         power :power3
 
         def index
-          if Rails.version >= '5'
-            render :plain => 'ok'
-          else
-            render :text => 'ok', content_type: 'text/plain'
-          end
+          Consul::Util.render_ok(self)
         end
       end
 
-      it 'calls the right powers' do
-
-        power_class = Class.new do
+      let :power_class do
+        Class.new do
           include Consul::Power
 
           power :power1 do
@@ -88,7 +79,9 @@ describe ApplicationController, :type => :controller do
             true
           end
         end
+      end
 
+      it 'calls the right powers' do
         power = power_class.new
         controller.stub :current_power => power
 
@@ -97,6 +90,110 @@ describe ApplicationController, :type => :controller do
         power.should_receive(:power3).at_least(:once).and_call_original
 
         get :index
+      end
+
+    end
+
+  end
+
+  describe '.require_power_check' do
+
+    let :power_class do
+      Class.new do
+        include Consul::Power
+
+        power :always_true do
+          true
+        end
+      end
+    end
+
+    describe 'when a controller forgets any .power check' do
+
+      controller do
+        def index
+          Consul::Util.render_ok(self)
+        end
+      end
+
+      it 'raises Consul::UncheckedPower and does not call the action' do
+        allow(controller).to receive(:current_power).and_return(power_class.new)
+        expect(controller).to_not receive(:index)
+        expect { get :index }.to raise_error(Consul::UncheckedPower)
+      end
+
+    end
+
+    describe 'when a controller has no .power check but has .skip_power_check' do
+
+      controller do
+        skip_power_check
+
+        def index
+          Consul::Util.render_ok(self)
+        end
+      end
+
+      it 'calls the action' do
+        allow(controller).to receive(:current_power).and_return(power_class.new)
+        expect(controller).to receive(:index).and_call_original
+        expect { get :index }.to_not raise_error
+      end
+
+    end
+
+    describe 'when a controller has at least one .power check' do
+
+      controller do
+        power :always_true
+
+        def index
+          Consul::Util.render_ok(self)
+        end
+      end
+
+      it 'calls the action' do
+        allow(controller).to receive(:current_power).and_return(power_class.new)
+        expect(controller).to receive(:index).and_call_original
+        expect { get :index }.to_not raise_error
+      end
+
+    end
+
+    describe 'when a controller inherits at least one .power check' do
+
+      class self::BaseController < ApplicationController
+        power :always_true
+      end
+
+      controller(self::BaseController) do
+        def index
+          Consul::Util.render_ok(self)
+        end
+
+      end
+
+      it 'calls the action' do
+        allow(controller).to receive(:current_power).and_return(power_class.new)
+        expect(controller).to receive(:index).and_call_original
+        expect { get :index }.to_not raise_error
+      end
+
+    end
+
+    describe 'when a controller has at least one .power check, but :only for another action' do
+      controller do
+        power :always_true, only: :show
+
+        def index
+          Consul::Util.render_ok(self)
+        end
+      end
+
+      it 'calls the action (which might be a public action)' do
+        allow(controller).to receive(:current_power).and_return(power_class.new)
+        expect(controller).to receive(:index).and_call_original
+        expect { get :index }.to_not raise_error
       end
 
     end

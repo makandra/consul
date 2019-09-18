@@ -82,10 +82,12 @@ module Consul
       end
 
       def power(*args)
-
         guard = Consul::Guard.new(*args)
         consul_guards << guard
-        skip_power_check guard.filter_options
+
+        # One .power directive will skip the check for all actions, even
+        # if that .power directive has :only or :except options.
+        skip_power_check
 
         # Store arguments for testing
         # TODO: Why do we have this array and also consul_guards?
