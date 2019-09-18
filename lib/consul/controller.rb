@@ -53,7 +53,7 @@ module Consul
         skip_power_check
 
         # Store arguments for testing
-        (@consul_power_args ||= []) << args
+        consul_power_args << args
 
         Util.before_action(self, guard.filter_options) do |controller|
           guard.ensure!(controller, controller.action_name)
@@ -66,6 +66,20 @@ module Consul
           private guard.direct_access_method
         end
 
+      end
+
+      # On first access we inherit .consul_power_args from our ancestor classes.
+      # We also copy inherited args so we don't change our parent's .consul_power_args
+      def consul_power_args
+        unless @consul_power_args_initialized
+          if superclass && superclass.respond_to?(:consul_power_args, true)
+            @consul_power_args = superclass.send(:consul_power_args).dup
+          else
+            @consul_power_args = []
+          end
+          @consul_power_args_initialized = true
+        end
+        @consul_power_args
       end
 
     end
