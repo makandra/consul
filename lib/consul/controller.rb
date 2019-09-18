@@ -45,30 +45,14 @@ module Consul
         end
       end
 
-      attr_writer :consul_guards
-
-      def consul_guards
-        unless @consul_guards_initialized
-          if superclass && superclass.respond_to?(:consul_guards, true)
-            @consul_guards = superclass.send(:consul_guards).dup
-          else
-            @consul_guards = []
-          end
-          @consul_guards_initialized = true
-        end
-        @consul_guards
-      end
-
       def power(*args)
         guard = Consul::Guard.new(*args)
-        consul_guards << guard
 
         # One .power directive will skip the check for all actions, even
         # if that .power directive has :only or :except options.
         skip_power_check
 
         # Store arguments for testing
-        # TODO: Why do we have this array and also consul_guards?
         (@consul_power_args ||= []) << args
 
         Util.before_action(self, guard.filter_options) do |controller|
