@@ -14,6 +14,36 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 -
 
 
+## 1.0.3 - 2019-09-19
+
+### Security fix
+
+This releases fix a security issue where in a controller with multiple `power` directives, the `:only` and `:except` options of the last directive was applied to all directives.
+
+Affected code looks like this:
+
+```ruby
+class UsersController < ApplicationController
+  power :foo
+  power :bar, only: :index
+
+  ...
+end
+```
+
+In this example both the powers `:foo` and `:bar` were only checked for the `#index` action. Other actions were left unprotected by powers checks.
+
+Controllers with a single `power` directive are unaffected.
+Contollers where neither `power` uses `:only` or `:except` options are unaffected.
+
+This vulnerability has been assigned the CVE identifier CVE-2019-16377.
+
+
+### Compatible changes
+
+- The RSpec matcher `check_power` now also sees powers inherited by a parent controller.
+
+
 ## 1.0.2 - 2019-05-22
 
 ### Compatible changes
