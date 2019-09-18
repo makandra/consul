@@ -88,12 +88,17 @@ module Consul
         skip_power_check guard.filter_options
 
         # Store arguments for testing
+        # TODO: Why do we have this array and also consul_guards?
         (@consul_power_args ||= []) << args
 
         if Rails.version.to_i < 4
-          before_filter :check_power, guard.filter_options
+          before_filter guard.filter_options do |controller|
+            guard.ensure!(controller, controller.action_name)
+          end
         else
-          before_action :check_power, guard.filter_options
+          before_action guard.filter_options do |controller|
+            guard.ensure!(controller, controller.action_name)
+          end
         end
 
         if guard.direct_access_method
@@ -110,12 +115,6 @@ module Consul
     module InstanceMethods
 
       private
-
-      define_method :check_power do
-        self.class.send(:consul_guards).each do |guard|
-          guard.ensure!(self, action_name)
-        end
-      end
 
       def unchecked_power
         raise Consul::UncheckedPower, "This controller does not check against a power"
