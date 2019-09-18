@@ -6,4 +6,4 @@ pkg
 *.log
 .bundle
 spec/support/database.yml
-
+.byebug_history

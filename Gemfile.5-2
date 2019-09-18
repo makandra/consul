@@ -12,6 +12,7 @@ gem 'shoulda-matchers'
 gem 'sqlite3'
 gem 'database_cleaner'
 gem 'gemika'
+gem 'byebug'
 
 # Gem under test
 gem 'consul', :path => '.'
