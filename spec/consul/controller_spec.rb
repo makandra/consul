@@ -94,6 +94,83 @@ describe ApplicationController, :type => :controller do
 
     end
 
+    describe 'inherited powers' do
+
+      class self::GrandParentController < ApplicationController
+        power :grand_parent
+
+        def index
+          render_nothing
+        end
+      end
+
+      class self::ParentController < self::GrandParentController
+        power :parent
+      end
+
+      class self::ChildController < self::ParentController
+        power :child
+      end
+
+      class self::Power
+        include Consul::Power
+
+        power :grand_parent do
+          true
+        end
+
+        power :parent do
+          true
+        end
+
+        power :child do
+          true
+        end
+      end
+
+      let :power do
+        self.class::Power.new
+      end
+
+      before :each do
+        allow(controller).to receive(:current_power).and_return(power)
+      end
+
+      describe 'a controller that inherits from a parent with .power checks' do
+
+        controller(self::ChildController) { }
+
+        it 'inherits the .power checks of its ancestors' do
+          expect(power).to receive(:grand_parent).at_least(:once).and_call_original
+          expect(power).to receive(:parent).at_least(:once).and_call_original
+
+          get :index
+        end
+
+        it 'may add additional power checks' do
+          expect(power).to receive(:child).at_least(:once).and_call_original
+
+          get :index
+        end
+
+      end
+
+      describe 'the parent of a controller that defines additional .power checks' do
+
+        controller(self::ParentController) { }
+
+        it 'does not modify the parent powers with powers from the child' do
+          expect(power).to receive(:grand_parent).at_least(:once).and_call_original
+          expect(power).to receive(:parent).at_least(:once).and_call_original
+          expect(power).to_not receive(:child)
+
+          get :index
+        end
+
+      end
+
+    end
+
   end
 
   describe '.require_power_check' do
