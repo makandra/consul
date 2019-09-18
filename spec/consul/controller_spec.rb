@@ -142,6 +142,24 @@ describe ApplicationController, :type => :controller do
 
     end
 
+    describe 'when a controller has no .power check but has .skip_power_check for another action' do
+
+      controller do
+        skip_power_check only: :show
+
+        def index
+          render_nothing
+        end
+      end
+
+      it 'raises Consul::UncheckedPower and does not call the action' do
+        allow(controller).to receive(:current_power).and_return(power_class.new)
+        expect(controller).to_not receive(:index)
+        expect { get :index }.to raise_error(Consul::UncheckedPower)
+      end
+
+    end
+
     describe 'when a controller has at least one .power check' do
 
       controller do
