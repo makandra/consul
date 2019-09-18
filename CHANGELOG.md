@@ -13,6 +13,15 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 -
 
+
+## 1.0.2 - 2019-05-22
+
+### Compatible changes
+
+- The `#arity` of of power methods with optional arguments are now preserved.
+
+
+
 ## 1.0.1 - 2019-02-27
 
 ### Compatible changes
