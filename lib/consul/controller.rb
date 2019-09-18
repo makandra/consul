@@ -5,11 +5,7 @@ module Consul
       base.send :include, InstanceMethods
       base.send :extend, ClassMethods
       if ensure_power_initializer_present?
-        if Rails.version.to_i < 4
-          base.before_filter :ensure_power_initializer_present
-        else
-          base.before_action :ensure_power_initializer_present
-        end
+        Util.before_action(base, :ensure_power_initializer_present)
       end
     end
 
