@@ -57,14 +57,6 @@ module Consul
       [adjective, record]
     end
 
-    def render_ok(controller)
-      if Rails.version >= '5'
-        controller.render :plain => 'ok'
-      else
-        controller.render :text => 'ok', content_type: 'text/plain'
-      end
-    end
-
   end
 end
 

@@ -14,7 +14,7 @@ describe ApplicationController, :type => :controller do
           power :power3
 
           def index
-            Consul::Util.render_ok(self)
+            render_nothing
           end
         end
 
@@ -59,7 +59,7 @@ describe ApplicationController, :type => :controller do
         power :power3
 
         def index
-          Consul::Util.render_ok(self)
+          render_nothing
         end
       end
 
@@ -112,7 +112,7 @@ describe ApplicationController, :type => :controller do
 
       controller do
         def index
-          Consul::Util.render_ok(self)
+          render_nothing
         end
       end
 
@@ -130,7 +130,7 @@ describe ApplicationController, :type => :controller do
         skip_power_check
 
         def index
-          Consul::Util.render_ok(self)
+          render_nothing
         end
       end
 
@@ -148,7 +148,7 @@ describe ApplicationController, :type => :controller do
         power :always_true
 
         def index
-          Consul::Util.render_ok(self)
+          render_nothing
         end
       end
 
@@ -168,7 +168,7 @@ describe ApplicationController, :type => :controller do
 
       controller(self::BaseController) do
         def index
-          Consul::Util.render_ok(self)
+          render_nothing
         end
 
       end
@@ -186,7 +186,7 @@ describe ApplicationController, :type => :controller do
         power :always_true, only: :show
 
         def index
-          Consul::Util.render_ok(self)
+          render_nothing
         end
       end
 
