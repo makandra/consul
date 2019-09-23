@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    consul (1.0.1)
+    consul (1.0.3)
       edge_rider (>= 0.3.0)
       memoized (>= 1.0.2)
       rails (>= 3.2)
@@ -51,7 +51,7 @@ GEM
     crass (1.0.4)
     database_cleaner (1.7.0)
     diff-lcs (1.2.5)
-    edge_rider (0.3.3)
+    edge_rider (1.0.0)
       activerecord
     erubis (2.7.0)
     gemika (0.3.4)
