@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    consul (1.0.1)
+    consul (1.0.2)
       edge_rider (>= 0.3.0)
       memoized (>= 1.0.2)
       rails (>= 3.2)
@@ -54,6 +54,7 @@ GEM
     assignable_values (0.12.1)
       activerecord (>= 2.3)
     builder (3.2.3)
+    byebug (11.0.1)
     concurrent-ruby (1.1.4)
     crass (1.0.4)
     database_cleaner (1.7.0)
@@ -159,6 +160,7 @@ PLATFORMS
 
 DEPENDENCIES
   assignable_values
+  byebug
   consul!
   database_cleaner
   gemika

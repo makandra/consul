@@ -547,7 +547,9 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-Should you for some obscure reason want to forego the power check:
+Note that this check is satisfied by *any* `.power` directive in the controller class or its ancestors, even if that `.power` directive has `:only` or `:except` options that do not apply to the current action.
+
+Should you want to forego the power check (e.g. to remove authorization checks from an entirely public controller):
 
 ```rb
 class ApiController < ApplicationController

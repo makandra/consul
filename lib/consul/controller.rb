@@ -5,11 +5,7 @@ module Consul
       base.send :include, InstanceMethods
       base.send :extend, ClassMethods
       if ensure_power_initializer_present?
-        if Rails.version.to_i < 4
-          base.before_filter :ensure_power_initializer_present
-        else
-          base.before_action :ensure_power_initializer_present
-        end
+        Util.before_action(base, :ensure_power_initializer_present)
       end
     end
 
@@ -32,68 +28,35 @@ module Consul
       private
 
       def require_power_check(options = {})
-        if Rails.version.to_i < 4
-          before_filter :unchecked_power, options
-        else
-          before_action :unchecked_power, options
-        end
+        Util.before_action(self, :unchecked_power, options)
       end
 
       # This is badly named, since it doesn't actually skip the :check_power filter
       def skip_power_check(options = {})
-        if Rails.version.to_i < 4
-          skip_before_filter :unchecked_power, options
-        elsif Rails.version.to_i < 5
-          skip_before_action :unchecked_power, options
-        else
-          # Every `power` in a controller will skip the power check filter. After the 1st time, Rails 5+ will raise
-          # an error because there is no `unchecked_power` action to skip any more.
-          # To avoid this, we add the following extra option. Note that it must not be added in Rails 4 to avoid errors.
-          # See http://api.rubyonrails.org/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-skip_callback
-          skip_before_action :unchecked_power, { :raise => false }.merge!(options)
-        end
+        Util.skip_before_action(self, :unchecked_power, options)
       end
 
       def current_power(&initializer)
         self.current_power_initializer = initializer
-        if Rails.version.to_i < 4
-          around_filter :with_current_power
-        else
-          around_action :with_current_power
-        end
+        Util.around_action(self, :with_current_power)
 
         if respond_to?(:helper_method)
           helper_method :current_power
         end
       end
 
-      attr_writer :consul_guards
-
-      def consul_guards
-        unless @consul_guards_initialized
-          if superclass && superclass.respond_to?(:consul_guards, true)
-            @consul_guards = superclass.send(:consul_guards).dup
-          else
-            @consul_guards = []
-          end
-          @consul_guards_initialized = true
-        end
-        @consul_guards
-      end
-
       def power(*args)
-
         guard = Consul::Guard.new(*args)
-        consul_guards << guard
-        skip_power_check guard.filter_options
+
+        # One .power directive will skip the check for all actions, even
+        # if that .power directive has :only or :except options.
+        skip_power_check
 
         # Store arguments for testing
-        (@consul_power_args ||= []) << args
+        consul_power_args << args
 
-        if Rails.version.to_i < 4
-          before_filter :check_power, guard.filter_options
-        else
-          before_action :check_power, guard.filter_options
+        Util.before_action(self, guard.filter_options) do |controller|
+          guard.ensure!(controller, controller.action_name)
         end
 
         if guard.direct_access_method
@@ -105,17 +68,25 @@ module Consul
 
       end
 
+      # On first access we inherit .consul_power_args from our ancestor classes.
+      # We also copy inherited args so we don't change our parent's .consul_power_args
+      def consul_power_args
+        unless @consul_power_args_initialized
+          if superclass && superclass.respond_to?(:consul_power_args, true)
+            @consul_power_args = superclass.send(:consul_power_args).dup
+          else
+            @consul_power_args = []
+          end
+          @consul_power_args_initialized = true
+        end
+        @consul_power_args
+      end
+
     end
 
     module InstanceMethods
 
       private
-
-      define_method :check_power do
-        self.class.send(:consul_guards).each do |guard|
-          guard.ensure!(self, action_name)
-        end
-      end
 
       def unchecked_power
         raise Consul::UncheckedPower, "This controller does not check against a power"

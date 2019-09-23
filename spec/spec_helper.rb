@@ -11,6 +11,12 @@ require 'gemika'
 # Gem under test
 require 'consul'
 
+begin
+  require 'byebug'
+rescue LoadError
+  # byebug is not available for the current Gemfile
+end
+
 # Require all files in spec/support
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each {|f| require f}
 
