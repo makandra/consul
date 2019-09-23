@@ -48,7 +48,7 @@ This vulnerability has been assigned the CVE identifier CVE-2019-16377.
 
 ### Compatible changes
 
-- The `#arity` of of power methods with optional arguments are now preserved.
+- The `#arity` of power methods with optional arguments is now preserved.
 
 
 
