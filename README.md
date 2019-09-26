@@ -46,7 +46,7 @@ class Power
 end
 ```
 
-There are no restrictions on the name or constructor arguments of your this class.
+There are no restrictions on the name or constructor arguments of this class.
 
 You can deposit all kinds of objects in your power. See the sections below for details.
 
@@ -90,7 +90,7 @@ Or you can ask if the power is given (meaning it's not `nil`):
 power.notes? # => returns true if Power#notes returns a scope and not nil
 ```
 
-Or you can raise an error unless a power its given, e.g. to guard access into a controller action:
+Or you can raise an error unless a power is given, e.g. to guard access into a controller action:
 
 ```rb
 power.notes! # => raises Consul::Powerless unless Power#notes returns a scope (even if it's empty)
