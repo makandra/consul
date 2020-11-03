@@ -847,8 +847,11 @@ Now run `bundle install` to lock the gem into your project.
 Development
 -----------
 
-- There are tests in `spec`. We only accept PRs with tests.
-- We currently develop using Ruby 2.3.8 (see `.ruby-version`) since that version works for all versions of ActiveRecord that we support. Travis CI will test additional Ruby versions (2.4.5 and 2.5.3).
+We currently develop using Ruby 2.3.8 (see `.ruby-version`) since that version works for all versions of ActiveRecord that we support. GitHub Actions will test additional Ruby versions (2.4.5 and 2.5.3).
+
+There are tests in `spec`. We only accept PRs with tests. To run tests:
+
+- Install Ruby 2.3.8
 - Put your database credentials into `spec/support/database.yml`. There's a `database.sample.yml` you can use as a template.
 - There are gem bundles in the project root for each rails version that we support.
 - You can bundle all test applications by saying `bundle exec rake matrix:install`
@@ -859,6 +862,8 @@ If you would like to contribute:
 - Fork the repository.
 - Push your changes **with specs**.
 - Send me a pull request.
+
+Note that we have configured GitHub Actions to automatically run tests in all supported Ruby versions and dependency sets after each push. We will only merge pull requests after a green GitHub Actions run.
 
 I'm very eager to keep this gem leightweight and on topic. If you're unsure whether a change would make it into the gem, [talk to me beforehand](mailto:henning.koch@makandra.de).
 
