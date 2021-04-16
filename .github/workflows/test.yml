@@ -28,6 +28,8 @@ jobs:
           gemfile: Gemfile.5-2
         - ruby: 2.5.3
           gemfile: Gemfile.6-1
+        - ruby: 3.0.1
+          gemfile: Gemfile.6-1
     env:
       BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
     steps:

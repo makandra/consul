@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
--
+- add Ruby 3 compatibility
 
 
 ## 1.0.3 - 2019-09-23

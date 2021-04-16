@@ -9,7 +9,7 @@ Consul is an authorization solution for Ruby on Rails where you describe *sets o
 We have used Consul in combination with [assignable_values](https://github.com/makandra/assignable_values) to solve a variety of authorization requirements ranging from boring to bizarre.
 Also see our crash course video: [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/).
 
-Consul is tested with Rails 3.2, 4.2, 5.2, and 6.0 on Ruby 2.3, 2.4, and 2.5 (only if supported, for each Ruby/Rails combination). If you need support for Rails 3.2, please use [v0.13.2](https://github.com/makandra/consul/tree/v0.13.2).
+Consul is tested with Rails 3.2, 4.2, 5.2, and 6.0 on Ruby 2.3, 2.4, 2.5 and 3.0 (only if supported, for each Ruby/Rails combination). If you need support for Rails 3.2, please use [v0.13.2](https://github.com/makandra/consul/tree/v0.13.2).
 
 
 Describing access to your application
@@ -847,11 +847,12 @@ Now run `bundle install` to lock the gem into your project.
 Development
 -----------
 
-We currently develop using Ruby 2.3.8 (see `.ruby-version`) since that version works for all versions of ActiveRecord that we support. GitHub Actions will test additional Ruby versions (2.4.5 and 2.5.3).
+We currently develop using Ruby 2.5.3 (see `.ruby-version`) since that version works for current versions of ActiveRecord that we support. GitHub Actions will test additional Ruby versions (2.3.8, 2.4.5, and 3.0.1).
 
 There are tests in `spec`. We only accept PRs with tests. To run tests:
 
-- Install Ruby 2.3.8
+- Install Ruby 2.5.3
+- run `bundle install`
 - Put your database credentials into `spec/support/database.yml`. There's a `database.sample.yml` you can use as a template.
 - There are gem bundles in the project root for each rails version that we support.
 - You can bundle all test applications by saying `bundle exec rake matrix:install`

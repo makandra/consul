@@ -31,9 +31,9 @@ module Consul
           options = lambda.call(*args)
           klass.scoped(options.slice *EdgeRider::Scoped::VALID_FIND_OPTIONS)
         }
-      end      
+      end
     end
-    
+
     # This method does not support dynamic default scopes via lambdas
     # (as does #define_scope), because it is currently not required.
     def define_default_scope(klass, conditions)
