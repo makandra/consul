@@ -78,7 +78,7 @@ GEM
     edge_rider (1.1.0)
       activerecord (>= 3.2)
     erubi (1.10.0)
-    gemika (0.3.4)
+    gemika (0.6.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     i18n (1.8.9)

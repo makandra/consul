@@ -14,19 +14,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: 2.3.8
-          gemfile: Gemfile.3-2
-        - ruby: 2.3.8
-          gemfile: Gemfile.4-2
-        - ruby: 2.3.8
-          gemfile: Gemfile.5-2
-        - ruby: 2.4.5
-          gemfile: Gemfile.4-2
-        - ruby: 2.4.5
-          gemfile: Gemfile.5-2
         - ruby: 2.5.3
           gemfile: Gemfile.5-2
         - ruby: 2.5.3
+          gemfile: Gemfile.6-1
+        - ruby: 2.7.3
           gemfile: Gemfile.6-1
         - ruby: 3.0.1
           gemfile: Gemfile.6-1
