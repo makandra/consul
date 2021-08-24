@@ -498,7 +498,7 @@ And the following power definitions:
 class Power
   ...
 
-  power :clients do |client|
+  power :clients do
     Client.active if signed_in?
   end
 
