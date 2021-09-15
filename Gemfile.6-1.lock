@@ -2,9 +2,11 @@ PATH
   remote: .
   specs:
     consul (1.0.3)
+      activerecord (>= 3.2)
+      activesupport (>= 3.2)
       edge_rider (>= 0.3.0)
       memoized (>= 1.0.2)
-      rails (>= 3.2)
+      railties (>= 3.2)
 
 GEM
   remote: https://rubygems.org/
