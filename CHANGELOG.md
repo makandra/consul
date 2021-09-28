@@ -7,12 +7,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 
+### Compatible changes
+
+## 1.1.0 - 2021-09-28
+
+### Breaking changes
+
 - remove no longer supported ruby versions (2.3.8, 2.4.5)
+- Consul no longer depends on the whole rails framework
 
 ### Compatible changes
 
 - add Ruby 3 compatibility
-
 
 ## 1.0.3 - 2019-09-23
 
@@ -112,4 +118,3 @@ Thanks to derekprior.
 ## Older releases
 
 Please check commits.
-
