@@ -24,6 +24,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency('memoized', '>=1.0.2')
-  s.add_dependency('rails', '>=3.2')
+  s.add_dependency('activerecord', '>= 3.2')
+  s.add_dependency('activesupport', '>= 3.2')
+  s.add_dependency('railties', '>= 3.2')
   s.add_dependency('edge_rider', '>= 0.3.0')
 end
