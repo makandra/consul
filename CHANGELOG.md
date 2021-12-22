@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+- support rails 7
+
 ## 1.1.0 - 2021-09-28
 
 ### Breaking changes
