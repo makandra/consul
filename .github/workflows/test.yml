@@ -20,6 +20,8 @@ jobs:
           gemfile: Gemfile.6-1
         - ruby: 2.7.3
           gemfile: Gemfile.6-1
+        - ruby: 2.7.3
+          gemfile: Gemfile.7-0
         - ruby: 3.0.3
           gemfile: Gemfile.6-1
         - ruby: 3.0.3
