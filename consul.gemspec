@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
     s.metadata = {
       'bug_tracker_uri' => 'https://github.com/makandra/consul/issues',
       'changelog_uri' => 'https://github.com/makandra/consul/blob/master/CHANGELOG.md',
+      'rubygems_mfa_required' => 'true',
     }
   end
 
