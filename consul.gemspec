@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
 
   if RUBY_VERSION.to_f >= 2.0
     s.metadata = {
+      'source_code_uri' => s.homepage,
       'bug_tracker_uri' => 'https://github.com/makandra/consul/issues',
       'changelog_uri' => 'https://github.com/makandra/consul/blob/master/CHANGELOG.md',
       'rubygems_mfa_required' => 'true',
