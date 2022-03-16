@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    consul (1.1.0)
+    consul (1.1.1)
       activerecord (>= 3.2)
       activesupport (>= 3.2)
       edge_rider (>= 0.3.0)
@@ -45,7 +45,7 @@ GEM
     edge_rider (1.1.0)
       activerecord (>= 3.2)
     erubi (1.10.0)
-    gemika (0.6.1)
+    gemika (0.7.1)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     loofah (2.9.0)

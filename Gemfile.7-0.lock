@@ -49,7 +49,7 @@ GEM
     edge_rider (2.0.0)
       activerecord (>= 3.2)
     erubi (1.10.0)
-    gemika (0.6.1)
+    gemika (0.7.1)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     loofah (2.13.0)
