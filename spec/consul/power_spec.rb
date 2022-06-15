@@ -549,11 +549,38 @@ describe Consul::Power do
       Power.current = nil # clean up for subsequent specs -- too bad we can't use .with_power :)
     end
 
-    it 'should call instantiate a new Power if the given argument is not already a power' do
+    it 'should instantiate a new Power if the given argument is not already a power' do
       spy = double
       Power.should_receive(:new).with('argument').and_return('instantiated power')
       spy.should_receive(:observe).with('instantiated power')
       Power.with_power('argument') do
+        spy.observe(Power.current)
+      end
+    end
+
+    it 'should instantiate a new Power with all given arguments if it receives more than one regular argument' do
+      spy = double
+      Power.should_receive(:new).with('more', 'than', 'one').and_return('instantiated power')
+      spy.should_receive(:observe).with('instantiated power')
+      Power.with_power('more', 'than', 'one') do
+        spy.observe(Power.current)
+      end
+    end
+
+    it 'should instantiate a new Power with all given arguments if it receives any keyword argument' do
+      spy = double
+      Power.should_receive(:new).with(keyword: 'argument').and_return('instantiated power')
+      spy.should_receive(:observe).with('instantiated power')
+      Power.with_power(keyword: 'argument') do
+        spy.observe(Power.current)
+      end
+    end
+
+    it 'should instantiate a new Power with all given arguments if it receives regular AND keyword argument' do
+      spy = double
+      Power.should_receive(:new).with('regular', 'and', keyword: 'arguments').and_return('instantiated power')
+      spy.should_receive(:observe).with('instantiated power')
+      Power.with_power('regular', 'and', keyword: 'arguments') do
         spy.observe(Power.current)
       end
     end

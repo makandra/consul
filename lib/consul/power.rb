@@ -99,10 +99,17 @@ module Consul
         Thread.current[ClassMethods.thread_key(self)] = power
       end
 
-      def with_power(inner_power, &block)
-        unless inner_power.is_a?(self) || inner_power.nil?
-          inner_power = new(inner_power)
+      def with_power(*args, **kwargs , &block)
+        inner_power = if args.first.is_a?(self)
+          args.first
+        elsif args.length == 1 && args.first.nil?
+          nil
+        elsif kwargs.empty?
+          new(*args)
+        else
+          new(*args, **kwargs)
         end
+
         old_power = current
         self.current = inner_power
         block.call
