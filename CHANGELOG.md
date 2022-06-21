@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+## 1.1.2 - 2022-06-21
+
+### Compatible changes
+
 - `.with_power` now also forwards keyword arguments to the Power initializer correctly
 
 ## 1.1.1 - 2022-03-16
