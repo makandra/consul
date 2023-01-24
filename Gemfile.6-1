@@ -11,7 +11,7 @@ gem 'rspec_candy'
 gem 'shoulda-matchers'
 gem 'sqlite3'
 gem 'database_cleaner'
-gem 'gemika'
+gem 'gemika', '>= 0.8.1'
 
 # Gem under test
 gem 'consul', :path => '.'

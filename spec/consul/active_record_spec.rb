@@ -4,7 +4,7 @@ describe Consul::ActiveRecord do
   describe '.authorize_values_for' do
     it 'should be a shortcut for .assignable_values_for :attribute, :through => lambda { ::Power.current }' do
       klass = Note.disposable_copy
-      klass.should_receive(:assignable_values_for).with(:attribute, :option => 'option', :through => kind_of(Proc))
+      klass.should_receive(:assignable_values_for).with(:attribute, { :option => 'option', :through => kind_of(Proc) })
       klass.class_eval do
         authorize_values_for :attribute, :option => 'option'
       end
