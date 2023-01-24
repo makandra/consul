@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # Runtime dependencies
 gem 'railties', '>= 3.2'
-gem 'assignable_values'
+gem 'assignable_values', '>= 0.18.0'
 
 # Development dependencies
 gem 'rspec'
@@ -11,7 +11,7 @@ gem 'rspec_candy'
 gem 'shoulda-matchers'
 gem 'sqlite3'
 gem 'database_cleaner'
-gem 'gemika'
+gem 'gemika', '>= 0.8.1'
 gem 'byebug'
 
 # Gem under test
