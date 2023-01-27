@@ -10,6 +10,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 
 
+## 1.3.0 - 2023-01-27
+
+### Compatible changes
+
+- When you [map a power to a controller method](https://github.com/makandra/consul#auto-mapping-a-power-scope-to-a-controller-method) you can now override the generated method. The original implementation can be accessed with `super`.
+- When trying to map multiple controller method with the name, an error is now raised. Previously only the last mapping was used.
+
 
 ## 1.2.0 - 2023-01-24
 
