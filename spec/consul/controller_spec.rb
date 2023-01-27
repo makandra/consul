@@ -4,6 +4,48 @@ describe ApplicationController, :type => :controller do
 
   describe '.power' do
 
+    describe 'with :as option' do
+
+      controller do
+        power :power, map: { index: :power1, show: :power2 }, as: :power_value
+
+        def index
+          render plain: power_value
+        end
+
+        def show
+          render plain: power_value
+        end
+
+      end
+
+      let :power_class do
+        Class.new do
+          include Consul::Power
+
+          power :power1 do
+            'value of power1'
+          end
+
+          power :power2 do
+            'value of power2'
+          end
+        end
+      end
+
+      it 'defines a method that returns the power for the current action' do
+        power = power_class.new
+        controller.stub :current_power => power
+
+        get :index
+        expect(response.body).to eq('value of power1')
+
+        get :show, params: { id: '1' }
+        expect(response.body).to eq('value of power2')
+      end
+
+    end
+
     describe 'multiple .power directives in one controller' do
 
       describe 'with individual :only options' do
