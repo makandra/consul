@@ -94,12 +94,14 @@ module Consul
         name = :ConsulFeatures
         # Each controller class should get its own FeatureModule, even when
         # we already inherit one from our parent.
-        const_get(name, _search_ancestors = false)
-      rescue NameError
-        mod = Module.new
-        const_set(name, mod)
-        include(mod)
-        mod
+        if const_defined?(name, (_search_ancestors = false))
+          const_get(name, _search_ancestors = false)
+        else
+          mod = Module.new
+          const_set(name, mod)
+          include(mod)
+          mod
+        end
       end
 
       # On first access we inherit .consul_power_args from our ancestor classes.
