@@ -49,49 +49,48 @@ describe ApplicationController, :type => :controller do
 
       end
 
-    end
+      describe 'with individual :except options' do
 
-    describe 'with individual :except options' do
+        controller do
+          power :power1, :except => :show
+          power :power2, :except => :index
+          power :power3
 
-      controller do
-        power :power1, :except => :show
-        power :power2, :except => :index
-        power :power3
-
-        def index
-          render_nothing
-        end
-      end
-
-      let :power_class do
-        Class.new do
-          include Consul::Power
-
-          power :power1 do
-            true
-          end
-
-          power :power2 do
-            true
-          end
-
-          power :power3 do
-            true
+          def index
+            render_nothing
           end
         end
+
+        let :power_class do
+          Class.new do
+            include Consul::Power
+
+            power :power1 do
+              true
+            end
+
+            power :power2 do
+              true
+            end
+
+            power :power3 do
+              true
+            end
+          end
+        end
+
+        it 'calls the right powers' do
+          power = power_class.new
+          controller.stub :current_power => power
+
+          power.should_receive(:power1).at_least(:once).and_call_original
+          power.should_not_receive(:power2)
+          power.should_receive(:power3).at_least(:once).and_call_original
+
+          get :index
+        end
+
       end
-
-      it 'calls the right powers' do
-        power = power_class.new
-        controller.stub :current_power => power
-
-        power.should_receive(:power1).at_least(:once).and_call_original
-        power.should_not_receive(:power2)
-        power.should_receive(:power3).at_least(:once).and_call_original
-
-        get :index
-      end
-
     end
 
     describe 'inherited powers' do
