@@ -47,6 +47,7 @@ module Consul
 
       def power(*args)
         guard = Consul::Guard.new(*args)
+        controller = self
 
         # One .power directive will skip the check for all actions, even
         # if that .power directive has :only or :except options.
@@ -60,12 +61,45 @@ module Consul
         end
 
         if guard.direct_access_method
-          define_method guard.direct_access_method do
-            guard.power_value(self, action_name)
+          consul_features_module.module_eval do
+            # It's dangerous to re-define direct access methods like this:
+            #
+            #     power :one, as: :my_power
+            #     power :two, as: :my_power
+            #
+            # The method would always check the last power only.
+            # To prevent this we're raising an error.
+            if method_defined?(guard.direct_access_method)
+              raise DuplicateMethod, "Method #{direct_access_method} is already defined on #{controller.name}"
+            end
+
+            define_method guard.direct_access_method do
+              guard.power_value(self, action_name)
+            end
+
+            private guard.direct_access_method
           end
-          private guard.direct_access_method
         end
 
+      end
+
+      # Instead of using define_method on the controller we're enhancing,
+      # we define dynamic method in a module and have the controller include that.
+      # This way the controller can override our generated method and access
+      # the original implenentation with super().
+      #
+      # See https://thepugautomatic.com/2013/07/dsom/ for more examples on this
+      # technique.
+      def consul_features_module
+        name = :ConsulFeatures
+        # Each controller class should get its own FeatureModule, even when
+        # we already inherit one from our parent.
+        const_get(name, _search_ancestors = false)
+      rescue NameError
+        mod = Module.new
+        const_set(name, mod)
+        include(mod)
+        mod
       end
 
       # On first access we inherit .consul_power_args from our ancestor classes.

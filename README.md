@@ -476,7 +476,23 @@ class NotesController < ApplicationController
 end
 ```
 
-This is especially useful when you are using a RESTful controller library like [resource_controller](https://github.com/jamesgolick/resource_controller). The mapped method is aware of the `:map` option.
+The mapped method is aware of the `:map` option.
+
+The mapped method can be overridden and access the original implementation using `super`:
+
+```ruby
+class NotesController < ApplicationController
+
+  power :notes, :as => :note_scope
+
+  # ...
+    
+  def note_scope
+    super.where(trashed: false)
+  end
+
+end
+```
 
 
 ### Multiple power-mappings for nested resources

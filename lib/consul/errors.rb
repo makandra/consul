@@ -7,4 +7,5 @@ module Consul
   class NoCollection < Error; end
   class MissingContext < Error; end
   class PowerNotSingularizable < Error; end
+  class DuplicateMethod < Error; end
 end
