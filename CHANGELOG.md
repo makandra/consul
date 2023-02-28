@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+## 1.3.1 - 2023-02-28
+
+### Compatible changes
+
+- clean release to fix file permissions of files that were broken in 1.3.0
 
 ## 1.3.0 - 2023-01-27
 
