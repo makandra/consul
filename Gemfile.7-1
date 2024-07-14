@@ -9,7 +9,7 @@ gem 'rspec'
 gem 'rspec-rails'
 gem 'rspec_candy'
 gem 'shoulda-matchers'
-gem 'sqlite3'
+gem 'sqlite3', "~> 1.7"
 gem 'database_cleaner'
 gem 'gemika', '>= 0.8.1'
 
