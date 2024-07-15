@@ -1,19 +1,15 @@
-Consul — A next gen authorization solution
-==========================================
+# Consul — A next gen authorization solution
 
 [![Tests](https://github.com/makandra/consul/workflows/Tests/badge.svg)](https://github.com/makandra/consul/actions) [![Code Climate](https://codeclimate.com/github/makandra/consul.png)](https://codeclimate.com/github/makandra/consul)
 
-
-Consul is an authorization solution for Ruby on Rails where you describe *sets of accessible things* to control what a user can see or edit.
+Consul is an authorization solution for Ruby on Rails where you describe _sets of accessible things_ to control what a user can see or edit.
 
 We have used Consul in combination with [assignable_values](https://github.com/makandra/assignable_values) to solve a variety of authorization requirements ranging from boring to bizarre.
 Also see our crash course video: [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/).
 
-Consul is tested with Rails 5.2, 6.1 and 7.0 on Ruby 2.5, 2.7 and 3.2 (only if supported, for each Ruby/Rails combination). If you need support for Rails 3.2, please use [v0.13.2](https://github.com/makandra/consul/tree/v0.13.2).
+Consul is tested with Rails 5.2, 6.1, 7.0, 7.1 on Ruby 2.5, 2.7, 3.2, 3.3 (only if supported, for each Ruby/Rails combination). If you need support for Rails 3.2, please use [v0.13.2](https://github.com/makandra/consul/tree/v0.13.2).
 
-
-Describing access to your application
--------------------------------------
+## Describing access to your application
 
 You describe access to your application by putting a `Power` model into `app/models/power.rb`.
 Inside your `Power` you can talk about what is accessible for the current user, e.g.
@@ -51,9 +47,7 @@ There are no restrictions on the name or constructor arguments of this class.
 
 You can deposit all kinds of objects in your power. See the sections below for details.
 
-
 ### Scope powers (relations)
-
 
 A typical use case in a Rails application is to restrict access to your ActiveRecord models. For example:
 
@@ -111,12 +105,9 @@ power.note!(Note.last) # => raises Consul::Powerless unless the given Note is in
 
 See our crash course video [Solving bizare authorization requirements with Rails](http://bizarre-authorization.talks.makandra.com/) for many different use cases you can cover with this pattern.
 
-
-
 ### Defining different powers for different actions
 
 If you have different access rights for e.g. viewing or updating posts, simply use different powers:
-
 
 ```rb
 class Power
@@ -138,8 +129,6 @@ end
 ```
 
 There is also a [shortcut to map different powers to RESTful controller actions](#protect-entry-into-controller-actions).
-
-
 
 ### Boolean powers
 
@@ -163,7 +152,6 @@ power = Power.new(@user)
 power.dashboard? # => true
 power.dashboard! # => raises Consul::Powerless unless Power#dashboard? returns true
 ```
-
 
 ### Powers that give no access at all
 
@@ -194,15 +182,12 @@ power.user?(User.last) # => returns false
 power.user!(User.last) # => raises Consul::Powerless
 ```
 
-
-
 ### Powers that only check a given object
 
 Sometimes it is not convenient to define powers as a collection or scope (relation).
 Sometimes you only want to store a method that checks whether a given object is accessible.
 
 To do so, simply define a power that ends in a question mark:
-
 
 ```rb
 class Power
@@ -222,7 +207,6 @@ power = Power.new(@user)
 power.updatable_post?(Post.last) # return true if the author of the post is @user
 power.updatable_post!(Post.last) # raises Consul::Powerless unless the author of the post is @user
 ```
-
 
 ### Other types of powers
 
@@ -254,7 +238,6 @@ power.assignable_note_state?('published') # => returns false
 power.assignable_note_state!('published') # => raises Consul::Powerless
 ```
 
-
 ### Defining multiple powers at once
 
 You can define multiple powers at once by giving multiple power names:
@@ -269,7 +252,6 @@ class Power
 
 end
 ```
-
 
 ### Powers that require context (arguments)
 
@@ -293,7 +275,6 @@ client = ...
 note = ...
 Power.current.client_note?(client, note)
 ```
-
 
 ### Optimizing record checks for scope powers
 
@@ -337,9 +318,7 @@ end
 
 This way you do not need to touch the database at all.
 
-
-Role-based permissions
-----------------------
+## Role-based permissions
 
 Consul has no built-in support for role-based permissions, but you can easily implement it yourself. Let's say your `User` model has a string column `role` which can be `"author"` or `"admin"`:
 
@@ -367,9 +346,7 @@ class Power
 end
 ```
 
-
-Controller integration
-----------------------
+## Controller integration
 
 It is convenient to expose the power for the current request to the rest of the application. Consul will help you with that if you tell it how to instantiate a power for the current request:
 
@@ -398,7 +375,6 @@ class NotesController < ApplicationController
 end
 ```
 
-
 ### Protect entry into controller actions
 
 To make sure a power is given before every action in a controller:
@@ -409,7 +385,7 @@ class NotesController < ApplicationController
 end
 ```
 
-You can use `:except` and `:only` options like in before\_actions.
+You can use `:except` and `:only` options like in before_actions.
 
 You can also map different powers to different actions:
 
@@ -441,7 +417,6 @@ class NotesController < ApplicationController
 end
 ```
 
-
 And if your power [requires context](#powers-that-require-context-arguments) (is parametrized), you can give it using the `:context` method:
 
 ```rb
@@ -457,8 +432,6 @@ class ClientNotesController < ApplicationController
 
 end
 ```
-
-
 
 ### Auto-mapping a power scope to a controller method
 
@@ -486,14 +459,13 @@ class NotesController < ApplicationController
   power :notes, :as => :note_scope
 
   # ...
-    
+
   def note_scope
     super.where(trashed: false)
   end
 
 end
 ```
-
 
 ### Multiple power-mappings for nested resources
 
@@ -564,7 +536,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-Note that this check is satisfied by *any* `.power` directive in the controller class or its ancestors, even if that `.power` directive has `:only` or `:except` options that do not apply to the current action.
+Note that this check is satisfied by _any_ `.power` directive in the controller class or its ancestors, even if that `.power` directive has `:only` or `:except` options that do not apply to the current action.
 
 Should you want to forego the power check (e.g. to remove authorization checks from an entirely public controller):
 
@@ -574,9 +546,7 @@ class ApiController < ApplicationController
 end
 ```
 
-
-Validating assignable values
-----------------------------
+## Validating assignable values
 
 Sometimes a scope is not enough to express what a user can edit. You will often want to give a user write access to a record, but restrict the values she can assign to a given field.
 
@@ -647,8 +617,7 @@ The `authorize_values_for` macro comes with many useful options and details best
 assignable_values_for :field, :through => lambda { Power.current }
 ```
 
-Memoization
------------
+## Memoization
 
 All power methods are [memoized](https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby-and-one-gem/) for performance reasons. Multiple calls to the same method will only call your block the first time, and return a cached result afterwards:
 
@@ -665,9 +634,7 @@ If you want to discard all cached results, call `#unmemoize_all`:
 power.unmemoize_all
 ```
 
-
-Dynamic power access
---------------------
+## Dynamic power access
 
 Consul gives you a way to dynamically access and query powers for a given name, model class or record.
 A common use case for this are generic helper methods, e.g. a method to display an "edit" link for any given record
@@ -687,30 +654,27 @@ end
 
 You can find a full list of available dynamic calls below:
 
-| Dynamic call                                            | Equivalent                                 |
-|---------------------------------------------------------|--------------------------------------------|
-| `Power.current.send(:notes)`                            | `Power.current.notes`                      |
-| `Power.current.include_power?(:notes)`                  | `Power.current.notes?`                     |
-| `Power.current.include_power!(:notes)`                  | `Power.current.notes!`                     |
-| `Power.current.include_object?(:notes, Note.last)`      | `Power.current.note?(Note.last)`           |
-| `Power.current.include_object!(:notes, Note.last)`      | `Power.current.note!(Note.last)`           |
-| `Power.current.for_model(Note)`                         | `Power.current.notes`                      |
-| `Power.current.for_model(:updatable, Note)`             | `Power.current.updatable_notes`            |
-| `Power.current.include_model?(Note)`                    | `Power.current.notes?`                     |
-| `Power.current.include_model?(:updatable, Note)`        | `Power.current.updatable_notes?`           |
-| `Power.current.include_model!(Note)`                    | `Power.current.notes!`                     |
-| `Power.current.include_model!(:updatable, Note)`        | `Power.current.updatable_notes!`           |
-| `Power.current.include_record?(Note.last)`              | `Power.current.note?(Note.last)`           |
-| `Power.current.include_record?(:updatable, Note.last)`  | `Power.current.updatable_note?(Note.last)` |
-| `Power.current.include_record!(Note.last)`              | `Power.current.note!(Note.last)`           |
-| `Power.current.include_record!(:updatable, Note.last)`  | `Power.current.updatable_note!(Note.last)` |
-| `Power.current.name_for_model(Note)`                    | `:notes`                                   |
-| `Power.current.name_for_model(:updatable, Note)`        | `:updatable_notes`                         |
+| Dynamic call                                           | Equivalent                                 |
+| ------------------------------------------------------ | ------------------------------------------ |
+| `Power.current.send(:notes)`                           | `Power.current.notes`                      |
+| `Power.current.include_power?(:notes)`                 | `Power.current.notes?`                     |
+| `Power.current.include_power!(:notes)`                 | `Power.current.notes!`                     |
+| `Power.current.include_object?(:notes, Note.last)`     | `Power.current.note?(Note.last)`           |
+| `Power.current.include_object!(:notes, Note.last)`     | `Power.current.note!(Note.last)`           |
+| `Power.current.for_model(Note)`                        | `Power.current.notes`                      |
+| `Power.current.for_model(:updatable, Note)`            | `Power.current.updatable_notes`            |
+| `Power.current.include_model?(Note)`                   | `Power.current.notes?`                     |
+| `Power.current.include_model?(:updatable, Note)`       | `Power.current.updatable_notes?`           |
+| `Power.current.include_model!(Note)`                   | `Power.current.notes!`                     |
+| `Power.current.include_model!(:updatable, Note)`       | `Power.current.updatable_notes!`           |
+| `Power.current.include_record?(Note.last)`             | `Power.current.note?(Note.last)`           |
+| `Power.current.include_record?(:updatable, Note.last)` | `Power.current.updatable_note?(Note.last)` |
+| `Power.current.include_record!(Note.last)`             | `Power.current.note!(Note.last)`           |
+| `Power.current.include_record!(:updatable, Note.last)` | `Power.current.updatable_note!(Note.last)` |
+| `Power.current.name_for_model(Note)`                   | `:notes`                                   |
+| `Power.current.name_for_model(:updatable, Note)`       | `:updatable_notes`                         |
 
-
-
-Querying a power that might be nil
-----------------------------------
+## Querying a power that might be nil
 
 You will often want to access `Power.current` from another model, to e.g. iterate through the list of accessible users:
 
@@ -760,23 +724,20 @@ end
 
 There is a long selection of class methods that behave neutrally in case `Power.current` is `nil`:
 
-| Call                                                     | Equivalent                                                          |
-|----------------------------------------------------------|---------------------------------------------------------------------|
-| `Power.for_model(Note)`                                  | `Power.current.present? ? Power.current.notes : Note`               |
-| `Power.for_model(:updatable, Note)`                      | `Power.current.present? ? Power.current.updatable_notes : Note`     |
-| `Power.include_model?(Note)`                             | `Power.current.present? ? Power.notes? : true`                      |
-| `Power.include_model?(:updatable, Note)`                 | `Power.current.present? ? Power.updatable_notes? : true`            |
-| `Power.include_model!(Note)`                             | `Power.notes! if Power.current.present?`                            |
-| `Power.include_model!(:updatable, Note)`                 | `Power.updatable_notes! if Power.current.present?`                  |
-| `Power.include_record?(Note.last)`                       | `Power.current.present? ? Power.note?(Note.last) : true`            |
-| `Power.include_record?(:updatable, Note.last)`           | `Power.current.present? ? Power.updatable_note?(Note.last?) : true` |
-| `Power.include_record!(Note.last)`                       | `Power.note!(Note.last) if Power.current.present?`                  |
-| `Power.include_record!(:updatable, Note.last)`           | `Power.updatable_note!(Note.last) if Power.current.present?`        |
+| Call                                           | Equivalent                                                          |
+| ---------------------------------------------- | ------------------------------------------------------------------- |
+| `Power.for_model(Note)`                        | `Power.current.present? ? Power.current.notes : Note`               |
+| `Power.for_model(:updatable, Note)`            | `Power.current.present? ? Power.current.updatable_notes : Note`     |
+| `Power.include_model?(Note)`                   | `Power.current.present? ? Power.notes? : true`                      |
+| `Power.include_model?(:updatable, Note)`       | `Power.current.present? ? Power.updatable_notes? : true`            |
+| `Power.include_model!(Note)`                   | `Power.notes! if Power.current.present?`                            |
+| `Power.include_model!(:updatable, Note)`       | `Power.updatable_notes! if Power.current.present?`                  |
+| `Power.include_record?(Note.last)`             | `Power.current.present? ? Power.note?(Note.last) : true`            |
+| `Power.include_record?(:updatable, Note.last)` | `Power.current.present? ? Power.updatable_note?(Note.last?) : true` |
+| `Power.include_record!(Note.last)`             | `Power.note!(Note.last) if Power.current.present?`                  |
+| `Power.include_record!(:updatable, Note.last)` | `Power.updatable_note!(Note.last) if Power.current.present?`        |
 
-
-
-Testing
--------
+## Testing
 
 This section Some hints for testing authorization with Consul.
 
@@ -847,9 +808,7 @@ Power.without_power do
 end
 ```
 
-
-Installation
-------------
+## Installation
 
 Add the following to your `Gemfile`:
 
@@ -859,9 +818,7 @@ gem 'consul'
 
 Now run `bundle install` to lock the gem into your project.
 
-
-Development
------------
+## Development
 
 We currently develop using Ruby 2.5.3 (see `.ruby-version`) since that version works for current versions of ActiveRecord that we support. GitHub Actions will test additional Ruby versions (2.3.8, 2.4.5, and 3.0.1).
 
@@ -884,8 +841,6 @@ Note that we have configured GitHub Actions to automatically run tests in all su
 
 I'm very eager to keep this gem leightweight and on topic. If you're unsure whether a change would make it into the gem, [talk to me beforehand](mailto:henning.koch@makandra.de).
 
-
-Credits
--------
+## Credits
 
 Henning Koch from [makandra](http://makandra.com/)
