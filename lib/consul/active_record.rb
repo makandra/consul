@@ -14,4 +14,6 @@ module Consul
   end
 end
 
-ActiveRecord::Base.send(:extend, Consul::ActiveRecord)
+ActiveSupport.on_load(:active_record) do
+  extend(Consul::ActiveRecord)
+end
