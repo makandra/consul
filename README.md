@@ -14,7 +14,7 @@
   </picture>
 </p>
 
-[![Tests](https://github.com/makandra/consul/workflows/Tests/badge.svg)](https://github.com/makandra/consul/actions) [![Code Climate](https://codeclimate.com/github/makandra/consul.png)](https://codeclimate.com/github/makandra/consul)
+[![Tests](https://github.com/makandra/consul/workflows/Tests/badge.svg)](https://github.com/makandra/consul/actions)
 
 
 Consul is an authorization solution for Ruby on Rails where you describe *sets of accessible things* to control what a user can see or edit.
