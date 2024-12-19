@@ -9,6 +9,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+- Test against Rails 8.0
+- Drop tests for Rails 5.2
+
 ## 1.3.2 - 2024-08-27
 
 ### Compatible changes

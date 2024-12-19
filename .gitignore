@@ -7,3 +7,4 @@ pkg
 .bundle
 spec/support/database.yml
 .byebug_history
+tmp
