@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - Test against Rails 8.0
 - Drop tests for Rails 5.2
+- Test against Ruby 3.4 instead of Ruby 3.3
 
 ## 1.3.2 - 2024-08-27
 
