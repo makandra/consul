@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 
+- Increase gemspec version constraints to Rails >= 6.0
+- Drop tests (and support) for Ruby 2.5
+
 ### Compatible changes
 
 - Test against Rails 8.0

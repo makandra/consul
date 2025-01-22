@@ -834,11 +834,11 @@ Now run `bundle install` to lock the gem into your project.
 
 ## Development
 
-We currently develop using Ruby 2.5.3 (see `.ruby-version`) since that version works for current versions of ActiveRecord that we support. GitHub Actions will test additional Ruby versions (2.3.8, 2.4.5, and 3.0.1).
+We currently develop using Ruby 3.3.4 (see `.ruby-version`) since that version works for current versions of ActiveRecord that we support. GitHub Actions will test additional Ruby versions (2.7.3, 3.2.0).
 
 There are tests in `spec`. We only accept PRs with tests. To run tests:
 
-- Install Ruby 2.5.3
+- Install Ruby 3.3.4
 - run `bundle install`
 - Put your database credentials into `spec/support/database.yml`. There's a `database.sample.yml` you can use as a template.
 - There are gem bundles in the project root for each rails version that we support.

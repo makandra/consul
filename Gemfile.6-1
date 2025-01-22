@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Runtime dependencies
-gem 'railties', '>= 3.2'
+gem 'railties', '~> 6.1'
 gem 'assignable_values'
 
 # Development dependencies
