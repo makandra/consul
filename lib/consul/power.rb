@@ -32,8 +32,7 @@ module Consul
         if Util.scope_selects_all_records?(power_value)
           true
         else
-          power_ids_name = self.class.power_ids_name(power_name)
-          send(power_ids_name, *context).include?(object.id)
+          power_value.exists?(object.id)
         end
       elsif Util.collection?(power_value)
         power_value.include?(object)

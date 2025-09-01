@@ -10,6 +10,7 @@ require 'gemika'
 
 # Gem under test
 require 'consul'
+require 'pry'
 
 begin
   require 'byebug'

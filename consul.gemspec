@@ -30,4 +30,5 @@ Gem::Specification.new do |s|
   s.add_dependency('activesupport', '>= 6.0')
   s.add_dependency('railties', '>= 6.0')
   s.add_dependency('edge_rider', '>= 0.3.0')
+  s.add_dependency('pry')
 end

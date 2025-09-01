@@ -685,8 +685,15 @@ describe Consul::Power do
   describe '#include_record?' do
 
     it 'should return if the given record is included in the power corresponding to the class of the given record' do
-      @user.power.include_record?(@deleted_client).should == false
-      @user.power.include_record?(@client1).should == true
+      logger_was = ActiveRecord::Base.logger
+
+      begin
+        ActiveRecord::Base.logger = Logger.new(STDOUT)
+        @user.power.include_record?(@deleted_client).should == false
+        @user.power.include_record?(@client1).should == true
+      ensure
+        ActiveRecord::Base.logger = logger_was
+      end
     end
 
   end
