@@ -738,18 +738,18 @@ end
 
 There is a long selection of class methods that behave neutrally in case `Power.current` is `nil`:
 
-| Call                                           | Equivalent                                                          |
-| ---------------------------------------------- | ------------------------------------------------------------------- |
-| `Power.for_model(Note)`                        | `Power.current.present? ? Power.current.notes : Note`               |
-| `Power.for_model(:updatable, Note)`            | `Power.current.present? ? Power.current.updatable_notes : Note`     |
-| `Power.include_model?(Note)`                   | `Power.current.present? ? Power.notes? : true`                      |
-| `Power.include_model?(:updatable, Note)`       | `Power.current.present? ? Power.updatable_notes? : true`            |
-| `Power.include_model!(Note)`                   | `Power.notes! if Power.current.present?`                            |
-| `Power.include_model!(:updatable, Note)`       | `Power.updatable_notes! if Power.current.present?`                  |
-| `Power.include_record?(Note.last)`             | `Power.current.present? ? Power.note?(Note.last) : true`            |
-| `Power.include_record?(:updatable, Note.last)` | `Power.current.present? ? Power.updatable_note?(Note.last?) : true` |
-| `Power.include_record!(Note.last)`             | `Power.note!(Note.last) if Power.current.present?`                  |
-| `Power.include_record!(:updatable, Note.last)` | `Power.updatable_note!(Note.last) if Power.current.present?`        |
+| Call                                           | Equivalent                                                 |
+| ---------------------------------------------- | -----------------------------------------------------------|
+| `Power.for_model(Note)`                        | `Power.current? ? Power.current.notes : Note`              |
+| `Power.for_model(:updatable, Note)`            | `Power.current? ? Power.current.updatable_notes : Note`    |
+| `Power.include_model?(Note)`                   | `Power.current? ? Power.notes? : true`                     |
+| `Power.include_model?(:updatable, Note)`       | `Power.current? ? Power.updatable_notes? : true`           |
+| `Power.include_model!(Note)`                   | `Power.notes! if Power.current`                            |
+| `Power.include_model!(:updatable, Note)`       | `Power.current.updatable_notes! if Power.current`          |
+| `Power.include_record?(Note.last)`             | `Power.current ? Power.current.note?(Note.last) : true`    |
+| `Power.include_record?(:updatable, Note.last)` | `Power.current? ? Power.current.updatable_note?(Note.last) : true` |
+| `Power.include_record!(Note.last)`             | `Power.current.note!(Note.last) if Power.current`          |
+| `Power.include_record!(:updatable, Note.last)` | `Power.updatable_note!(Note.last) if Power.current`        |
 
 ## Testing
 
