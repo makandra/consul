@@ -1,0 +1,65 @@
+#!/bin/bash
+set -euo pipefail
+
+# utility for comparing version strings
+# https://stackoverflow.com/questions/4023830/how-to-compare-two-strings-in-dot-separated-version-format-in-bash
+function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+
+# store current Ruby version and restore it on exit
+original_ruby_version=$(cat .ruby-version)
+trap "rbenv local $original_ruby_version" EXIT
+
+# determine employed Ruby versions (awk command == "strip whitespace", sed command == "delete_prefix")
+readarray -t versions < <(grep ruby: .github/workflows/test.yml | awk '{$1=$1};1' | sed 's/- ruby: //' | sort | uniq)
+echo "Detected Ruby versions:"
+for version in "${versions[@]}"
+do
+  echo "- $version"
+done
+echo ""
+
+for version in "${versions[@]}"
+do
+  # switch Ruby version
+  rbenv local "$version"
+
+  # determine actual versions
+  ruby_version=$(ruby -v)
+  rubygems_version=$(gem -v)
+  bundler_version=$(bundler -v | sed 's/Bundler version //')
+
+  # debug output
+  echo "====================="
+  echo "Target Ruby version: $version"
+  echo ""
+  echo "Ruby: $ruby_version"
+  echo "rubygems: $rubygems_version"
+  echo "Bundler: $bundler_version"
+  echo "====================="
+  echo ""
+
+  # version checks (minimum versions to make 'BUNDLED WITH' in Gemfile.lock work correctly)
+  if [ $(version $rubygems_version) -lt $(version "3.3.0") ]; then
+    echo "Please ensure that your rubygems version is > 3.3.0 for Ruby $ruby_version!"
+    echo "Install newest version:"
+    echo "gem update --system"
+    echo "Install specific version:"
+    echo "gem update --system <version>"
+    exit 1
+  fi
+
+  if [ $(version $bundler_version) -lt $(version "2.3.0") ]; then
+    echo "Please ensure that your Bundler version is > 2.3.0 for Ruby $ruby_version!"
+    echo "Install newest version:"
+    echo "gem install bundler"
+    echo "Install specific version:"
+    echo "gem install bundler:<version>"
+    exit 1
+  fi
+
+  # bundle and run specs
+  rake matrix:install
+  rake matrix:spec
+done
+
+exit 0

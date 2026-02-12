@@ -834,16 +834,39 @@ Now run `bundle install` to lock the gem into your project.
 
 ## Development
 
-We currently develop using Ruby 3.4.1 (see `.ruby-version`) since that version works for current versions of ActiveRecord that we support. GitHub Actions will test additional Ruby versions (2.7.3, 3.2.0).
+We currently develop using Ruby 3.4.1 (see `.ruby-version`) since that version works for current versions of ActiveRecord that we support. GitHub Actions will test additional Ruby versions (3.2.0, 4.0.1).
 
 There are tests in `spec`. We only accept PRs with tests. To run tests:
 
-- Install Ruby 3.4.1
-- run `bundle install`
-- Put your database credentials into `spec/support/database.yml`. There's a `database.sample.yml` you can use as a template.
-- There are gem bundles in the project root for each rails version that we support.
-- You can bundle all test applications by saying `bundle exec rake matrix:install`
-- You can run specs from the project root by saying `bundle exec rake matrix:spec`. This will run all gemfiles compatible with your current Ruby.
+- First, put your database credentials into `spec/support/database.yml`. There's a `database.sample.yml` you can use as
+  a template.
+
+Then, you have multiple options:
+
+1. Running tests for a single set of dependencies
+   - Install and switch to a Ruby version
+   - run `BUNDLE_GEMFILE=... bundle install`
+   - run `BUNDLE_GEMFILE=... bundle exec rspec`
+   - NOTE:
+     - There are gem bundles in the project root for each rails version that we support.
+     - Refer to `.github/workflows/test.yml` to see which Gemfiles are supported for which Ruby version.
+
+2. Run tests against a specific Ruby version and all Gemfiles for that version:
+   - Install and switch to the Ruby version
+   - Install development dependencies using `rake matrix:install`
+   - Run tests using `rake matrix:spec`
+
+3. Run tests against all Ruby versions:
+   - Install all Ruby versions mentioned in `.github/workflows/test.yml`
+   - run `dev/matrix` (only supports `rbenv` for switching Ruby versions currently)
+
+Hints:
+
+- Check the [gemika](github.com/makandra/gemika) README for more detailed development instructions.
+- We recommend to have sufficiently new versions of bundler (> 2.3.0) and rubygems (> 3.3.0) installed for each Ruby
+  version.
+- The script `dev/matrix` will warn you, if that is not the case. For all other methods you need to ensure that
+  yourself.
 
 If you would like to contribute:
 
