@@ -12,6 +12,10 @@ gem 'shoulda-matchers'
 gem 'sqlite3'
 gem 'database_cleaner'
 gem 'gemika', '>= 0.8.1'
+gem 'actionpack'
+
+# Previous default gems
+gem 'cgi'
 
 # Gem under test
 gem 'consul', :path => '.'
