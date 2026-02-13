@@ -45,7 +45,7 @@ GEM
     edge_rider (2.1.1)
       activerecord (>= 3.2)
     erubi (1.10.0)
-    gemika (0.8.1)
+    gemika (2.0.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     loofah (2.9.0)
@@ -115,7 +115,7 @@ DEPENDENCIES
   assignable_values
   consul!
   database_cleaner
-  gemika (>= 0.8.1)
+  gemika (>= 2.0.0)
   railties (~> 6.1)
   rspec
   rspec-rails

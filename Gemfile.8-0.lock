@@ -68,7 +68,7 @@ GEM
     edge_rider (2.3.0)
       activerecord (>= 3.2)
     erubi (1.13.0)
-    gemika (0.8.3)
+    gemika (2.0.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     io-console (0.8.0)
@@ -167,7 +167,7 @@ DEPENDENCIES
   cgi
   consul!
   database_cleaner
-  gemika (>= 0.8.1)
+  gemika (>= 2.0.0)
   railties (~> 8.0)
   rspec
   rspec-rails
