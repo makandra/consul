@@ -13,7 +13,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 -
 
+## 2.0.1 - 2026-03-10
 
+### Compatible changes
+
+- Add tests for Ruby 4.0 and Rails 8.1
+- Introduce `required_ruby_version` in gemspec so people on legacy Ruby versions don't receive future upgrades
+- Drop tests and support for Ruby < 3 and Rails < 7.2
 
 ## 2.0.0 - 2025-01-22
 
