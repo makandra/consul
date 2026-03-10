@@ -25,9 +25,11 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
+  s.required_ruby_version = '>= 3.0.0'
+
   s.add_dependency('memoized', '>=1.0.2')
-  s.add_dependency('activerecord', '>= 6.0')
-  s.add_dependency('activesupport', '>= 6.0')
-  s.add_dependency('railties', '>= 6.0')
+  s.add_dependency('activerecord', '>= 7.2')
+  s.add_dependency('activesupport', '>= 7.2')
+  s.add_dependency('railties', '>= 7.2')
   s.add_dependency('edge_rider', '>= 0.3.0')
 end

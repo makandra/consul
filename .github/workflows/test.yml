@@ -15,13 +15,9 @@ jobs:
       matrix:
         include:
           - ruby: 3.2.0
-            gemfile: Gemfile.6-1
-          - ruby: 3.2.0
-            gemfile: Gemfile.7-1
+            gemfile: Gemfile.7-2
           - ruby: 3.2.0
             gemfile: Gemfile.8-0
-          - ruby: 3.4.1
-            gemfile: Gemfile.7-1
           - ruby: 3.4.1
             gemfile: Gemfile.7-2
           - ruby: 3.4.1
