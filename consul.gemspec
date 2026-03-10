@@ -10,20 +10,18 @@ Gem::Specification.new do |s|
   s.summary = 'A scope-based authorization solution for Ruby on Rails.'
   s.description = s.summary
   s.license = 'MIT'
+  s.metadata = {
+    'source_code_uri' => s.homepage,
+    'bug_tracker_uri' => 'https://github.com/makandra/consul/issues',
+    'changelog_uri' => 'https://github.com/makandra/consul/blob/master/CHANGELOG.md',
+    'rubygems_mfa_required' => 'true',
+  }
 
-  if RUBY_VERSION.to_f >= 2.0
-    s.metadata = {
-      'source_code_uri' => s.homepage,
-      'bug_tracker_uri' => 'https://github.com/makandra/consul/issues',
-      'changelog_uri' => 'https://github.com/makandra/consul/blob/master/CHANGELOG.md',
-      'rubygems_mfa_required' => 'true',
-    }
-  end
-
-  s.files         = `git ls-files`.split("\n").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.files = `git ls-files`.split("\n").reject { |f| File.symlink?(f) }.reject { |f| f.match(%r{^(spec|dev|media|.github)/}) }
   s.require_paths = ["lib"]
+
+  s.bindir = 'exe'
+  s.executables = []
 
   s.required_ruby_version = '>= 3.0.0'
 
